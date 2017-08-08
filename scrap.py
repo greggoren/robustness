@@ -13,5 +13,5 @@ if __name__=="__main__":
     X,y = prep.create_data_set(a,b,c)
     svm = ss.svm_sgd(C=0.1)
     svm.fit(X,np.array(y))
-    print svm.w
+    print (svm.w)
 

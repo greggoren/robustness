@@ -1,5 +1,6 @@
 import numpy as np
 import random as r
+import evaluator as e
 class svm_sgd:
 
     def __init__(self,C=None):
@@ -17,7 +18,7 @@ class svm_sgd:
 
 
     def fit(self,X,y):
-        print "started SGD"
+        print ("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
         self.w = np.zeros(number_of_features)#weights initialization
         if self.C is not None:
@@ -25,9 +26,9 @@ class svm_sgd:
         else:
             lambda_factor = number_of_examples
 
-        for t in xrange(number_of_examples):#itarating over examples
-            if t%1000==0:
-                print "in iteration",t,"out of",number_of_examples
+        for t in range(number_of_examples):#itarating over examples
+            if t%100000==0:
+                print ("in iteration",t,"out of",number_of_examples)
             lr = 1.0/(t+1)
 
             random_index = r.randint(0,number_of_examples-1)
@@ -37,8 +38,21 @@ class svm_sgd:
             else:
                 self.w = t * lr * self.w
 
-        print "SGD ended"
+        print ("SGD ended")
 
-    def predict(self,X,queries):
-        ""
+    def predict(self,X,queries,test_indices):
+        results = {}
+
+        for index in test_indices:
+            results[index] = np.dot(self.w,X[index].T)
+
+        eval = e.eval()
+        eval.create_trec_eval_file(test_indices,queries,results)
+
+
+
+
+
+
+
 

@@ -2,7 +2,8 @@ import os
 import numpy as np
 import itertools
 from sklearn.datasets import load_svmlight_file
-from sklearn.model_selection import KFold, cross_val_score
+from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import LeavePGroupsOut
 
 
 class preprocess:
@@ -45,8 +46,8 @@ class preprocess:
 
 
     def create_folds(self,X,y,groups,number_of_folds):
-        kf = KFold(3)
-        unique_groups = set(groups)
+        kf = GroupKFold(number_of_folds)
+        return kf.split(X,y,groups)
 
 
 
