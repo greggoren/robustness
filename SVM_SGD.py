@@ -39,6 +39,7 @@ class svm_sgd:
         print ("SGD ended")
 
     def predict(self,X,queries,test_indices):
+
         results = {}
 
         for index in test_indices:

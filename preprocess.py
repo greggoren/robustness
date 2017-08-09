@@ -22,15 +22,15 @@ class preprocess:
 
     def create_data_set(self,X,y,groups):
         print ("creating data set")
-        X=X.toarray()
+        X=np.matrix(X.toarray())
         data = []
         labels = []
         k=0
         unique_groups = set(groups)
         for group in unique_groups:
             print ("working on query ",group)
-            relevat_indexes = np.where(groups==group)[0]
-            comb = list(itertools.combinations(relevat_indexes, 2))
+            relevant_indexes = np.where(groups==group)[0]
+            comb = list(itertools.combinations(relevant_indexes, 2))
             for (i,j) in comb:
                 if (y[i]==y[j]):
                     continue
