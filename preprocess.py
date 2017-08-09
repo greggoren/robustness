@@ -22,7 +22,7 @@ class preprocess:
 
     def create_data_set(self,X,y,groups):
         print ("creating data set")
-        X=X.todense()
+        X=np.matrix(X.todense())
         data = []
         labels = []
         k=0
