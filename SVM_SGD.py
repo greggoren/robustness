@@ -15,8 +15,6 @@ class svm_sgd:
         return False
 
 
-
-
     def fit(self,X,y):
         print ("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])

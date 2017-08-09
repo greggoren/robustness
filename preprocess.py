@@ -4,7 +4,7 @@ import itertools
 from sklearn.datasets import load_svmlight_file
 from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import LeavePGroupsOut
-
+import math
 
 class preprocess:
 
@@ -50,6 +50,9 @@ class preprocess:
         return kf.split(X,y,groups)
 
 
+
+    def create_validation_set(self,number_of_folds,test_indices,already_been_in_validation_indices):
+        number_of_queries_in_set = math.floor(float(float(self.number_of_queries)/number_of_folds))
 
 
 
