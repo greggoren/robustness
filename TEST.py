@@ -9,9 +9,9 @@ if __name__=="__main__":
     svm = svmsgd.svm_sgd(C=0.1)
     for train,test in folds:
         X_i,y_i=a.create_data_set(X[train],y[train],queries[train])
-        X_i = np.matrix(X_i)
         svm.fit(X_i,y_i)
         svm.predict(X,queries,test)
+        break
 
 
 
