@@ -22,7 +22,6 @@ class preprocess:
 
     def create_data_set(self,X,y,groups):
         print("creating data set")
-        #X=X.toarray()
         data = []
         labels = []
         k=0
