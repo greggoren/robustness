@@ -13,7 +13,7 @@ class eval:
             trec_file = "trec_file.txt"
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
-            trec_file_access.write(str(queries[index])+"\t0\t"+str(index)+"\t"+str(results[index])+"\n")
+            trec_file_access.write(str(queries[index])+"\tQ0\t"+str(index)+"\t"+str(index)+"\t"+str(results[index])+"\tindri\n")
         trec_file_access.close()
 
     def run_command(self, command):
