@@ -40,5 +40,5 @@ class eval:
     def create_qrels_file(self,X,y,queries):
         qrels = open("qrels",'a')
         for i in range(len(X)):
-            qrels.write(str(queries[i]) + "\t0\t" + str(i) + "\t" + str(y[i]) + "\n")
+            qrels.write(str(queries[i]) + "\t0\t" + str(i) + "\t" + str(int(y[i])) + "\n")
         qrels.close()
