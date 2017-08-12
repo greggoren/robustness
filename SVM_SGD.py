@@ -38,7 +38,8 @@ class svm_sgd:
 
         print ("SGD ended")
 
-    def predict(self,X,queries,test_indices):
+
+    def predict(self,X,queries,test_indices,validation=None):
 
         results = {}
 
@@ -46,7 +47,8 @@ class svm_sgd:
             results[index] = np.dot(self.w,X[index].T)
 
         eval = e.eval()
-        eval.create_trec_eval_file(test_indices,queries,results)
+        return eval.create_trec_eval_file(test_indices,queries,results,str(self.C),validation)
+
 
 
 

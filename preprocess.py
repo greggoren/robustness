@@ -3,7 +3,6 @@ import numpy as np
 import itertools
 from sklearn.datasets import load_svmlight_file
 from sklearn.model_selection import GroupKFold
-from sklearn.model_selection import LeavePGroupsOut
 import math
 
 class preprocess:
@@ -18,7 +17,7 @@ class preprocess:
         print ("loading svmLight file")
         X, y, groups= load_svmlight_file(file,query_id=True)
         print ("loading complete")
-        return X,y,groups
+        return X.toarray(),y,groups
 
     def create_data_set(self,X,y,groups):
         print("creating data set")
@@ -29,13 +28,13 @@ class preprocess:
         for group in unique_groups:
             print ("working on query ",group)
             relevant_indexes = np.where(groups==group)[0]
-            comb = list(itertools.combinations(relevant_indexes, 2))
+            comb = itertools.combinations(relevant_indexes, 2)
             for (i,j) in comb:
                 if (y[i]==y[j]):
                     continue
                 data.append(X[i]-X[j])
                 labels.append(np.sign(y[i]-y[j]))
-                if labels[-1] != (-1) ** k:
+                if labels[-1] != (-1) ** k:#to get a balanced data set
                     labels[-1] *= -1
                     data[-1] *= -1
                 k += 1
@@ -50,9 +49,19 @@ class preprocess:
 
 
 
-    def create_validation_set(self,number_of_folds,test_indices,already_been_in_validation_indices):
-        number_of_queries_in_set = math.floor(float(float(self.number_of_queries)/number_of_folds))
-
+    def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries):
+        number_of_queries_in_set = math.floor(float(float(number_of_queries)/number_of_folds))
+        working_set = train_indices - already_been_in_validation_indices
+        members_count = 1
+        validation_set = set()
+        for index in working_set:
+            if members_count>=number_of_queries_in_set:
+                break
+            validation_set.add(index)
+            members_count+=1
+        already_been_in_validation_indices= already_been_in_validation_indices.union(validation_set)
+        train_set = train_indices - validation_set
+        return already_been_in_validation_indices,validation_set,train_set
 
 
 
