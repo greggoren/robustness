@@ -38,7 +38,7 @@ class eval:
         return score
 
     def empty_validation_files(self):
-        dir_name = "validation"
+        dir_name = "./validation"
         if os._exists(dir_name):
             for root, dirs, files in os.walk(dir_name):
                 for name in files:
