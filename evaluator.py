@@ -16,7 +16,7 @@ class eval:
                 os.makedirs(os.path.dirname(trec_file))
 
         else:
-            trec_file = "trec_file.txt"
+            trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
             trec_file_access.write(str(queries[index])+"\tQ0\t"+str(index)+"\t"+str(index)+"\t"+str(results[index])+"\tindri\n")
