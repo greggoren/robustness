@@ -41,7 +41,7 @@ class eval:
         dir_name = "./validation"#TODO: add external param
 
         shutil.rmtree(dir_name)
-        if os._exists(dir_name):
+        if not os._exists(dir_name):
             print(dir_name,"removed succesfully")
         else:
             print("problem with dir removal")
