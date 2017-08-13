@@ -17,7 +17,7 @@ if __name__=="__main__":
     for train,test in folds:
         eval.empty_validation_files()
         validation_results={}
-        validated,validation_set,train_set = a.create_validation_set(number_of_folds,validated,set(train),number_of_queries)
+        validated,validation_set,train_set = a.create_validation_set(number_of_folds,validated,set(train),number_of_queries,queries)
         train_set = list(train_set)
         X_i,y_i=a.create_data_set(X[train_set],y[train_set],queries[train_set])
         print(validation_set)

@@ -49,16 +49,18 @@ class preprocess:
 
 
 
-    def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries):
+    def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries,queries):
+        validation_queries = set()
         number_of_queries_in_set = math.floor(float(float(number_of_queries)/number_of_folds))
         working_set = train_indices - already_been_in_validation_indices
-        members_count = 1
+
         validation_set = set()
         for index in working_set:
-            if members_count>=number_of_queries_in_set:
+
+            if len(validation_queries)>=number_of_queries_in_set:
                 break
+            validation_queries.add(queries[index])
             validation_set.add(index)
-            members_count+=1
         already_been_in_validation_indices= already_been_in_validation_indices.union(validation_set)
         train_set = train_indices - validation_set
         return already_been_in_validation_indices,validation_set,train_set
