@@ -1,3 +1,3 @@
 qrels = "qrels"
-validation_folder = "./validation/"
+validation_folder = "/lv_local/home/sgregory/robustness/validation/"
 score_file = "trec_file.txt"

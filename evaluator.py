@@ -39,13 +39,11 @@ class eval:
         return score
 
     def empty_validation_files(self):
-        if os._exists(params.validation_folder):
+        try:
             shutil.rmtree(params.validation_folder)
-        if not os._exists(params.validation_folder):
-            print(params.validation_folder,"removed succesfully")
-        else:
-            print("problem with dir removal")
-            sys.exit(2)
+        except:
+            print("no validation folder")
+
 
     def run_trec_eval_on_test(self):
         score_data = []
