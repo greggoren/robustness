@@ -35,15 +35,9 @@ class models_handler():
         self.chosen_model_per_fold[fold]=max_C
 
 
-    def predict(self,X,y,test_indices,fold):
+    def predict(self,X,queries,test_indices,fold):
         svm = svm_sgd.svm_sgd(C=self.chosen_model_per_fold[fold])
         svm.w = self.weights_index[fold]
-        svm.predict(X,y,test_indices)
+        svm.predict(X,queries,test_indices)
 
 
-
-
-
-
-    def get_right_model_for_fold(self):
-        ""

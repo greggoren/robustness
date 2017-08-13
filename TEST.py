@@ -24,7 +24,7 @@ if __name__=="__main__":
         X_i, y_i = a.create_data_set(X[train_set], y[train_set], queries[train_set])
         model_handler.set_queries_to_folds(queries,test,fold_number)
         model_handler.fit_model_on_train_set_and_choose_best(X,X_i,y_i,validation_set,fold_number,queries)
-        model_handler.predict(X,y,test,fold_number)
+        model_handler.predict(X,queries,test,fold_number)
         fold_number+=1
     eval.run_trec_eval_on_test()
 
