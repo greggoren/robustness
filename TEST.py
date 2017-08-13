@@ -22,7 +22,6 @@ if __name__=="__main__":
         eval.empty_validation_files()
         validated, validation_set, train_set = a.create_validation_set(number_of_folds, validated, set(train),
                                                                        number_of_queries, queries)
-        train_set = list(train_set)
         X_i, y_i = a.create_data_set(X[train_set], y[train_set], queries[train_set])
         model_handler.set_queries_to_folds(queries,test,fold_number)
         model_handler.fit_model_on_train_set_and_choose_best(X,X_i,y_i,validation_set,fold_number,queries)

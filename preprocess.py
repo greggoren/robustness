@@ -62,7 +62,7 @@ class preprocess:
             validation_set.add(index)
         already_been_in_validation_indices= already_been_in_validation_indices.union(validation_set)
         train_set = train_indices - validation_set
-        return already_been_in_validation_indices,validation_set,train_set
+        return already_been_in_validation_indices,validation_set,list(train_set)
 
 
 
