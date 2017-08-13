@@ -2,6 +2,7 @@ import shutil
 import subprocess
 import os
 import sys
+import params
 class eval:
 
     def __init__(self):
@@ -63,9 +64,8 @@ class eval:
 
     def create_qrels_file(self,X,y,queries):
         print("creating qrels file")
-        qrels = open("qrels",'w')
+        qrels = open(params.qrels,'w')
         for i in range(len(X)):
             qrels.write(str(queries[i]) + "\t0\t" + str(i) + "\t" + str(int(y[i])) + "\n")
         qrels.close()
         print("qrels file ended")
-        return "qrels"
