@@ -39,11 +39,10 @@ class eval:
         return score
 
     def empty_validation_files(self):
-        dir_name = "./validation"#TODO: add external param
-        if os._exists(dir_name):
-            shutil.rmtree(dir_name)
-        if not os._exists(dir_name):
-            print(dir_name,"removed succesfully")
+        if os._exists(params.validation_folder):
+            shutil.rmtree(params.validation_folder)
+        if not os._exists(params.validation_folder):
+            print(params.validation_folder,"removed succesfully")
         else:
             print("problem with dir removal")
             sys.exit(2)
