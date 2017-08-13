@@ -32,6 +32,7 @@ class eval:
     def run_trec_eval(self, qrel_path, score_file):
         command = "./trec_eval -m " + self.validation_metric + " " + qrel_path + " " + score_file
         for output_line in self.run_command(command):
+            print("output line=",output_line)
             score = output_line.split()[-1]
             break
         return score
