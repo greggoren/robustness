@@ -40,7 +40,8 @@ class eval:
     def empty_validation_files(self):
         dir_name = "./validation"#TODO: add external param
 
-        if (shutil.rmtree(dir_name)):
+        shutil.rmtree(dir_name)
+        if os._exists(dir_name):
             print(dir_name,"removed succesfully")
         else:
             print("problem with dir removal")
