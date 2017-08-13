@@ -54,18 +54,19 @@ class eval:
 
     def run_trec_eval_on_test(self):
         score_data = []
+        print("last stats:")
         for metric in self.metrics:
             command = "./trec_eval -m " + metric + " " + params.qrels + " " + params.score_file
-            print("last stats:")
             for output_line in self.run_command(command):
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
-                score_data.append(( metric, score))
+                score_data.append((metric, score,))
 
         summary_file = open("summary_of_test_run.txt", 'w')
         summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:
-            summary_file.write(score_record[0] + "\t" + score_record[1] + "\n")
+            next_line = score_record[0] + "\t" + score_record[1] + "\n"
+            summary_file.write(next_line.decode('utf-8'))
         summary_file.close()
 
     def create_qrels_file(self,X,y,queries):
