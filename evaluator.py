@@ -26,7 +26,7 @@ class eval:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
-            trec_file_access.write(str(queries[index])+"\tQ0\t"+str(index)+"\t"+str(index)+"\t"+str(results[index])+"\tindri\n")
+            trec_file_access.write(str(queries[index])+"\tQ0\t"+str(index)+"\t"+str(0)+"\t"+str(results[index])+"\tindri\n")
         trec_file_access.close()
         return trec_file
 
@@ -60,13 +60,13 @@ class eval:
             for output_line in self.run_command(command):
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
-                score_data.append((metric, score,))
+                score_data.append((metric, str(score)))
 
         summary_file = open("summary_of_test_run.txt", 'w')
         summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:
             next_line = score_record[0] + "\t" + score_record[1] + "\n"
-            summary_file.write(next_line.decode('utf-8'))
+            summary_file.write(next_line)
         summary_file.close()
 
     def create_qrels_file(self,X,y,queries):
