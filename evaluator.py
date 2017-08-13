@@ -48,18 +48,18 @@ class eval:
             print("problem with dir removal")
             sys.exit(2)
 
-    def run_trec_eval_on_test(self, qrel_path, score_file, model_name):
+    def run_trec_eval_on_test(self):
         score_data = []
         for metric in self.metrics:
-            command = "./trec_eval -m " + metric + " " + qrel_path + " " + score_file
+            command = "./trec_eval -m " + metric + " " + params.qrels + " " + params.score_file
             for output_line in self.run_command(command):
                 score = output_line.split()[-1].rstrip()
-                score_data.append((model_name, metric, score))
+                score_data.append(( metric, score))
 
         summary_file = open("summary_of_test_run.txt", 'w')
-        summary_file.write("MODEL\tMETRIC\tSCORE\n")
+        summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:
-            summary_file.write(score_record[0] + "\t" + score_record[1] + "\t" + score_record[2] + "\n")
+            summary_file.write(score_record[0] + "\t" + score_record[1] + "\n")
         summary_file.close()
 
     def create_qrels_file(self,X,y,queries):
