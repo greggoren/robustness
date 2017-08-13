@@ -37,9 +37,10 @@ class eval:
 
     def empty_validation_files(self):
         dir_name = "validation"
-        for dir in os.walk(dir_name):
-            if dir[2]:
-                os.remove(dir[0]+"/"+dir[2])
+        if os._exists(dir_name):
+            for dir in os.walk(dir_name):
+                if dir[2]:
+                    os.remove(dir[0]+"/"+dir[2])
 
 
     def run_trec_eval_on_test(self, qrel_path, score_file, model_name):
