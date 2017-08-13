@@ -18,12 +18,12 @@ class models_handler():
         self.query_to_fold_index.update(tmp)
 
 
-    def fit_model_on_train_set_and_choose_best(self,X,y,validation_indices,fold,queries):
+    def fit_model_on_train_set_and_choose_best(self,X,X_i,y_i,validation_indices,fold,queries):
         print("fitting models on fold",fold)
         weights = {}
         scores={}
         for svm in self.models:
-            svm.fit(X,y)
+            svm.fit(X_i,y_i)
             weights[svm.C]=svm.w
             score_file = svm.predict(X, queries, validation_indices, True)
             evaluator = e.eval()
