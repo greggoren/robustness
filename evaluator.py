@@ -42,6 +42,7 @@ class eval:
         if os._exists(dir_name):
             for root, dirs, files in os.walk(dir_name):
                 for name in files:
+                    print("removing file",root+"/"+name)
                     os.remove(root+"/"+name)
 
 
