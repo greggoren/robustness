@@ -1,4 +1,4 @@
-
+import shutil
 import subprocess
 import os
 import sys
@@ -40,7 +40,7 @@ class eval:
     def empty_validation_files(self):
         dir_name = "./validation"#TODO: add external param
 
-        if (os.rmdir(dir_name)):
+        if (shutil.rmtree(dir_name)):
             print(dir_name,"removed succesfully")
         else:
             print("problem with dir removal")
