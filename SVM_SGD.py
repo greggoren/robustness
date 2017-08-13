@@ -25,7 +25,7 @@ class svm_sgd:
             lambda_factor = number_of_examples
 
         for t in range(number_of_examples):#itarating over examples
-            if t%100000==0:
+            if t%1000000==0:
                 print ("in iteration",t,"out of",number_of_examples)
             lr = 1.0/(t+1)
 

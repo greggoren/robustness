@@ -29,7 +29,7 @@ if __name__=="__main__":
         print("validation score",score)
         #after getting argmax
         score_file=svm.predict(X,queries,test)
-    eval.run_trec_eval_on_test(params.qrels,score_file,str(svm.C))
+    eval.run_trec_eval_on_test()
 
 
 
