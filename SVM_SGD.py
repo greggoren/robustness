@@ -23,10 +23,10 @@ class svm_sgd:
             lambda_factor = self.C*number_of_examples
         else:
             lambda_factor = number_of_examples
-
-        for t in range(2*number_of_examples):#itarating over examples
+        iterations = 2 * number_of_examples
+        for t in range(iterations):#itarating over examples
             if t%1000000==0:
-                print ("in iteration",t,"out of",number_of_examples)
+                print ("in iteration",t,"out of",iterations)
             lr = 1.0/(t+1)
 
             random_index = r.randint(0,number_of_examples-1)
