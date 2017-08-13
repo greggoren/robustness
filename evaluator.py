@@ -33,7 +33,7 @@ class eval:
         command = "./trec_eval -m " + self.validation_metric + " " + qrel_path + " " + score_file
         for output_line in self.run_command(command):
             print("output line=",output_line)
-            score = output_line.split()[-1]
+            score = output_line.split()[-1].rstrip()
             break
         return score
 
@@ -50,7 +50,7 @@ class eval:
         for metric in self.metrics:
             command = "./trec_eval -m " + metric + " " + qrel_path + " " + score_file
             for output_line in self.run_command(command):
-                score = output_line.split()[-1]
+                score = output_line.split()[-1].rstrip()
                 score_data.append((model_name, metric, score))
 
         summary_file = open("summary_of_test_run.txt", 'w')

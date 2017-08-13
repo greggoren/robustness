@@ -27,7 +27,7 @@ if __name__=="__main__":
         validation_results[svm.C]=score
         print("validation score",score)
         #after getting argmax
-        score_file=svm.predict(X,qrels,test)
+        score_file=svm.predict(X,queries,test)
         eval.run_trec_eval_on_test(qrels,score_file,str(svm.C))
 
 
