@@ -1,7 +1,7 @@
 
 import subprocess
 import os
-#sasas
+import sys
 class eval:
 
     def __init__(self):
@@ -38,13 +38,13 @@ class eval:
         return score
 
     def empty_validation_files(self):
-        dir_name = "./validation"
-        if os._exists(dir_name):
-            for root, dirs, files in os.walk(dir_name):
-                for name in files:
-                    print("removing file",root+"/"+name)
-                    os.remove(root+"/"+name)
+        dir_name = "./validation"#TODO: add external param
 
+        if (os.rmdir(dir_name)):
+            print(dir_name,"removed succesfully")
+        else:
+            print("problem with dir removal")
+            sys.exit(2)
 
     def run_trec_eval_on_test(self, qrel_path, score_file, model_name):
         score_data = []
