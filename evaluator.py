@@ -56,7 +56,9 @@ class eval:
         score_data = []
         for metric in self.metrics:
             command = "./trec_eval -m " + metric + " " + params.qrels + " " + params.score_file
+            print("last stats:")
             for output_line in self.run_command(command):
+                print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
                 score_data.append(( metric, score))
 

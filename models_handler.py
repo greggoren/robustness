@@ -29,7 +29,7 @@ class models_handler():
             evaluator = e.eval()
             score = evaluator.run_trec_eval(score_file)
             scores[svm.C] = score
-        max_C=max(scores.iteritems(), key=operator.itemgetter(1))[0]
+        max_C=max(scores.items(), key=operator.itemgetter(1))[0]
         print("on fold",str(fold),"the chosen model is",str(max_C))
         self.weights_index[fold] = weights[max_C]
         self.chosen_model_per_fold[fold]=max_C
