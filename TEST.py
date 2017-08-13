@@ -20,11 +20,13 @@ if __name__=="__main__":
         validated,validation_set,train_set = a.create_validation_set(number_of_folds,validated,set(train),number_of_queries)
         train_set = list(train_set)
         X_i,y_i=a.create_data_set(X[train_set],y[train_set],queries[train_set])
+        print(validation_set)
         svm.fit(X_i,y_i)
         models[svm.C]=svm.w
         score_file = svm.predict(X,queries,validation_set,True)
         score=eval.run_trec_eval(qrels, score_file)
         validation_results[svm.C]=score
+        print("validation score",score)
         #after getting argmax
         score_file=svm.predict(X,qrels,test)
         eval.run_trec_eval_on_test(qrels,score_file,str(svm.C))
