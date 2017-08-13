@@ -26,7 +26,6 @@ class preprocess:
         k=0
         unique_groups = set(groups)
         for group in unique_groups:
-            print ("working on query ",group)
             relevant_indexes = np.where(groups==group)[0]
             comb = itertools.combinations(relevant_indexes, 2)
             for (i,j) in comb:
