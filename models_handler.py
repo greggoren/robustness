@@ -6,6 +6,8 @@ class models_handler():
         for C in C_array:
             self.models.append(svm_sgd.svm_sgd(C))
 
+        self.query_to_fold_index ={}
+
 
 
     def get_right_model_for_fold(self):

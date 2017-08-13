@@ -23,7 +23,7 @@ if __name__=="__main__":
         print(validation_set)
         svm.fit(X_i,y_i)
         models[svm.C]=svm.w
-        score_file = svm.predict(X,queries,validation_set,str(svm.C),True)
+        score_file = svm.predict(X,queries,validation_set,True)
         score=eval.run_trec_eval(qrels, score_file)
         validation_results[svm.C]=score
         print("validation score",score)
