@@ -9,7 +9,9 @@ if __name__=="__main__":
     number_of_folds = 5
     number_of_queries = len(set(queries))
     eval = e.eval()
-    eval.create_qrels_file(X,y,queries)
+    eval.remove_score_file_from_last_run()
+    if not params.recovery:
+        eval.create_qrels_file(X,y,queries)
     folds = a.create_folds(X,y,queries,number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]

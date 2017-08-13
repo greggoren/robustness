@@ -5,9 +5,16 @@ import sys
 import params
 class eval:
 
+
+
+
     def __init__(self):
         self.metrics = ["map","ndcg_cut.20","P.5","P.10"]
         self.validation_metric = "ndcg_cut.20"
+
+    def remove_score_file_from_last_run(self):
+        if os._exists(params.score_file):
+            os.remove(params.score_file)
 
     def create_trec_eval_file(self, test_indices, queries, results,model,validation=None):#TODO: need to sort file via unix command
         if validation is not None:
