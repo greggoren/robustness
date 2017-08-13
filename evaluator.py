@@ -33,6 +33,7 @@ class eval:
         command = "./trec_eval -m " + self.validation_metric + " " + qrel_path + " " + score_file
         for output_line in self.run_command(command):
             score = output_line.split()[-1]
+            break
         return score
 
     def empty_validation_files(self):
@@ -58,8 +59,10 @@ class eval:
         summary_file.close()
 
     def create_qrels_file(self,X,y,queries):
-        qrels = open("qrels",'a')
+        print("creating qrels file")
+        qrels = open("qrels",'w')
         for i in range(len(X)):
             qrels.write(str(queries[i]) + "\t0\t" + str(i) + "\t" + str(int(y[i])) + "\n")
         qrels.close()
+        print("qrels file ended")
         return "qrels"
