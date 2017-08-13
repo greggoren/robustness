@@ -9,9 +9,8 @@ class preprocess:
 
 
 
-    def __init__(self,data_set_location):
-        self.data_set_location = data_set_location
-
+    def __init__(self):
+        ""
 
     def retrieve_data_from_file(self,file):
         print ("loading svmLight file")

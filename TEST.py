@@ -4,15 +4,14 @@ import SVM_SGD as svmsgd
 import evaluator as e
 import params
 if __name__=="__main__":
-    a = p.preprocess("../../../svm_test/a/test.txt")
-    X,y,queries=a.retrieve_data_from_file("../svm_test/a/test.txt")
-    number_of_folds = 5
+    a = p.preprocess()
+    X,y,queries=a.retrieve_data_from_file(params.data_set_file)
     number_of_queries = len(set(queries))
     eval = e.eval()
     eval.remove_score_file_from_last_run()
     if not params.recovery:
         eval.create_qrels_file(X,y,queries)
-    folds = a.create_folds(X,y,queries,number_of_folds)
+    folds = a.create_folds(X,y,queries,params.number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]
     model_handler = mh.models_handler(C_array)
@@ -20,7 +19,7 @@ if __name__=="__main__":
     validated = set()
     for train,test in folds:
         eval.empty_validation_files()
-        validated, validation_set, train_set = a.create_validation_set(number_of_folds, validated, set(train),
+        validated, validation_set, train_set = a.create_validation_set(params.number_of_folds, validated, set(train),
                                                                        number_of_queries, queries)
         X_i, y_i = a.create_data_set(X[train_set], y[train_set], queries[train_set])
         model_handler.set_queries_to_folds(queries,test,fold_number)
