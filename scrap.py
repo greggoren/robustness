@@ -1,8 +1,7 @@
-import SVM_SGD as ss
-import numpy as np
-import preprocess as p
-from sklearn.decomposition import PCA
-from scipy.sparse import csr_matrix
+import math
+import optimizer
 if __name__=="__main__":
-    file = open("../")
-
+    opt= optimizer.optimizer(0.001, [1,2,3])
+    x_0=[0.1,0,0.3]
+    res = opt.get_best_features(x_0)
+    print(res['x'])
