@@ -18,7 +18,7 @@ class models_handler():
         self.query_to_fold_index.update(tmp)
 
 
-    def fit_model_on_train_set_and_choose_best(self,X,X_i,y_i,validation_indices,fold,queries):
+    def fit_model_on_train_set_and_choose_best(self,X,X_i,y_i,validation_indices,fold,queries,evaluator):
         print("fitting models on fold",fold)
         weights = {}
         scores={}
@@ -26,7 +26,6 @@ class models_handler():
             svm.fit(X_i,y_i)
             weights[svm.C]=svm.w
             score_file = svm.predict(X, queries, validation_indices, True)
-            evaluator = e.eval()
             score = evaluator.run_trec_eval(score_file)
             scores[svm.C] = score
         max_C=max(scores.items(), key=operator.itemgetter(1))[0]
@@ -35,9 +34,9 @@ class models_handler():
         self.chosen_model_per_fold[fold]=max_C
 
 
-    def predict(self,X,queries,test_indices,fold):
+    def predict(self,X,queries,test_indices,fold,eval):
         svm = svm_sgd.svm_sgd(C=self.chosen_model_per_fold[fold])
         svm.w = self.weights_index[fold]
-        svm.predict(X,queries,test_indices)
+        svm.predict(X,queries,test_indices,eval)
 
 

@@ -40,11 +40,10 @@ class svm_sgd:
 
 
 
-    def predict(self,X,queries,test_indices,validation=None):
+    def predict(self,X,queries,test_indices,eval,validation=None):
         results = {}
         for index in test_indices:
             results[index] = np.dot(self.w,X[index].T)
-        eval = e.eval()
         return eval.create_trec_eval_file(test_indices,queries,results,str(self.C),validation)
 
 
