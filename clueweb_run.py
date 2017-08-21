@@ -8,6 +8,7 @@ if __name__=="__main__":
     X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
     number_of_queries = len(set(queries))
     evaluator = e.eval()
+    evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     if not params.recovery:
         evaluator.create_qrels_file(X, y, queries)

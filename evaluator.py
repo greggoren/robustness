@@ -11,6 +11,7 @@ class eval:
     def __init__(self):
         self.metrics = ["map","ndcg_cut.20","P.5","P.10"]
         self.validation_metric = "ndcg_cut.20"
+        self.doc_name_index = {}
 
     def remove_score_file_from_last_run(self):
         if os._exists(params.score_file):
@@ -26,7 +27,7 @@ class eval:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
-            trec_file_access.write(str(queries[index])+"\tQ0\t"+str(index)+"\t"+str(0)+"\t"+str(results[index])+"\tindri\n")
+            trec_file_access.write(str(queries[index])+"\tQ0\t"+self.doc_name_index[index]+"\t"+str(0)+"\t"+str(results[index])+"\tindri\n")
         trec_file_access.close()
         return trec_file
 
@@ -69,10 +70,19 @@ class eval:
             summary_file.write(next_line)
         summary_file.close()
 
+    def create_index_to_doc_name_dict(self):
+        index =0
+        with open(params.data_set_file) as ds:
+            for line in ds:
+                rec = line.split("# ")
+                doc_name = rec[1]
+                self.doc_name_index[index]=doc_name
+                index+=1
+
     def create_qrels_file(self,X,y,queries):
         print("creating qrels file")
         qrels = open(params.qrels,'w')
         for i in range(len(X)):
-            qrels.write(str(queries[i]) + "\t0\t" + str(i) + "\t" + str(int(y[i])) + "\n")
+            qrels.write(str(queries[i]) + "\tQ0\t" + self.doc_name_index[i] + "\t" + str(int(y[i])) + "\n")
         qrels.close()
         print("qrels file ended")
