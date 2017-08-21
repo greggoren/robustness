@@ -75,7 +75,7 @@ class eval:
         with open(params.data_set_file) as ds:
             for line in ds:
                 rec = line.split("# ")
-                doc_name = rec[1]
+                doc_name = rec[1].rstrip()
                 self.doc_name_index[index]=doc_name
                 index+=1
 
