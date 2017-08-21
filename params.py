@@ -5,3 +5,4 @@ recovery =False
 data_set_file ="../svm_test/features"
 number_of_folds=5
 normalized = False
+number_of_competitors = 10

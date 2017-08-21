@@ -2,6 +2,7 @@ import preprocess_clueweb as p
 import models_handler as mh
 import evaluator as e
 import params
+import pickle
 if __name__=="__main__":
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
@@ -26,7 +27,8 @@ if __name__=="__main__":
         model_handler.predict(X,queries,test,fold_number)
         fold_number+=1
     evaluator.run_trec_eval_on_test()
-
+    with open("model_handler.pickle",'wb') as f:
+        pickle._dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
 
 
 
