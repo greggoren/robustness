@@ -25,7 +25,7 @@ class models_handler():
         for svm in self.models:
             svm.fit(X_i,y_i)
             weights[svm.C]=svm.w
-            score_file = svm.predict(X, queries, validation_indices, True)
+            score_file = svm.predict(X, queries, validation_indices,evaluator, True)
             score = evaluator.run_trec_eval(score_file)
             scores[svm.C] = score
         max_C=max(scores.items(), key=operator.itemgetter(1))[0]
