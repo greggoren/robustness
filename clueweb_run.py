@@ -28,7 +28,7 @@ if __name__=="__main__":
         fold_number+=1
     evaluator.run_trec_eval_on_test()
     with open("model_handler.pickle",'wb') as f:
-        pickle._dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
+        pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
 
 
 
