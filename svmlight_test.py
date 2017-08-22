@@ -18,7 +18,8 @@ def run_command(command):
     return iter(p.stdout.readline, b'')
 
 def learn_svm(C,train_file,fold):
-    os.makedirs("models/"+str(fold))
+    if not os.path.exists("models/"+str(fold)):
+        os.makedirs("models/"+str(fold))
     learning_command = "./svm_rank_learn -c " + str(C) + " "+train_file+" "+"models/"+str(fold)+"/svm_model"+str(C)+".txt"
     for output_line in run_command(learning_command):
         print(output_line)
