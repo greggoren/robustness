@@ -83,6 +83,8 @@ class eval:
         print("creating qrels file")
         qrels = open(params.qrels,'w')
         for i in range(len(X)):
+            if y[i]==0:
+                continue
             if queries[i]<10:
                 qid = "00"+str(queries[i])
             elif queries[i]<100:
