@@ -92,8 +92,8 @@ class eval:
         print("creating qrels file")
         qrels = open(params.qrels,'w')
         for i in range(len(X)):
-            #if y[i]==0:
-                #continue
+            if y[i]==0:
+                continue
 
             qrels.write(self.set_qid_for_trec(queries[i]) + " 0 " + self.doc_name_index[i] + " " + str(int(y[i])) + "\n")
         qrels.close()
