@@ -10,8 +10,8 @@ if __name__=="__main__":
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
-    if not params.recovery:
-        evaluator.create_qrels_file(X, y, queries)
+    """if not params.recovery:
+        evaluator.create_qrels_file(X, y, queries)"""
     folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]
