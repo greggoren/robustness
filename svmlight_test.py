@@ -1,9 +1,14 @@
 import preprocess_clueweb as p
 import models_handler as mh
+import operator
+
 import evaluator as e
 import params
+import numpy as np
+import os
 from sklearn.datasets import dump_svmlight_file
 import subprocess
+import SVM_SGD as s
 
 def run_command(self, command):
     p = subprocess.Popen(command,
@@ -13,6 +18,7 @@ def run_command(self, command):
     return iter(p.stdout.readline, b'')
 
 def learn_svm(C,train_file,fold):
+    os.makedirs("models/"+str(fold))
     learning_command = "./svm_rank_learn -c " + str(C) + " "+train_file+" "+"models/"+str(fold)+"/svm_model"+str(C)+".txt"
     for output_line in run_command(learning_command):
         print(output_line)
@@ -20,6 +26,8 @@ def learn_svm(C,train_file,fold):
 
 
 def recover_model(model):
+    indexes_covered = []
+    weights =[]
     with open(model) as model_file:
         for line in model_file:
             if line.__contains__(":"):
@@ -33,10 +41,15 @@ def recover_model(model):
                         for repair in range(index, feature_id):
                             if repair in indexes_covered:
                                 continue
-                            model_wheights_per_fold[fold].append(0)
+                                weights.append(0)
                             indexes_covered.append(repair)
-                    model_wheights_per_fold[fold].append(float(wheights[index].split(":")[1]))
+                    weights.append(float(wheights[index].split(":")[1]))
                     indexes_covered.append(feature_id)
+    return np.array(weights)
+
+
+
+
 
 if __name__=="__main__":
     preprocess = p.preprocess()
@@ -49,16 +62,31 @@ if __name__=="__main__":
         evaluator.create_qrels_file(X, y, queries)
     folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
     fold_number = 1
-    C_array = [0.1,0.01,0.001,1000,100]
+    C_array = [0.1,0.01,0.001]
     model_handler = mh.models_handler(C_array)
     validated = set()
+    scores = {}
+    models = {}
     for train,test in folds:
         evaluator.empty_validation_files()
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)
-        #X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
         train_file = "train" + str(fold_number) + ".txt"
         dump_svmlight_file(X[train],y[train],train_file,query_id=queries[train])
         for C in C_array:
-            model_file = learn_svm(C,train_file)
+            model_file = learn_svm(C,train_file,fold_number)
+            weights = recover_model(model_file)
+            svm = s.svm_sgd(C)
+            svm.w = weights
+            score_file=svm.predict(X, queries, validation_set,evaluator, True)
+            score = evaluator.run_trec_eval(score_file)
+            scores[svm.C] = score
+            models[svm.C] = svm
+        max_C = max(scores.items(), key=operator.itemgetter(1))[0]
+        chosen_model = models[max_C]
+        chosen_model.predict(X,queries,test,evaluator)
+        fold_number+=1
+    evaluator.run_trec_eval_on_test()
+
+
 

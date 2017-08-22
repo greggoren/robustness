@@ -63,7 +63,7 @@ class eval:
                 score = output_line.split()[-1].rstrip()
                 score_data.append((metric, str(score)))
 
-        summary_file = open("summary_of_test_run.txt", 'w')
+        summary_file = open(params.summary_file, 'w')
         summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:
             next_line = score_record[0] + "\t" + score_record[1] + "\n"
