@@ -10,7 +10,7 @@ from sklearn.datasets import dump_svmlight_file
 import subprocess
 import SVM_SGD as s
 
-def run_command(self, command):
+def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
