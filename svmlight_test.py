@@ -74,7 +74,7 @@ if __name__=="__main__":
                                                                                 number_of_queries, queries)
         train_file = "train" + str(fold_number) + ".txt"
         run_command("rm "+train_file)
-        dump_svmlight_file(X[train],y[train],train_file,query_id=queries[train])
+        dump_svmlight_file(X[train],y[train],train_file,query_id=queries[train],zero_based=False)
         for C in C_array:
             model_file = learn_svm(C,train_file,fold_number)
             weights = recover_model(model_file)
