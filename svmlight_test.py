@@ -73,6 +73,7 @@ if __name__=="__main__":
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)
         train_file = "train" + str(fold_number) + ".txt"
+        run_command("rm "+train_file)
         dump_svmlight_file(X[train],y[train],train_file,query_id=queries[train])
         for C in C_array:
             model_file = learn_svm(C,train_file,fold_number)
