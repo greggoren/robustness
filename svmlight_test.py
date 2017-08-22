@@ -42,7 +42,7 @@ def recover_model(model):
                         for repair in range(index, feature_id):
                             if repair in indexes_covered:
                                 continue
-                                weights.append(0)
+                            weights.append(0)
                             indexes_covered.append(repair)
                     weights.append(float(wheights[index].split(":")[1]))
                     indexes_covered.append(feature_id)
