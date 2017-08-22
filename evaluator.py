@@ -29,6 +29,7 @@ class eval:
         for index in test_indices:
             trec_file_access.write(str(queries[index])+"\tQ0\t"+self.doc_name_index[index]+"\t"+str(0)+"\t"+str(results[index])+"\tindri\n")
         trec_file_access.close()
+        return trec_file
 
     def run_command(self, command):
         p = subprocess.Popen(command,

@@ -25,7 +25,7 @@ if __name__=="__main__":
         model_handler.set_queries_to_folds(queries,test,fold_number)
         model_handler.fit_model_on_train_set_and_choose_best(X,X_i,y_i,validation_set,fold_number,queries,evaluator)
         model_handler.predict(X,queries,test,fold_number,evaluator)
-        fold_number+=1
+        fold_number += 1
     evaluator.run_trec_eval_on_test()
     with open("model_handler.pickle",'wb') as f:#TODO: change file-name to params.model_handler_file
         pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
