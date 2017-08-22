@@ -48,6 +48,10 @@ class preprocess:
         kf = GroupKFold(number_of_folds)
         return kf.split(X,y,groups)
 
+    """def create_sets_for_fold(self,groups,number_of_folds,number_of_queries):
+        number_of_queries_in_set = math.floor(float(float(number_of_queries) / number_of_folds))
+
+        #for fold in range(1,number_of_folds+1):"""
 
 
     def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries,queries):
