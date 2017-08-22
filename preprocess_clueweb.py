@@ -50,7 +50,6 @@ class preprocess:
 
     """def create_sets_for_fold(self,groups,number_of_folds,number_of_queries):
         number_of_queries_in_set = math.floor(float(float(number_of_queries) / number_of_folds))
-
         #for fold in range(1,number_of_folds+1):"""
 
 
