@@ -3,7 +3,25 @@ import models_handler as mh
 import evaluator as e
 import params
 from sklearn.datasets import dump_svmlight_file
-import pickle
+import subprocess
+
+def run_command(self, command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         shell=True)
+    return iter(p.stdout.readline, b'')
+
+def learn_svm(C,train_file,fold):
+    learning_command = "./svm_rank_learn -c " + str(C) + " "+train_file+" "+"models/"+str(fold)+"/svm_model"+str(C)+".txt"
+    for output_line in run_command(learning_command):
+        print(output_line)
+    return "models/"+str(fold)+"/svm_model"+str(C)+".txt"
+
+
+def recover_model():
+    ""
+
 if __name__=="__main__":
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
@@ -23,6 +41,7 @@ if __name__=="__main__":
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)
         #X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
+        "train" + str(fold_number) + ".txt"
         dump_svmlight_file(X[train],y[train],"train"+str(fold_number)+".txt",query_id=queries[train])
         for C in C_array:
-            "train models with svmlight"
+            learn_svm(C)

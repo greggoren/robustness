@@ -27,7 +27,7 @@ class eval:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
-            trec_file_access.write(str(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+"\t"+str(results[index])+" seo\n")
+            trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+"\t"+str(results[index])+" seo\n")
         trec_file_access.close()
         return trec_file
 
@@ -79,18 +79,22 @@ class eval:
                 self.doc_name_index[index]=doc_name
                 index+=1
 
+    def set_qid_for_trec(self,query):
+        if query < 10:
+            qid = "00" + str(query)
+        elif query < 100:
+            qid = "0" + str(query)
+        else:
+            qid = str(query)
+        return qid
+
     def create_qrels_file(self,X,y,queries):
         print("creating qrels file")
         qrels = open(params.qrels,'w')
         for i in range(len(X)):
             #if y[i]==0:
                 #continue
-            if queries[i]<10:
-                qid = "00"+str(queries[i])
-            elif queries[i]<100:
-                qid = "0" + str(queries[i])
-            else:
-                qid = str(queries[i])
-            qrels.write(qid + " 0 " + self.doc_name_index[i] + " " + str(int(y[i])) + "\n")
+
+            qrels.write(self.set_qid_for_trec(queries[i]) + " 0 " + self.doc_name_index[i] + " " + str(int(y[i])) + "\n")
         qrels.close()
         print("qrels file ended")
