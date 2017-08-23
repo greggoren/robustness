@@ -27,7 +27,7 @@ class svm_ent_models_handler():
         return svm
 
     def fit_model_on_train_set_and_choose_best(self, X, X_i, y_i, validation_indices, fold, queries, evaluator):
-        p = Pool(params.processes_number)
+        p = Pool(4)
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
