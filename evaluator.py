@@ -27,7 +27,7 @@ class eval:
         else:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
-        ordered_indices = self.set_trec_order(queries,results,test_indices)
+        ordered_indices = self.set_trec_order(queries,results,list(test_indices))
         for index in ordered_indices:
             trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+" "+str(results[index])+" seo\n")
         trec_file_access.close()
