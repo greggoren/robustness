@@ -3,7 +3,7 @@ import svm_ent_models_handler as mh
 import evaluator as e
 import params
 import sys
-
+import pickle
 def fit_models(X, y, svm):
     svm.fit(X, y)
     return svm
@@ -32,6 +32,7 @@ if __name__=="__main__":
         model_handler.predict(X,queries,test,fold_number,evaluator)
         fold_number += 1
     evaluator.run_trec_eval_on_test()
-
+    with open("model_handler_ent.pickle",'wb') as f:#TODO: change file-name to params.model_handler_file
+        pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
 
 
