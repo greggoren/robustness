@@ -7,9 +7,7 @@ import params
 from functools import partial
 
 
-def fit_models(X, y, svm):
-    svm.fit(X, y)
-    return svm
+
 
 class svm_ent_models_handler():
     def __init__(self, C_array,Gamma_array):
@@ -33,13 +31,14 @@ class svm_ent_models_handler():
         return svm
 
     def fit_model_on_train_set_and_choose_best(self, X, X_i, y_i, validation_indices, fold, queries, evaluator):
-        p = Pool(4)
-        print("fitting models on fold", fold)
+
+        #p = Pool(4)
+        #print("fitting models on fold", fold)
         weights = {}
         scores = {}
-        f = partial(fit_models,(X_i,y_i))
-        fitted_models = p.map(f,self.models)
-        self.models = fitted_models
+        #f = partial(fit_models,(X_i,y_i))
+        #fitted_models = p.map(f,self.models)
+        #self.models = fitted_models
         for svm in self.models:
             sys.stdout.flush()
             #svm.fit(X_i, y_i)
