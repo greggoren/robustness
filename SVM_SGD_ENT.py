@@ -12,8 +12,10 @@ class svm_sgd_entropy(svm_s.svm_sgd):
         self.Gamma = 2*Gamma
 
     def entropy_part_for_sgd(self,number_of_features):
-        r_t = sum([(w_i**2)*self.safe_ln(w_i**2) for w_i in self.w])
-        z_t = sum([(w_i**2) for w_i in self.w])
+        r_t, z_t = 0, 0
+        for i in self.w:
+            r_t += (i ** 2) * self.safe_ln(i)
+            z_t += i ** 2
         addition = np.zeros(number_of_features)
         if z_t!=0:#avoid division by zero
             for i,w_i in enumerate(self.w):
