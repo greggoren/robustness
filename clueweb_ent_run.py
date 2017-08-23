@@ -22,7 +22,9 @@ if __name__=="__main__":
     fold_number = 1
     C_array = [0.1,0.01,0.001]
     Gamma_array = [0.2,0.1,0.01]
+    models = []
     model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
+    models = model_handler.models
     validated = set()
     for train,test in folds:
         sys.stdout.flush()
@@ -32,7 +34,7 @@ if __name__=="__main__":
         X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
         f = partial(fit_models,X_i,y_i)
         p = Pool(4)
-        new_models = p.map(f,model_handler.models)
+        new_models = p.map(f,models)
         model_handler.models = new_models
         model_handler.set_queries_to_folds(queries,test,fold_number)
         model_handler.fit_model_on_train_set_and_choose_best(X,X_i,y_i,validation_set,fold_number,queries,evaluator)
