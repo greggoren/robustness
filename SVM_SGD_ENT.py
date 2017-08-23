@@ -4,6 +4,7 @@ import random as r
 import math
 import evaluator
 import params
+import sys
 class svm_sgd_entropy(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None):
         self.C = C
@@ -39,6 +40,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
+                sys.stdout.flush()
             lr = 1.0/(t+1)
 
             random_index = r.randint(0,number_of_examples-1)
