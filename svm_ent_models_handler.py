@@ -31,7 +31,7 @@ class svm_ent_models_handler():
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
-        f = partial(self.fit_models,args=(X_i,y_i))
+        f = partial(self.fit_models,(X_i,y_i))
         fitted_models = p.map(f,self.models)
         self.models = fitted_models
         for svm in self.models:
