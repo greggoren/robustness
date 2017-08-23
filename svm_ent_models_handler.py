@@ -7,7 +7,7 @@ class svm_ent_models_handler():
         self.models = []
         for C in C_array:
             for Gamma in Gamma_array:
-                self.models.append(svm_sgd_ent.svm_sgd(C,Gamma))
+                self.models.append(svm_sgd_ent.svm_sgd_entropy(C,Gamma))
 
         self.query_to_fold_index = {}
         self.weights_index = {}
@@ -38,6 +38,6 @@ class svm_ent_models_handler():
 
     def predict(self, X, queries, test_indices, fold, eval):
         C,Gamma = self.chosen_model_per_fold[fold]
-        svm = svm_sgd_ent.svm_sgd(C,Gamma)
+        svm = svm_sgd_ent.svm_sgd_entropy(C,Gamma)
         svm.w = self.weights_index[fold]
         svm.predict(X, queries, test_indices, eval)
