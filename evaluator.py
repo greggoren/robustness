@@ -27,21 +27,20 @@ class eval:
         else:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
-        ordered_indices = self.set_trec_order(queries,results,list(test_indices))
-        for index in ordered_indices:
+        for index in test_indices:
             trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+" "+str(results[index])+" seo\n")
         trec_file_access.close()
         return trec_file
 
 
-    def set_trec_order(self,queries,results,indices):
+    """def set_trec_order(self,queries,results,indices):
         order = []
         all_queries = sorted(list(set(queries[indices])))
         for query in all_queries:
             query_indexes = list(np.where(queries==query))[0]
-            ordered_queries = sorted(query_indexes,key=lambda x: (results[x]),reverse=True)
+            ordered_queries = sorted(query_indexes,key=lambda x: results[x],reverse=True)
             order.extend(ordered_queries)
-        return order
+        return order"""
 
 
 
