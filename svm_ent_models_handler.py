@@ -32,7 +32,7 @@ class svm_ent_models_handler():
             score = evaluator.run_trec_eval(score_file)
             scores[(svm.C,svm.Gamma)] = score
         max_C,max_Gamma = max(scores.items(), key=operator.itemgetter(1))[0]
-        print("on fold", str(fold), "the chosen model is", str(max_C))
+        print("on fold", str(fold), "the chosen model is", str(max_C),str(max_Gamma))
         self.weights_index[fold] = weights[(max_C,max_Gamma)]
         self.chosen_model_per_fold[fold] = (max_C,max_Gamma)
 
