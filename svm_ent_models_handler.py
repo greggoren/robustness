@@ -2,6 +2,9 @@ import SVM_SGD_ENT as svm_sgd_ent
 import evaluator as e
 import operator
 import sys
+from multiprocessing import Pool
+import params
+from functools import partial
 class svm_ent_models_handler():
     def __init__(self, C_array,Gamma_array):
         self.models = []
@@ -19,14 +22,21 @@ class svm_ent_models_handler():
         tmp = {a: fold for a in set_of_queries}
         self.query_to_fold_index.update(tmp)
 
+    def fit_models(self,X,y,svm):
+        svm.fit(X, y)
+        return svm
 
     def fit_model_on_train_set_and_choose_best(self, X, X_i, y_i, validation_indices, fold, queries, evaluator):
+        p = Pool(params.processes_number)
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
+        f = partial(self.fit_models,args=(X_i,y_i))
+        fitted_models = p.map(f,self.models)
+        self.models = fitted_models
         for svm in self.models:
             sys.stdout.flush()
-            svm.fit(X_i, y_i)
+            #svm.fit(X_i, y_i)
             weights[(svm.C,svm.Gamma)] = svm.w
             score_file = svm.predict(X, queries, validation_indices, evaluator, True)
             score = evaluator.run_trec_eval(score_file)

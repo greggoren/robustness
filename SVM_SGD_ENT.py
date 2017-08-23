@@ -54,3 +54,10 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             self.w =self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)
 
         print ("SGD ended")
+
+
+    def predict(self,X,queries,test_indices,eval,validation=None):
+        results = {}
+        for index in test_indices:
+            results[index] = np.dot(self.w,X[index].T)
+        return eval.create_trec_eval_file(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),validation)

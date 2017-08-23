@@ -9,3 +9,4 @@ number_of_competitors = 10
 summary_file = "ent.txt"
 random_seed = 9001
 iter_factor = 1
+processes_number = 9

@@ -1,21 +1,16 @@
-import preprocess_clueweb as p
-import svm_models_handler as mh
-import evaluator as e
-import params
-import pickle
 import numpy as np
 import math
 import time
 
 def safe_ln(x):
-    """if x <= 0:
-        return 0"""
+    if x == 0:
+        return 0
     return math.log(x)
 
 def t(w,number_of_features):
     r_t, z_t = 0, 0
     for i in w:
-        r_t += (i ** 2) * safe_ln(i)
+        r_t += (i ** 2) * safe_ln(i**2)
         z_t += i ** 2
     addition = np.zeros(number_of_features)
     if z_t != 0:  # avoid division by zero
@@ -39,17 +34,13 @@ def entropy_part_for_sgd(w,number_of_features):
 
 
 if __name__=="__main__":
-    """w = np.zeros(130)
+    w = np.zeros(130)
     w+=1
     begin = time.time()
     print (begin)
     for i in range(3000):
-        w += entropy_part_for_sgd(w,130)
-
-    print ("took",time.time()-begin)"""
-    a = np.array([1,2,3,54])
-    query_indexes = list(np.where(a == 1))
-    print (query_indexes)
+        w += t(w,130)
+    print ("took",time.time()-begin)
 
 
 
