@@ -39,7 +39,7 @@ class eval:
         all_queries = sorted(list(set(queries[indices])))
         for query in all_queries:
             query_indexes = np.where(queries==query)
-            ordered_queries = sorted(query_indexes,key=lambda x: (results[x]),reversed=True)
+            ordered_queries = sorted(query_indexes,key=lambda x: (results[x]),reverse=True)
             order.extend(ordered_queries)
         return order
 
