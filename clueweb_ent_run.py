@@ -30,7 +30,7 @@ if __name__=="__main__":
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)
         X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
-        f = partial(fit_models,(X_i,y_i))
+        f = partial(fit_models,X_i,y_i)
         p = Pool(4)
         new_models = p.map(f,model_handler.models)
         model_handler.models = new_models
