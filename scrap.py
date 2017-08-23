@@ -39,15 +39,17 @@ def entropy_part_for_sgd(w,number_of_features):
 
 
 if __name__=="__main__":
-    w = np.zeros(130)
+    """w = np.zeros(130)
     w+=1
     begin = time.time()
     print (begin)
     for i in range(3000):
         w += entropy_part_for_sgd(w,130)
 
-    print ("took",time.time()-begin)
-
+    print ("took",time.time()-begin)"""
+    a = np.array([1,2,3,54])
+    query_indexes = list(np.where(a == 1))
+    print (query_indexes)
 
 
 
