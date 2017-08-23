@@ -11,7 +11,7 @@ if __name__=="__main__":
     evaluator.create_index_to_doc_name_dict()
 
     folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
-
+    validated = set()
     for train,test in folds:
         print("queries in test:",sorted(list(set(queries[test]))))
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated,
