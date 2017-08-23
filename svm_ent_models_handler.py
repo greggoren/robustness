@@ -1,7 +1,7 @@
 import SVM_SGD_ENT as svm_sgd_ent
 import evaluator as e
 import operator
-
+import sys
 class svm_ent_models_handler():
     def __init__(self, C_array,Gamma_array):
         self.models = []
@@ -25,6 +25,7 @@ class svm_ent_models_handler():
         weights = {}
         scores = {}
         for svm in self.models:
+            sys.stdout.flush()
             svm.fit(X_i, y_i)
             weights[(svm.C,svm.Gamma)] = svm.w
             score_file = svm.predict(X, queries, validation_indices, evaluator, True)

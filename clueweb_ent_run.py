@@ -18,7 +18,6 @@ if __name__=="__main__":
     validated = set()
     for train,test in folds:
         sys.stdout.flush()
-        print("queries in test:",set(queries[test]))
         evaluator.empty_validation_files()
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)

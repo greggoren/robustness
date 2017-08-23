@@ -1,4 +1,4 @@
-qrels = "q.txt"
+qrels = "qrels"
 validation_folder = "/lv_local/home/sgregory/robustness/validation/"
 score_file = "/lv_local/home/sgregory/robustness/trec_file.txt"
 recovery =False
@@ -6,6 +6,6 @@ data_set_file ="featuresF"
 number_of_folds=5
 normalized = False
 number_of_competitors = 10
-summary_file = "s.txt"
-random_seed = 1
-iter_factor = 5
+summary_file = "ent.txt"
+random_seed = 9001
+iter_factor = 1
