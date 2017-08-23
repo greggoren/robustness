@@ -2,7 +2,7 @@ import preprocess_clueweb as p
 import svm_ent_models_handler as mh
 import evaluator as e
 import params
-import pickle
+import sys
 if __name__=="__main__":
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
@@ -17,6 +17,7 @@ if __name__=="__main__":
     model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
     validated = set()
     for train,test in folds:
+        sys.stdout.flush()
         print("queries in test:",set(queries[test]))
         evaluator.empty_validation_files()
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
