@@ -3,6 +3,7 @@ import subprocess
 import os
 import sys
 import params
+import numpy as np
 class eval:
 
 
@@ -26,10 +27,23 @@ class eval:
         else:
             trec_file = params.score_file
         trec_file_access = open(trec_file,'a')
-        for index in test_indices:
+        ordered_indices = self.set_trec_order(queries,results,test_indices)
+        for index in ordered_indices:
             trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+" "+str(results[index])+" seo\n")
         trec_file_access.close()
         return trec_file
+
+
+    def set_trec_order(self,queries,results,indices):
+        order = []
+        all_queries = sorted(list(set(queries[indices])))
+        for query in all_queries:
+            query_indexes = np.where(queries==query)
+            ordered_queries = sorted(query_indexes,key=lambda x: (results[x]),reversed=True)
+            order.extend(ordered_queries)
+        return order
+
+
 
     def run_command(self, command):
         p = subprocess.Popen(command,
@@ -62,7 +76,6 @@ class eval:
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
                 score_data.append((metric, str(score)))
-
         summary_file = open(params.summary_file, 'w')
         summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:

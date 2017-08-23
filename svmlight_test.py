@@ -48,10 +48,6 @@ def recover_model(model):
                     indexes_covered.append(feature_id)
     return np.array(weights)
 
-
-
-
-
 if __name__=="__main__":
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
