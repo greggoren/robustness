@@ -17,7 +17,7 @@ if __name__=="__main__":
         validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated,
                                                                                 set(train),
                                                                                 number_of_queries, queries)
-        print("queries in val:",sorted(list(set(queries[validation_set]))))
+        print("queries in val:",sorted(list(set(queries[list(validation_set)]))))
 
 
 
