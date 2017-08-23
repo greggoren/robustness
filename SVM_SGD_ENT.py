@@ -38,7 +38,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             lambda_factor = number_of_examples
         iterations = params.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
-            if t%1000000==0:
+            if t%1000==0:
                 print ("in iteration",t,"out of",iterations)
                 sys.stdout.flush()
             lr = 1.0/(t+1)
@@ -49,6 +49,6 @@ class svm_sgd_entropy(svm_s.svm_sgd):
                 self.w = t*lr*self.w + lr*lambda_factor*y_k
             else:
                 self.w = t * lr * self.w
-            self.w += self.Gamma*self.entropy_part_for_sgd(number_of_features)
+            self.w =self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)
 
         print ("SGD ended")
