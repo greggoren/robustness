@@ -5,6 +5,12 @@ import sys
 from multiprocessing import Pool
 import params
 from functools import partial
+
+
+def fit_models(X, y, svm):
+    svm.fit(X, y)
+    return svm
+
 class svm_ent_models_handler():
     def __init__(self, C_array,Gamma_array):
         self.models = []
@@ -31,7 +37,7 @@ class svm_ent_models_handler():
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
-        f = partial(self.fit_models,(X_i,y_i))
+        f = partial(fit_models,(X_i,y_i))
         fitted_models = p.map(f,self.models)
         self.models = fitted_models
         for svm in self.models:
