@@ -10,6 +10,8 @@ def fit_models(X, y, svm):
     svm.fit(X, y)
     return svm
 
+models = []
+
 if __name__=="__main__":
 
     preprocess = p.preprocess()
@@ -22,7 +24,7 @@ if __name__=="__main__":
     fold_number = 1
     C_array = [0.1,0.01,0.001]
     Gamma_array = [0.2,0.1,0.01]
-    models = []
+
     model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
     models = model_handler.models
     validated = set()
