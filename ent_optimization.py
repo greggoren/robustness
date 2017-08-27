@@ -21,7 +21,8 @@ if __name__=="__main__":
     C_array = [0.1,0.01,0.001]
     for gamma in params_ent.gammas:
         params_ent.score_file = str(gamma)+"_trec.txt"
-        Gamma_array = [].append(gamma)
+        Gamma_array = []
+        Gamma_array.append(gamma)
 
         model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
         validated = set()
