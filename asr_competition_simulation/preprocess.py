@@ -1,4 +1,5 @@
 import preprocess_clueweb as pc
+import pickle
 class preprocess(pc.preprocess):
 
 
@@ -21,7 +22,7 @@ class preprocess(pc.preprocess):
         for index in doc_name_index:
             doc_name = doc_name_index
             details = doc_name.split("-")
-            epoch = details[1]
+            epoch = int(details[1])
             qid = details[2]
             doc = details[3]
             if not competition_data.get(epoch,False):
@@ -30,3 +31,8 @@ class preprocess(pc.preprocess):
                 competition_data[epoch][qid]={}
             competition_data[epoch][qid][doc] = X[index]
         return competition_data
+
+    def load_model_handlers(self,svm_ent,svm):
+        svm_file = open(svm,'rb')
+        svm_ent_file = open(svm_ent,'rb')
+        return pickle.load(svm_file),pickle.load(svm_ent_file)

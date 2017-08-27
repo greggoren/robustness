@@ -1,7 +1,7 @@
 import preprocess_clueweb as p
 import svm_ent_models_handler as mh
-import evaluator as e
-import params
+import evaluator_ent as e
+import params_ent
 import sys
 import pickle
 def fit_models(X, y, svm):
@@ -9,13 +9,14 @@ def fit_models(X, y, svm):
     return svm
 
 if __name__=="__main__":
+
     preprocess = p.preprocess()
-    X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
+    X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file)
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
-    folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
+    folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]
     Gamma_array = [0.2,0.1,0.01]
@@ -24,7 +25,7 @@ if __name__=="__main__":
     for train,test in folds:
         sys.stdout.flush()
         evaluator.empty_validation_files()
-        validated, validation_set, train_set = preprocess.create_validation_set(params.number_of_folds, validated, set(train),
+        validated, validation_set, train_set = preprocess.create_validation_set(params_ent.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)
         X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
         model_handler.set_queries_to_folds(queries,test,fold_number)
