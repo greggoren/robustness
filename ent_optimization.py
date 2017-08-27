@@ -17,9 +17,10 @@ if __name__=="__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
-    fold_number = 1
     C_array = [0.1,0.01,0.001]
     for gamma in params_ent.gammas:
+        fold_number = 1
+
         params_ent.score_file = str(gamma)+"_trec.txt"
         Gamma_array = []
         Gamma_array.append(gamma)
