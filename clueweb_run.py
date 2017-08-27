@@ -28,7 +28,7 @@ if __name__=="__main__":
         model_handler.predict(X,queries,test,fold_number,evaluator)
         fold_number += 1
     evaluator.run_trec_eval_on_test()
-    with open("model_handler.pickle",'wb') as f:#TODO: change file-name to params.model_handler_file
+    with open(params.model_handler_file,'wb') as f:
         pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
 
 
