@@ -3,7 +3,7 @@ import numpy as np
 import random as r
 import math
 import evaluator_ent
-import params
+import params_ent
 import sys
 class svm_sgd_entropy(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None):
@@ -30,7 +30,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
 
 
     def fit(self,X,y):
-        r.seed(params.random_seed)#traceability reasons
+        r.seed(params_ent.random_seed)#traceability reasons
         print ("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
         self.w = np.zeros(number_of_features)#weights initialization
@@ -38,7 +38,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             lambda_factor = self.C*number_of_examples
         else:
             lambda_factor = number_of_examples
-        iterations = params.iter_factor * number_of_examples
+        iterations = params_ent.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%100000==0:
                 print ("in iteration",t,"out of",iterations)
