@@ -20,8 +20,7 @@ if __name__=="__main__":
     C_array = [0.1,0.01,0.001]
     for gamma in params_ent.gammas:
         fold_number = 1
-
-        params_ent.score_file = str(gamma)+"_trec.txt"
+        score_file = str(gamma)+"_"+params_ent.score_file
         Gamma_array = []
         Gamma_array.append(gamma)
 
@@ -34,11 +33,11 @@ if __name__=="__main__":
                                                                                     number_of_queries, queries)
             X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
             model_handler.set_queries_to_folds(queries,test,fold_number)
-            model_handler.fit_model_on_train_set_and_choose_best(X,X_i,y_i,validation_set,fold_number,queries,evaluator)
-            model_handler.predict(X,queries,test,fold_number,evaluator)
+            model_handler.fit_model_on_train_set_and_choose_best_opt(X,X_i,y_i,validation_set,fold_number,queries,score_file,evaluator)
+            model_handler.predict_opt(X,queries,test,fold_number,evaluator)
             fold_number += 1
-
-        evaluator.run_trec_eval_on_test()
+        summary_file = str(gamma)+"_"+params_ent.summary_file
+        evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
         with open(params_ent.model_handler_file+str(gamma), 'wb') as f:
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
 
