@@ -44,13 +44,31 @@ class preprocess:
         return data,labels
 
 
+    def create_data_set_opt(self,X,y,groups):
+        print("creating data set")
+        data = []
+        labels = []
+        k=0
+        unique_groups = set(groups)
+        for group in unique_groups:
+            relevant_indexes = np.where(groups==group)[0][:100]
+            comb = itertools.combinations(relevant_indexes, 2)
+            for (i,j) in comb:
+                if (y[i]==y[j]):
+                    continue
+                data.append(X[i]-X[j])
+                labels.append(np.sign(y[i]-y[j]))
+                if labels[-1] != (-1) ** k:#to get a balanced data set
+                    labels[-1] *= -1
+                    data[-1] *= -1
+                k += 1
+        print ("finished data set creation")
+        print ("number of points",len(data))
+        return data,labels
+
     def create_folds(self,X,y,groups,number_of_folds):
         kf = GroupKFold(number_of_folds)
         return kf.split(X,y,groups)
-
-    """def create_sets_for_fold(self,groups,number_of_folds,number_of_queries):
-        number_of_queries_in_set = math.floor(float(float(number_of_queries) / number_of_folds))
-        #for fold in range(1,number_of_folds+1):"""
 
 
     def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries,queries):
