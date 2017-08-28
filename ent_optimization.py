@@ -20,7 +20,7 @@ if __name__=="__main__":
     C_array = [0.1,0.01,0.001]
     for gamma in params_ent.gammas:
         fold_number = 1
-        score_file = str(gamma)+"_"+params_ent.score_file
+        score_file = params_ent.score_file+str(gamma)
         Gamma_array = []
         Gamma_array.append(gamma)
 
@@ -36,7 +36,7 @@ if __name__=="__main__":
             model_handler.fit_model_on_train_set_and_choose_best_opt(X,X_i,y_i,validation_set,fold_number,queries,score_file,evaluator)
             model_handler.predict_opt(X,queries,test,fold_number,score_file,evaluator)
             fold_number += 1
-        summary_file = str(gamma)+"_"+params_ent.summary_file
+        summary_file = params_ent.summary_file+str(gamma)
         evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
         with open(params_ent.model_handler_file+str(gamma), 'wb') as f:
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
