@@ -7,6 +7,8 @@ import numpy as np
 if __name__=="__main__":
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file("featuresCB_asr",False)
-    dump_svmlight_file(X,y,"nan",zero_based=False,query_id=queries)
+    print(X.max(axis=0))
+    print(X.min(axis=0))
+    # dump_svmlight_file(X,y,"nan",zero_based=False,query_id=queries)
 
 
