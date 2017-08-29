@@ -12,12 +12,12 @@ class preprocess:
     def __init__(self):
         ""
 
-    def retrieve_data_from_file(self,file):
+    def retrieve_data_from_file(self,file,normalized):
         print ("loading svmLight file")
         X, y, groups= load_svmlight_file(file,query_id=True)
         print ("loading complete")
         X = X.toarray()
-        if not params.normalized:
+        if not normalized:
             X=(X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
         return X,y,groups
 

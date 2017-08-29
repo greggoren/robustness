@@ -11,7 +11,7 @@ def fit_models(X, y, svm):
 if __name__=="__main__":
 
     preprocess = p.preprocess()
-    X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file)
+    X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
