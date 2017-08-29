@@ -6,6 +6,6 @@ import numpy as np
 if __name__=="__main__":
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file("featuresCB_asr")
-    print(np.where(np.isnan(X.toarray())))
+    print(np.where(np.isnan(X)))
 
 
