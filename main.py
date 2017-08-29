@@ -7,6 +7,6 @@ import numpy as np
 if __name__=="__main__":
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file("featuresCB_asr")
-    dump_svmlight_file(X,y,"nan")
+    dump_svmlight_file(X,y,"nan",zero_based=False,query_id=queries)
 
 
