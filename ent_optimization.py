@@ -16,9 +16,10 @@ if __name__=="__main__":
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
-    folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
+
     C_array = [0.1,0.01,0.001]
     for gamma in params_ent.gammas:
+        folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
         fold_number = 1
         score_file = params_ent.score_file+str(gamma)
         Gamma_array = []
@@ -40,4 +41,5 @@ if __name__=="__main__":
         evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
         with open(params_ent.model_handler_file+str(gamma), 'wb') as f:
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
+
 
