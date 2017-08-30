@@ -51,7 +51,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
                 self.w = t*lr*self.w + lr*lambda_factor*y_k
             else:
                 self.w = t * lr * self.w
-            self.w =self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)
+            self.w =self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
 
         print ("SGD ended")
 
