@@ -51,7 +51,7 @@ class preprocess:
         k=0
         unique_groups = set(groups)
         for group in unique_groups:
-            relevant_indexes = np.where(groups==group)[0][:100]
+            relevant_indexes = np.where(groups==group)[0][:500]
             comb = itertools.combinations(relevant_indexes, 2)
             for (i,j) in comb:
                 if (y[i]==y[j]):
