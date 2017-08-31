@@ -21,7 +21,7 @@ class preprocess(pc.preprocess):
         competition_data = {}
         X,y,queries = self.retrieve_data_from_file(data_set,True)
         for index in doc_name_index:
-            doc_name = doc_name_index
+            doc_name = doc_name_index[index]
             details = doc_name.split("-")
             epoch = int(details[1])
             if epoch==0:
