@@ -97,14 +97,13 @@ class analysis:
             kt_svm_orig.append(float(sum_svm_original)/n_q)
             kt_svm_ent.append(float(sum_svm_ent)/n_q)
             kt_svm_ent_orig.append(float(sum_svm_ent_original)/n_q)
-        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig
+        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig,range(2,9)
 
 
     def analyze(self,svm,svm_ent,competition_data):
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
         retrieved_list_svm_ent, retrieved_list_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
-
-
-
+        kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig, x_axis = self.calculate_average_kendall_tau(retrieved_list_svm_ent, retrieved_list_svm)
+        print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
 
 
