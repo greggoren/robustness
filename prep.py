@@ -19,7 +19,7 @@ class preprocess(pc.preprocess):
     def extract_features_by_epoch(self,data_set):
         doc_name_index = self.create_index_to_doc_name_dict(data_set)#TODO:chnage the assignment as an outside param
         competition_data = {}
-        X,y,queries = self.retrieve_data_from_file(data_set)
+        X,y,queries = self.retrieve_data_from_file(data_set,True)
         for index in doc_name_index:
             doc_name = doc_name_index
             details = doc_name.split("-")
