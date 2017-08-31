@@ -22,7 +22,7 @@ def set_qid_for_trec(query):
 if __name__=="__main__":
 
     preprocess = p.preprocess()
-    X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
+    X,y,queries=preprocess.retrieve_data_from_file("features",False)
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     file = open("model_handler_ent_opt.pickle",'rb')
