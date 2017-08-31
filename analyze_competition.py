@@ -46,7 +46,7 @@ class analysis:
                 rankings_svm[epoch][query]= self.transition_to_rank_vector(competitors[query],retrieved_list_svm)
                 retrieved_list_svm_ent =  sorted(competitors[query],key=lambda x:scores_svm_ent[epoch][query][x],reverse=True)
                 rankings_svm_ent[epoch][query] =self.transition_to_rank_vector(competitors[query],retrieved_list_svm_ent)
-        return retrieved_list_svm_ent,retrieved_list_svm
+        return rankings_svm_ent,rankings_svm
 
     def transition_to_rank_vector(self,original_list,sorted_list):
         rank_vector = []
@@ -55,7 +55,7 @@ class analysis:
         return rank_vector
 
 
-    def calculate_average_kendall_tau(self,retrieved_list_svm_ent, retrieved_list_svm):
+    def calculate_average_kendall_tau(self, rankings_svm_ent, rankings_list_svm):
         kt_svm = []
         kt_svm_ent=[]
         kt_svm_orig = []
@@ -65,16 +65,16 @@ class analysis:
         last_list_index_svm_ent = {}
         original_list_index_svm = {}
         original_list_index_svm_ent = {}
-        n_q = len(retrieved_list_svm_ent[1])
+        n_q = len(rankings_svm_ent[1])
 
-        for epoch in retrieved_list_svm:
+        for epoch in rankings_list_svm:
             sum_svm = 0
             sum_svm_ent =0
             sum_svm_original = 0
             sum_svm_ent_original = 0
-            for query in retrieved_list_svm[epoch]:
-                current_list_svm = retrieved_list_svm[epoch][query]
-                current_list_svm_ent = retrieved_list_svm_ent[epoch][query]
+            for query in rankings_list_svm[epoch]:
+                current_list_svm = rankings_list_svm[epoch][query]
+                current_list_svm_ent = rankings_svm_ent[epoch][query]
                 if not last_list_index_svm.get(query,False):
                     last_list_index_svm[query]=current_list_svm
                     last_list_index_svm_ent[query]=current_list_svm_ent
@@ -102,8 +102,8 @@ class analysis:
 
     def analyze(self,svm,svm_ent,competition_data):
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
-        retrieved_list_svm_ent, retrieved_list_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
-        kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig, x_axis = self.calculate_average_kendall_tau(retrieved_list_svm_ent, retrieved_list_svm)
+        rankings_svm_ent, rankings_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
+        kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
         print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
 
 
