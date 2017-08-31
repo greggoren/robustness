@@ -81,14 +81,14 @@ class analysis:
                     original_list_index_svm[query]=current_list_svm_ent
                     original_list_index_svm_ent[query]=current_list_svm_ent
                     continue
-                kt = kendalltau(original_list_index_svm[query], current_list_svm)
-                kt_orig = kendalltau(last_list_index_svm[query], current_list_svm)
+                kt = kendalltau(original_list_index_svm[query], current_list_svm)[0]
+                kt_orig = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                 if not np.isnan(kt):
                     sum_svm+=kt
                 if not np.isnan(kt_orig):
                     sum_svm_original+=kt_orig
-                kt_ent = kendalltau(last_list_index_svm_ent[query],current_list_svm_ent)
-                kt_ent_orig = kendalltau(original_list_index_svm_ent[query],current_list_svm_ent)
+                kt_ent = kendalltau(last_list_index_svm_ent[query],current_list_svm_ent)[0]
+                kt_ent_orig = kendalltau(original_list_index_svm_ent[query],current_list_svm_ent)[0]
                 if not np.isnan(kt_ent_orig):
                     sum_svm_ent_original += kt_ent_orig
                 if not np.isnan(kt_ent):
