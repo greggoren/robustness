@@ -1,7 +1,8 @@
 import preprocess_clueweb as pc
 import pickle
 class preprocess(pc.preprocess):
-
+    def __init__(self):
+        ""
 
     def create_index_to_doc_name_dict(self,data_set):
         doc_name_index = {}
@@ -23,6 +24,8 @@ class preprocess(pc.preprocess):
             doc_name = doc_name_index
             details = doc_name.split("-")
             epoch = int(details[1])
+            if epoch==0:
+                continue
             qid = details[2]
             doc = details[3]
             if not competition_data.get(epoch,False):
