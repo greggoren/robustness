@@ -11,7 +11,7 @@ class analysis:
     def get_all_scores(self,svm,svm_ent,competition_data):
         scores_svm = {}
         scores_svm_ent = {}
-        epochs = range(9)
+        epochs = range(1,9)
         for epoch in epochs:
             scores_svm[epoch] = {}
             scores_svm_ent[epoch] = {}
@@ -56,23 +56,54 @@ class analysis:
 
 
     def calculate_average_kendall_tau(self,retrieved_list_svm_ent, retrieved_list_svm):
-        kt_svm = {}
-        kt_svm_ent={}
+        kt_svm = []
+        kt_svm_ent=[]
+        kt_svm_orig = []
+        kt_svm_ent_orig = []
         last_list_index_svm={}
+
         last_list_index_svm_ent = {}
+        original_list_index_svm = {}
+        original_list_index_svm_ent = {}
+        n_q = len(retrieved_list_svm_ent[1])
+
         for epoch in retrieved_list_svm:
+            sum_svm = 0
+            sum_svm_ent =0
+            sum_svm_original = 0
+            sum_svm_ent_original = 0
             for query in retrieved_list_svm[epoch]:
                 current_list_svm = retrieved_list_svm[epoch][query]
                 current_list_svm_ent = retrieved_list_svm_ent[epoch][query]
                 if not last_list_index_svm.get(query,False):
                     last_list_index_svm[query]=current_list_svm
                     last_list_index_svm_ent[query]=current_list_svm_ent
+                    original_list_index_svm[query]=current_list_svm_ent
+                    original_list_index_svm_ent[query]=current_list_svm_ent
                     continue
-                
+                kt = kendalltau(original_list_index_svm[query], current_list_svm)
+                kt_orig = kendalltau(last_list_index_svm[query], current_list_svm)
+                if not np.isnan(kt):
+                    sum_svm+=kt
+                if not np.isnan(kt_orig):
+                    sum_svm_original+=kt_orig
+                kt_ent = kendalltau(last_list_index_svm_ent[query],current_list_svm_ent)
+                kt_ent_orig = kendalltau(original_list_index_svm_ent[query],current_list_svm_ent)
+                if not np.isnan(kt_ent_orig):
+                    sum_svm_ent_original += kt_ent_orig
+                if not np.isnan(kt_ent):
+                    sum_svm_ent+=kt_ent
+            kt_svm.append(float(sum_svm)/n_q)
+            kt_svm_orig.append(float(sum_svm_original)/n_q)
+            kt_svm_ent.append(float(sum_svm_ent)/n_q)
+            kt_svm_ent_orig.append(float(sum_svm_ent_original)/n_q)
+        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig
+
 
     def analyze(self,svm,svm_ent,competition_data):
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
         retrieved_list_svm_ent, retrieved_list_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
+
 
 
 
