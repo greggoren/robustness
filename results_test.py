@@ -32,7 +32,7 @@ if __name__=="__main__":
             q = queries[index]
             fold = mh.query_to_fold_index[q]
             weights= mh.weights_index[fold]
-            f.write(set_qid_for_trec(queries[index])+" Q0 "+evaluator.doc_name_index[index]+" "+str(0)+" "+str(np.dot(X[index],weights.T)+" seo\n"))
+            f.write(set_qid_for_trec(queries[index])+" Q0 "+evaluator.doc_name_index[index]+" "+str(0)+" "+str(np.dot(X[index],weights.T))+" seo\n")
 
 
 
