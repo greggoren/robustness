@@ -2,11 +2,15 @@ import svm_ent_models_handler
 import svm_models_handler
 import numpy as np
 from scipy.stats import kendalltau
+from scipy import spatial
+import itertools
 class analysis:
 
     def __init__(self):
         ""
 
+    def cosine_distance(self,x,y):
+        return spatial.distance.cosine(x,y)[0]
 
     def get_all_scores(self,svm,svm_ent,competition_data):
         scores_svm = {}
@@ -65,13 +69,16 @@ class analysis:
         last_list_index_svm_ent = {}
         original_list_index_svm = {}
         original_list_index_svm_ent = {}
-
+        change_rate_svm_epochs =[]
+        change_rate_svm_ent_epochs =[]
         for epoch in rankings_list_svm:
             sum_svm = 0
             sum_svm_ent =0
             sum_svm_original = 0
             sum_svm_ent_original = 0
             n_q=0
+            change_rate_svm = 0
+            change_rate_svm_ent = 0
             for query in rankings_list_svm[epoch]:
                 current_list_svm = rankings_list_svm[epoch][query]
                 current_list_svm_ent = rankings_svm_ent[epoch][query]
@@ -81,6 +88,10 @@ class analysis:
                     original_list_index_svm[query]=current_list_svm
                     original_list_index_svm_ent[query]=current_list_svm_ent
                     continue
+                if current_list_svm.index(1)!=last_list_index_svm[query].index(1):
+                    change_rate_svm +=1
+                if current_list_svm_ent.index(1)!=last_list_index_svm_ent[query].index(1):
+                    change_rate_svm_ent +=1
                 n_q+=1
                 kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                 kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
@@ -96,19 +107,39 @@ class analysis:
                     sum_svm_ent+=kt_ent
                 last_list_index_svm[query] = current_list_svm
                 last_list_index_svm_ent[query] = current_list_svm_ent
+
             if n_q==0:
                 continue
+            change_rate_svm_ent_epochs.append(change_rate_svm_ent)
+            change_rate_svm_epochs.append(change_rate_svm)
             kt_svm.append(float(sum_svm)/n_q)
             kt_svm_orig.append(float(sum_svm_original)/n_q)
             kt_svm_ent.append(float(sum_svm_ent)/n_q)
             kt_svm_ent_orig.append(float(sum_svm_ent_original)/n_q)
-        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig,range(2,9)
+        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent,range(2,9)
 
+    def calcualte_average_distances(self,competition_data):
+        average_distances =[]
+        for epoch in competition_data:
+            total_average_distance_sum =0
+            number_of_queries = 0
+            for query in competition_data[epoch]:
+                number_of_queries+=1
+                sum_distance_query = 0
+                denom = 0
+                docs = competition_data[epoch][query].keys()
+                for doc1,doc2 in itertools.combinations(docs,2):
+                    sum_distance_query+=self.cosine_distance(doc1,doc2)
+                    denom+=1
+                total_average_distance_sum+=float(sum_distance_query)/denom
+            average_distances.append(total_average_distance_sum/number_of_queries)
+        return average_distances
 
     def analyze(self,svm,svm_ent,competition_data):
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
         rankings_svm_ent, rankings_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
-        kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
-        print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
+        kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
+        #print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
+        average_distances = self.calcualte_average_distances(competition_data)
 
 
