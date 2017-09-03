@@ -65,24 +65,25 @@ class analysis:
         last_list_index_svm_ent = {}
         original_list_index_svm = {}
         original_list_index_svm_ent = {}
-        n_q = len(rankings_svm_ent[1])
 
         for epoch in rankings_list_svm:
             sum_svm = 0
             sum_svm_ent =0
             sum_svm_original = 0
             sum_svm_ent_original = 0
+            n_q=0
             for query in rankings_list_svm[epoch]:
                 current_list_svm = rankings_list_svm[epoch][query]
                 current_list_svm_ent = rankings_svm_ent[epoch][query]
                 if not last_list_index_svm.get(query,False):
                     last_list_index_svm[query]=current_list_svm
                     last_list_index_svm_ent[query]=current_list_svm_ent
-                    original_list_index_svm[query]=current_list_svm_ent
+                    original_list_index_svm[query]=current_list_svm
                     original_list_index_svm_ent[query]=current_list_svm_ent
                     continue
-                kt = kendalltau(original_list_index_svm[query], current_list_svm)[0]
-                kt_orig = kendalltau(last_list_index_svm[query], current_list_svm)[0]
+                n_q+=1
+                kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
+                kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                 if not np.isnan(kt):
                     sum_svm+=kt
                 if not np.isnan(kt_orig):
@@ -93,6 +94,10 @@ class analysis:
                     sum_svm_ent_original += kt_ent_orig
                 if not np.isnan(kt_ent):
                     sum_svm_ent+=kt_ent
+                last_list_index_svm[query] = current_list_svm
+                last_list_index_svm_ent[query] = current_list_svm_ent
+            if n_q==0:
+                continue
             kt_svm.append(float(sum_svm)/n_q)
             kt_svm_orig.append(float(sum_svm_original)/n_q)
             kt_svm_ent.append(float(sum_svm_ent)/n_q)
