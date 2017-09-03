@@ -139,7 +139,7 @@ class analysis:
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
         rankings_svm_ent, rankings_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
         kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
-        #print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
-        average_distances = self.calcualte_average_distances(competition_data)
+        print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
+        #average_distances = self.calcualte_average_distances(competition_data)
 
 
