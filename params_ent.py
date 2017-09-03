@@ -1,10 +1,10 @@
 qrels = "qrels"
-validation_folder = "/lv_local/home/sgregory/run2/robustness/validation_ent/"
-score_file = "/lv_local/home/sgregory/run2/robustness/trec_file_asr_ent.txt"
+validation_folder = "C:/study/svm_test/validation_ent/"
+score_file = "C:/study/svm_test/trec_file_asr_ent.txt"
 recovery =False
-data_set_file ="features"
+data_set_file ="C:/study/svm_test/featuresCB_asr"
 number_of_folds=5
-normalized = False
+normalized = True
 number_of_competitors = 10
 summary_file = "ent_opt.txt"
 random_seed = 9001
