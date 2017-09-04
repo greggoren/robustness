@@ -34,7 +34,7 @@ def run_command(command):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
                          shell=True)
-    return iter(p.stdout.readline, b'')
+    return iter(p.stdout.readline)
 
 class analysis:
 
