@@ -196,12 +196,12 @@ class analysis:
             command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
             for line in run_command(command):
                 ndcg_score = line.split()[2].rstrip()
-                ndcg_by_epochs.append(int(''.join(e for e in ndcg_score if e.isdigit())))
+                ndcg_by_epochs.append(ndcg_score)
                 break
             command1 = "./trec_eval -m map " + qrels + " " + score_file
             for line in run_command(command1):
                 map_score = line.split()[2].rstrip()
-                map_by_epochs.append(int(''.join(e for e in map_score if e.isdigit())))
+                map_by_epochs.append(map_score)
                 break
         return ndcg_by_epochs,map_by_epochs
 
