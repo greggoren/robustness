@@ -20,7 +20,7 @@ class eval:
 
     def create_trec_eval_file(self, test_indices, queries, results,model,validation=None):#TODO: need to sort file via unix command
         if validation is not None:
-            trec_file = "validation/trec_file_"+model+".txt"
+            trec_file = params.validation_folder+"/trec_file_"+model+".txt"
             if not os.path.exists(os.path.dirname(trec_file)):
                 os.makedirs(os.path.dirname(trec_file))
 

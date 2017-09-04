@@ -4,13 +4,38 @@ import numpy as np
 from scipy.stats import kendalltau
 from scipy import spatial
 import itertools
+
+import matplotlib.pyplot as plt
+def create_plot(title,file_name,xlabel,ylabel,svm,svm_ent,x_axis):
+    fig = plt.figure()
+    fig.suptitle(title, fontsize=14, fontweight='bold')
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.plot(x_axis,svm,'g',label='svm')
+    ax.plot( x_axis,svm_ent, 'b', label='svm_ent')
+    plt.legend(loc='best')
+    plt.savefig(file_name)
+    plt.clf()
+
+def create_single_plot(title,file_name,xlabel,ylabel,y,x):
+    fig = plt.figure()
+    fig.suptitle(title, fontsize=14, fontweight='bold')
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.plot(x,y,'g')
+    plt.savefig(file_name)
+    plt.clf()
+
+
 class analysis:
 
     def __init__(self):
         ""
 
     def cosine_distance(self,x,y):
-        return spatial.distance.cosine(x,y)[0]
+        return spatial.distance.cosine(x,y)
 
     def get_all_scores(self,svm,svm_ent,competition_data):
         scores_svm = {}
@@ -116,7 +141,7 @@ class analysis:
             kt_svm_orig.append(float(sum_svm_original)/n_q)
             kt_svm_ent.append(float(sum_svm_ent)/n_q)
             kt_svm_ent_orig.append(float(sum_svm_ent_original)/n_q)
-        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent,range(2,9)
+        return kt_svm,kt_svm_ent,kt_svm_orig,kt_svm_ent_orig,change_rate_svm_epochs,change_rate_svm_ent_epochs,range(2,9)
 
     def calcualte_average_distances(self,competition_data):
         average_distances =[]
@@ -129,7 +154,7 @@ class analysis:
                 denom = 0
                 docs = competition_data[epoch][query].keys()
                 for doc1,doc2 in itertools.combinations(docs,2):
-                    sum_distance_query+=self.cosine_distance(doc1,doc2)
+                    sum_distance_query+=self.cosine_distance(competition_data[epoch][query][doc1],competition_data[epoch][query][doc2])
                     denom+=1
                 total_average_distance_sum+=float(sum_distance_query)/denom
             average_distances.append(total_average_distance_sum/number_of_queries)
@@ -139,7 +164,10 @@ class analysis:
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
         rankings_svm_ent, rankings_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
         kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
-        print(kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig)
-        #average_distances = self.calcualte_average_distances(competition_data)
-
-
+        create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kt_svm,kt_svm_ent,x_axis)
+        create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kt_svm_orig,kt_svm_ent_orig,x_axis)
+        average_distances = self.calcualte_average_distances(competition_data)
+        create_single_plot("Average distance between competitors","plt/dist.jpg","Epochs","Cosine distance",average_distances,range(1,9))
+        print(change_rate_svm)
+        create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",change_rate_svm,
+                    change_rate_svm_ent, x_axis)
