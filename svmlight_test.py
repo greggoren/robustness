@@ -50,7 +50,7 @@ def recover_model(model):
 
 if __name__=="__main__":
     preprocess = p.preprocess()
-    X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file)
+    X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file,params.normalized)
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
