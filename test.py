@@ -1,18 +1,8 @@
-import random as r
-import params_ent
-import preprocess_clueweb as p
-from sklearn.model_selection import GroupKFold
-from sklearn.datasets import dump_svmlight_file
-import numpy as np
+import analyze_competition as ac
+import pickle
 if __name__=="__main__":
-    preprocess = p.preprocess()
-    X, y, queries = preprocess.retrieve_data_from_file("features",True)
-    # dump_svmlight_file(X,y,"nan",zero_based=False,query_id=queries)
-    xmx = X.max(axis=0)
-    xmn= X.min(axis=0)
-    for i in range (len(xmn)):
-        if xmx[i]<=xmn[i]:
-            print("BIG SHIT!!!!")
-
-
-
+    a = ac.analysis()
+    s_nd,s_map=a.calculate_metrics("SVM")
+    e_nd, e_map = a.calculate_metrics("SVM_ENT")
+    with open("scores.pickle",'wb') as f:
+        pickle.dump((s_nd,s_map,e_nd,e_map),f)

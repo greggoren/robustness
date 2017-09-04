@@ -4,7 +4,7 @@ import numpy as np
 from scipy.stats import kendalltau
 from scipy import spatial
 import itertools
-
+import subprocess
 import matplotlib.pyplot as plt
 def create_plot(title,file_name,xlabel,ylabel,svm,svm_ent,x_axis):
     fig = plt.figure()
@@ -28,6 +28,13 @@ def create_single_plot(title,file_name,xlabel,ylabel,y,x):
     plt.savefig(file_name)
     plt.clf()
 
+
+def run_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         shell=True)
+    return iter(p.stdout.readline, b'')
 
 class analysis:
 
@@ -160,14 +167,54 @@ class analysis:
             average_distances.append(total_average_distance_sum/number_of_queries)
         return average_distances
 
+    def set_qid_for_trec(self,query):
+        if query < 10:
+            qid = "00" + str(query)
+        elif query < 100:
+            qid = "0" + str(query)
+        else:
+            qid = str(query)
+        return qid
+
+
+
+    def extract_score(self, scores, model):
+        for epoch in scores:
+            f = open("data/"+model+"_res"+str(epoch)+".txt",'w')
+            for query in scores[epoch]:
+                for doc in scores[epoch][query]:
+                    f.write(self.set_qid_for_trec(int(query))+" Q0 "+"ROUND-0"+str(epoch)+"-"+self.set_qid_for_trec(int(query))+"-"+doc+" "+str(0) +" "+ str(scores[epoch][query][doc])+" seo\n")
+            f.close()
+
+    def calculate_metrics(self,model):
+        path = "../data/"
+        ndcg_by_epochs = []
+        map_by_epochs = []
+        for i in range(1,9):
+            score_file =  path+model+"_res"+str(i)+".txt"
+            qrels = path+"rel0"+str(i)+".txt"
+            command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
+            for line in run_command(command):
+                ndcg_score = line.split()[2].rstrip()
+                ndcg_by_epochs.append(int(ndcg_score))
+                break
+            command1 = "./trec_eval -m map " + qrels + " " + score_file
+            for line in run_command(command1):
+                map_score = line.split()[2].rstrip()
+                map_by_epochs.append(int(map_score))
+                break
+        return ndcg_by_epochs,map_by_epochs
+
+
     def analyze(self,svm,svm_ent,competition_data):
         scores_svm, scores_svm_ent = self.get_all_scores(svm,svm_ent,competition_data)
+        self.extract_score(scores_svm, "SVM")
+        self.extract_score(scores_svm_ent, "SVM_ENT")
         rankings_svm_ent, rankings_svm = self.retrieve_ranking(scores_svm, scores_svm_ent)
         kt_svm, kt_svm_ent, kt_svm_orig, kt_svm_ent_orig,change_rate_svm,change_rate_svm_ent, x_axis = self.calculate_average_kendall_tau(rankings_svm_ent, rankings_svm)
         create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kt_svm,kt_svm_ent,x_axis)
         create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kt_svm_orig,kt_svm_ent_orig,x_axis)
         average_distances = self.calcualte_average_distances(competition_data)
         create_single_plot("Average distance between competitors","plt/dist.jpg","Epochs","Cosine distance",average_distances,range(1,9))
-        print(change_rate_svm)
         create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",change_rate_svm,
                     change_rate_svm_ent, x_axis)
