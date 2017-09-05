@@ -67,8 +67,8 @@ class svm_ent_models_handler():
         svm.w = self.weights_index[fold]
         svm.predict(X, queries, test_indices, eval)
 
-    def predict_opt(self, X, queries, test_indices, fold,score,eval):
+    def predict_opt(self, X, queries, test_indices, fold,score,eval,gamma):
         C,Gamma = self.chosen_model_per_fold[fold]
         svm = svm_sgd_ent.svm_sgd_entropy(C,Gamma)
         svm.w = self.weights_index[fold]
-        svm.predict_opt(X, queries, test_indices,eval,score)
+        svm.predict_opt(X, queries, test_indices,eval,score,gamma)
