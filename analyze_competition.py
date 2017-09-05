@@ -92,17 +92,18 @@ class analysis:
 
 
     def calculate_average_kendall_tau(self, rankings_svm_ent, rankings_list_svm):
+
         kt_svm = []
         kt_svm_ent=[]
         kt_svm_orig = []
         kt_svm_ent_orig = []
         last_list_index_svm={}
-
         last_list_index_svm_ent = {}
         original_list_index_svm = {}
         original_list_index_svm_ent = {}
         change_rate_svm_epochs =[]
         change_rate_svm_ent_epochs =[]
+
         for epoch in rankings_list_svm:
             sum_svm = 0
             sum_svm_ent =0
@@ -216,5 +217,4 @@ class analysis:
         create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kt_svm_orig,kt_svm_ent_orig,x_axis)
         average_distances = self.calcualte_average_distances(competition_data)
         create_single_plot("Average distance between competitors","plt/dist.jpg","Epochs","Cosine distance",average_distances,range(1,9))
-        create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",change_rate_svm,
-                    change_rate_svm_ent, x_axis)
+        create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",change_rate_svm,change_rate_svm_ent, x_axis)
