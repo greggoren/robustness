@@ -45,7 +45,7 @@ class svm_ent_models_handler():
         self.weights_index[fold] = weights[(max_C,max_Gamma)]
         self.chosen_model_per_fold[fold] = (max_C,max_Gamma)
 
-    def fit_model_on_train_set_and_choose_best_opt(self, X, X_i, y_i, validation_indices, fold, queries,score_opt,evaluator):
+    def fit_model_on_train_set_and_choose_best_opt(self, X, X_i, y_i, validation_indices, fold, queries,score_opt,gamma,evaluator):
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
@@ -53,7 +53,7 @@ class svm_ent_models_handler():
             sys.stdout.flush()
             svm.fit(X_i, y_i)
             weights[(svm.C,svm.Gamma)] = svm.w
-            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,True)
+            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,gamma,True)
             score = evaluator.run_trec_eval(score_file)
             scores[(svm.C,svm.Gamma)] = score
         max_C,max_Gamma = max(scores.items(), key=operator.itemgetter(1))[0]

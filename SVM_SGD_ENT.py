@@ -61,8 +61,8 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             results[index] = np.dot(self.w,X[index].T)
         return eval.create_trec_eval_file(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),validation)
 
-    def predict_opt(self,X,queries,test_indices,eval,score,validation=None):
+    def predict_opt(self,X,queries,test_indices,eval,score,gamma,validation=None):
         results = {}
         for index in test_indices:
             results[index] = np.dot(self.w,X[index].T)
-        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),score,validation)
+        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),score,gamma,validation)

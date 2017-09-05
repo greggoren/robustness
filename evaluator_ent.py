@@ -30,6 +30,21 @@ class eval:
         trec_file_access.close()
         return trec_file
 
+
+    def create_trec_eval_file_opt(self, test_indices, queries, results,model,gamma,validation=None):#TODO: need to sort file via unix command
+        if validation is not None:
+            trec_file = params_ent.validation_folder+str(gamma)+"/trec_file_"+model+".txt"
+            if not os.path.exists(os.path.dirname(trec_file)):
+                os.makedirs(os.path.dirname(trec_file))
+
+        else:
+            trec_file = params_ent.score_file
+        trec_file_access = open(trec_file,'a')
+        for index in test_indices:
+            trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+" "+str(results[index])+" seo\n")
+        trec_file_access.close()
+        return trec_file
+
     def create_trec_eval_file_opt(self, test_indices, queries, results,model,score,validation=None):
         if validation is not None:
             trec_file = params_ent.validation_folder+"/trec_file_"+model+".txt"
