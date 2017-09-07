@@ -35,7 +35,8 @@ class preprocess(pc.preprocess):
             competition_data[epoch][qid][doc] = X[index]
         return competition_data
 
-    def load_model_handlers(self,svm_ent,svm):
-        svm_file = open(svm,'rb')
-        svm_ent_file = open(svm_ent,'rb')
-        return pickle.load(svm_file),pickle.load(svm_ent_file)
+    def load_model_handlers(self,svms):
+        handlers=[]
+        for svm in svms:
+            handlers.append((pickle.load(open(svm[0],'rb')),svm[0],svm[1],svm[2]))
+        return handlers

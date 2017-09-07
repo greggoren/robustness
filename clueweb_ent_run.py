@@ -19,7 +19,7 @@ if __name__=="__main__":
     folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]
-    Gamma_array = [0.2,0.1,0.01]
+    Gamma_array = [0.3,0.001]
     model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
     validated = set()
     for train,test in folds:
