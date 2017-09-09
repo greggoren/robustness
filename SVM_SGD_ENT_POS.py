@@ -5,16 +5,16 @@ import math
 import evaluator_ent
 import params_ent
 import sys
-class svm_sgd_entropy(svm_s.svm_sgd):
+class svm_sgd_entropy_pos(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None):
         self.C = C
         self.w = None
-        self.Gamma = 2*Gamma
+        self.Gamma = Gamma
 
     def entropy_part_for_sgd(self,number_of_features):
         r_t, z_t = 0, 0
         for i in self.w:
-            r_t += (i ** 2) * self.safe_ln(i**2)
+            r_t += (i ** 2) * self.safe_ln(i)
             z_t += i ** 2
         addition = np.zeros(number_of_features)
         if z_t!=0:#avoid division by zero
