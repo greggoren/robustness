@@ -12,16 +12,21 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
         self.Gamma = Gamma
 
     def entropy_part_for_sgd(self,number_of_features):
-        r_t, z_t = 0, 0
+        r_t_pos, z_t_pos,z_t_neg,r_t_neg = 0, 0,0,0
         for i in self.w:
-            r_t += (i ** 2) * self.safe_ln(i)
-            z_t += i ** 2
+            if i<0:
+                r_t_neg += (-i) * self.safe_ln(-i)
+                z_t_neg += -i
+            else:
+                r_t_pos += (i) * self.safe_ln(i)
+                z_t_pos += i
         addition = np.zeros(number_of_features)
-        if z_t!=0:#avoid division by zero
-            for i,w_i in enumerate(self.w):
-                addition[i] = w_i*((self.safe_ln(w_i**2))/z_t - r_t/(z_t**2))
-        return addition
 
+        for i,w_i in enumerate(self.w):
+            if w_i<0:
+                addition[i] = -self.safe_ln(-w_i)/z_t_neg - r_t_neg/(z_t_neg ** 2)
+            else:
+                addition[i] = self.safe_ln(w_i) / z_t_pos + r_t_pos / (z_t_pos ** 2)
 
     def safe_ln(self,x):
         if x <= 0:

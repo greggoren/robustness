@@ -6,6 +6,7 @@ from scipy import spatial
 import itertools
 import subprocess
 import matplotlib.pyplot as plt
+import RBO as r
 def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
     fig = plt.figure()
     fig.suptitle(title, fontsize=14, fontweight='bold')
@@ -95,6 +96,7 @@ class analysis:
     def calculate_average_kendall_tau(self, rankings):
         kendall = {}
         change_rate = {}
+        rbo_min_models = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
             kt_svm = []
@@ -102,9 +104,13 @@ class analysis:
             last_list_index_svm={}
             original_list_index_svm = {}
             change_rate_svm_epochs =[]
+            rbo_min = []
+            rbo_min_orig = []
 
             for epoch in rankings_list_svm:
                 sum_svm = 0
+                sum_rbo_min = 0
+                sum_rbo_min_orig = 0
                 sum_svm_original = 0
                 n_q=0
                 change_rate_svm = 0
@@ -119,6 +125,18 @@ class analysis:
                     n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
+                    d=0
+                    rbo_orig_average=0
+                    rbo_average = 0
+                    for i in range(1):
+                        rbo_orig_average+= r.rbo_dict({x:i for x,i in enumerate(original_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)} , 0.1)["min"]
+                        rbo_average += r.rbo_dict({x:i for x,i in enumerate(last_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)},0.1)["min"]
+                        d+=1
+
+                    rbo_measure_orig = float(rbo_orig_average)/d
+                    rbo_measure = float(rbo_average)/d
+                    sum_rbo_min+=rbo_measure
+                    sum_rbo_min_orig+=rbo_measure_orig
                     if not np.isnan(kt):
                         sum_svm+=kt
                     if not np.isnan(kt_orig):
@@ -130,9 +148,12 @@ class analysis:
                 change_rate_svm_epochs.append(change_rate_svm)
                 kt_svm.append(float(sum_svm)/n_q)
                 kt_svm_orig.append(float(sum_svm_original)/n_q)
+                rbo_min.append(float(sum_rbo_min)/n_q)
+                rbo_min_orig.append(float(sum_rbo_min_orig)/n_q)
             kendall[svm]=(kt_svm,kt_svm_orig)
+            rbo_min_models[svm] = (rbo_min,rbo_min_orig)
             change_rate[svm]=(change_rate_svm_epochs,)
-        return kendall,change_rate,range(2,9)
+        return kendall,change_rate,rbo_min_models,range(2,9)
 
     def calcualte_average_distances(self,competition_data):
         average_distances =[]
@@ -162,40 +183,51 @@ class analysis:
 
 
 
-    def extract_score(self, scores, model):
-        for epoch in scores:
-            f = open("data/"+model+"_res"+str(epoch)+".txt",'w')
-            for query in scores[epoch]:
-                for doc in scores[epoch][query]:
-                    f.write(self.set_qid_for_trec(int(query))+" Q0 "+"ROUND-0"+str(epoch)+"-"+self.set_qid_for_trec(int(query))+"-"+doc+" "+str(0) +" "+ str(scores[epoch][query][doc])+" seo\n")
-            f.close()
+    def extract_score(self, scores):
+        for svm in scores:
+            for epoch in scores[svm]:
+                part = svm[1].split(".pickle")
+                name = part[0]+part[1].replace(".","")
+                f = open(name+str(epoch)+".txt",'w')
+                for query in scores[svm][epoch]:
+                    for doc in scores[svm][epoch][query]:
+                        f.write(self.set_qid_for_trec(int(query))+" Q0 "+"ROUND-0"+str(epoch)+"-"+self.set_qid_for_trec(int(query))+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
+                f.close()
 
-    def calculate_metrics(self,model):
-        path = "../data/"
-        ndcg_by_epochs = []
-        map_by_epochs = []
-        for i in range(1,9):
-            score_file =  path+model+"_res"+str(i)+".txt"
-            qrels = path+"rel0"+str(i)+".txt"
-            command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
-            for line in run_command(command):
-                ndcg_score = line.split()[2].rstrip()
-                ndcg_by_epochs.append(ndcg_score)
-                break
-            command1 = "./trec_eval -m map " + qrels + " " + score_file
-            for line in run_command(command1):
-                map_score = line.split()[2].rstrip()
-                map_by_epochs.append(map_score)
-                break
+    def calculate_metrics(self,models):
+        metrics = {}
+        for svm in models:
+            ndcg_by_epochs = []
+            map_by_epochs = []
+            for i in range(1,9):
+                part = svm[1].split(".pickle")
+                name = part[0] + part[1].replace(".", "")
+                score_file =  name+str(i)+".txt"
+                qrels = name+"rel0"+str(i)+".txt"
+                command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
+                for line in run_command(command):
+                    ndcg_score = line.split()[2].rstrip()
+                    ndcg_by_epochs.append(ndcg_score)
+                    break
+                command1 = "./trec_eval -m map " + qrels + " " + score_file
+                for line in run_command(command1):
+                    map_score = line.split()[2].rstrip()
+                    map_by_epochs.append(map_score)
+                    break
+            metrics[svm] = (ndcg_by_epochs,map_by_epochs)
         return ndcg_by_epochs,map_by_epochs
 
 
     def analyze(self,svms,competition_data):
         scores = self.get_all_scores(svms,competition_data)
         rankings_svm = self.retrieve_ranking(scores)
-        kendall, cr,x_axis = self.calculate_average_kendall_tau(rankings_svm)
+        kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
         create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kendall,0,x_axis)
         create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kendall,1,x_axis)
-        average_distances = self.calcualte_average_distances(competition_data)
-        #create_single_plot("Average distance between competitors","plt/dist.jpg","Epochs","Cosine distance",average_distances,range(1,9))
+        create_plot("Average RBO measure with original list","plt/rbo_min_orig.jpg","Epochs","RBO",rbo_min,1,x_axis)
+        create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
         create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
+        self.extract_score(scores)
+        nd,map=self.calculate_metrics(scores)
+        create_plot("Map by epochs", "plt/map.jpg", "Epochs", "Map", map, 1,
+                    x_axis)
