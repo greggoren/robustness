@@ -229,6 +229,6 @@ class analysis:
         # create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
         # create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
         self.extract_score(scores)
-        nd,map=self.calculate_metrics(scores)
+        metrics=self.calculate_metrics(scores)
         with open("comd.pickle",'wb') as f:
-            pickle.dump((nd,map),f)
+            pickle.dump(metrics,f)
