@@ -7,6 +7,7 @@ import itertools
 import subprocess
 import matplotlib.pyplot as plt
 import RBO as r
+import pickle
 def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
     fig = plt.figure()
     fig.suptitle(title, fontsize=14, fontweight='bold')
@@ -203,7 +204,7 @@ class analysis:
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")
                 score_file =  name+str(i)+".txt"
-                qrels = name+"rel0"+str(i)+".txt"
+                qrels = "rel0"+str(i)+".txt"
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
                 for line in run_command(command):
                     ndcg_score = line.split()[2].rstrip()
@@ -220,14 +221,14 @@ class analysis:
 
     def analyze(self,svms,competition_data):
         scores = self.get_all_scores(svms,competition_data)
-        rankings_svm = self.retrieve_ranking(scores)
-        kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
-        create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kendall,0,x_axis)
-        create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kendall,1,x_axis)
-        create_plot("Average RBO measure with original list","plt/rbo_min_orig.jpg","Epochs","RBO",rbo_min,1,x_axis)
-        create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
-        create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
+        # rankings_svm = self.retrieve_ranking(scores)
+        # kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
+        # create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kendall,0,x_axis)
+        # create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kendall,1,x_axis)
+        # create_plot("Average RBO measure with original list","plt/rbo_min_orig.jpg","Epochs","RBO",rbo_min,1,x_axis)
+        # create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
+        # create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
         self.extract_score(scores)
         nd,map=self.calculate_metrics(scores)
-        create_plot("Map by epochs", "plt/map.jpg", "Epochs", "Map", map, 1,
-                    x_axis)
+        with open("comd.pickle",'wb') as f:
+            pickle.dump((nd,map),f)
