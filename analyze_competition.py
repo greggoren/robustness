@@ -204,7 +204,7 @@ class analysis:
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")
                 score_file =  name+str(i)+".txt"
-                qrels = "rel0"+str(i)+".txt"
+                qrels = "rel/rel0"+str(i)+".txt"
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
                 for line in run_command(command):
                     ndcg_score = line.split()[2].rstrip()
@@ -216,7 +216,7 @@ class analysis:
                     map_by_epochs.append(map_score)
                     break
             metrics[svm] = (ndcg_by_epochs,map_by_epochs)
-        return ndcg_by_epochs,map_by_epochs
+        return metrics
 
 
     def analyze(self,svms,competition_data):
