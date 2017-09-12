@@ -1,5 +1,5 @@
 import preprocess_clueweb as p
-import svm_ent_models_handler as mh
+import svm_ent_models_handler_pos as mh
 import evaluator_ent as e
 import params_ent
 import sys
@@ -9,7 +9,6 @@ def fit_models(X, y, svm):
     return svm
 
 if __name__=="__main__":
-
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
     number_of_queries = len(set(queries))
@@ -19,7 +18,7 @@ if __name__=="__main__":
     folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
     fold_number = 1
     C_array = [0.1,0.01,0.001]
-    Gamma_array = [0.3,0.001]
+    Gamma_array = [0.1,0.01,0.001]
     model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
     validated = set()
     for train,test in folds:
@@ -33,7 +32,5 @@ if __name__=="__main__":
         model_handler.predict(X,queries,test,fold_number,evaluator)
         fold_number += 1
     evaluator.run_trec_eval_on_test()
-    with open(params_ent.model_handler_file,'wb') as f:#TODO: change file-name to params.model_handler_file
+    with open(params_ent.model_handler_file,'wb') as f:
         pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
-
-

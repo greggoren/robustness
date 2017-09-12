@@ -212,6 +212,7 @@ class analysis:
                     break
                 command1 = "./trec_eval -m map " + qrels + " " + score_file
                 for line in run_command(command1):
+                    print(line)
                     map_score = line.split()[2].rstrip()
                     map_by_epochs.append(map_score)
                     break
@@ -228,7 +229,12 @@ class analysis:
         # create_plot("Average RBO measure with original list","plt/rbo_min_orig.jpg","Epochs","RBO",rbo_min,1,x_axis)
         # create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
         # create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
-        self.extract_score(scores)
-        metrics=self.calculate_metrics(scores)
-        with open("comd.pickle",'wb') as f:
-            pickle.dump(metrics,f)
+        #self.extract_score(scores)
+        #metrics=self.calculate_metrics(scores)
+        #with open("comd.pickle",'wb') as f:
+        #    pickle.dump(metrics,f)
+        with open("comd.pickle",'rb') as f:
+            metrics = pickle.load(f)
+            create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
+            create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
+
