@@ -219,22 +219,45 @@ class analysis:
             metrics[svm] = (ndcg_by_epochs,map_by_epochs)
         return metrics
 
+    def get_average_epsilon(self,scores,number_of_competitors):
+        stat={}
+        for svm in scores:
+            deltas = []
+            for epoch in scores[svm]:
+                sum = 0
+                denom = 0
+                for query in scores[svm][epoch]:
+                    scores_list = sorted([scores[svm][epoch][query][doc] for doc in scores[svm][epoch][query]])
+                    last_score = None
+
+                    for s in scores_list:
+                        if last_score is None:
+                            last_score = s
+                            continue
+                        else:
+                            sum += (s-last_score)
+                            last_score=s
+                            denom+=1
+                deltas.append(float(sum)/denom)
+            stat[svm]=(deltas,)
+        return stat
+
 
     def analyze(self,svms,competition_data):
         scores = self.get_all_scores(svms,competition_data)
-        # rankings_svm = self.retrieve_ranking(scores)
-        # kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
-        # create_plot("Average Kendall-Tau with last iteration","plt/kt.jpg","Epochs","Kendall-Tau",kendall,0,x_axis)
-        # create_plot("Average Kendall-Tau with original list","plt/kt_orig.jpg","Epochs","Kendall-Tau",kendall,1,x_axis)
-        # create_plot("Average RBO measure with original list","plt/rbo_min_orig.jpg","Epochs","RBO",rbo_min,1,x_axis)
-        # create_plot("Average RBO measure with last iteration","plt/rbo_min.jpg","Epochs","RBO",rbo_min,0,x_axis)
-        # create_plot("Number of queries with winner changed", "plt/winner_change.jpg", "Epochs", "#Queries",cr,0, x_axis)
-        #self.extract_score(scores)
-        #metrics=self.calculate_metrics(scores)
-        #with open("comd.pickle",'wb') as f:
+        rankings_svm = self.retrieve_ranking(scores)
+        kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
+        create_plot("Average Kendall-Tau with last iteration","plt/kt1.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+        create_plot("Average Kendall-Tau with original list","plt/kt1_orig.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+        create_plot("Average RBO measure with original list","plt/rbo1_min_orig.PNG","Epochs","RBO",rbo_min,1,x_axis)
+        create_plot("Average RBO measure with last iteration","plt/rbo1_min.PNG","Epochs","RBO",rbo_min,0,x_axis)
+        create_plot("Number of queries with winner changed", "plt/winner_change1.PNG", "Epochs", "#Queries",cr,0, x_axis)
+        self.extract_score(scores)
+        # metrics=self.calculate_metrics(scores)
+        # with open("comd.pickle",'wb') as f:
         #    pickle.dump(metrics,f)
-        with open("comd.pickle",'rb') as f:
-            metrics = pickle.load(f)
-            create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
-            create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
+        # with open("comd.pickle",'rb') as f:
+        #     metrics = pickle.load(f)
+        #     create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
+        #     create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
 
