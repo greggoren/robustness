@@ -19,7 +19,7 @@ if __name__=="__main__":
     fold_number = 1
     C_array = [0.1,0.01,0.001]
     Gamma_array = [0.1,0.01,0.001]
-    model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
+    model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array)
     validated = set()
     for train,test in folds:
         sys.stdout.flush()
