@@ -23,9 +23,10 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
 
         for i,w_i in enumerate(self.w):
             if w_i<0:
-                addition[i] = -self.safe_ln(-w_i)/z_t_neg - r_t_neg/(z_t_neg ** 2)
+                addition[i] = float((-self.safe_ln(-w_i))/z_t_neg) - (float(r_t_neg)/(z_t_neg ** 2))
             else:
-                addition[i] = self.safe_ln(w_i) / z_t_pos + r_t_pos / (z_t_pos ** 2)
+                if z_t_pos>0:
+                    addition[i] = (float(self.safe_ln(w_i)) / z_t_pos) + (float(r_t_pos)/ (z_t_pos ** 2))
         return addition
 
 
