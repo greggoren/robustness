@@ -26,6 +26,8 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
                 addition[i] = -self.safe_ln(-w_i)/z_t_neg - r_t_neg/(z_t_neg ** 2)
             else:
                 addition[i] = self.safe_ln(w_i) / z_t_pos + r_t_pos / (z_t_pos ** 2)
+        return addition
+
 
     def safe_ln(self,x):
         if x <= 0:
