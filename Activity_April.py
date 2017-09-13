@@ -212,57 +212,61 @@ trainX, testX, trainY, testY = train_test_split(df, df_y, test_size=0.24)
 trainY = to_categorical(trainY, nb_classes=8)
 testY = to_categorical(testY, nb_classes=8)
 print(testY[:100])
+learning_rates = [0.1,0.01,0.001,0.0001]
+epochs=[100,200,500,1000]
+for lr in learning_rates:
+    for epoch in epochs:
 
-net = tflearn.input_data(shape=[None] + list(trainX.shape)[1:])
-# net = tflearn.input_data(shape=[None] + [18, 21])
-net = tflearn.layers.normalization.batch_normalization(net)
-# net = tflearn.lstm(net, 128, return_seq=True, dynamic=True, activation='relu')
-# cell = tflearn.layers.BasicLSTMCell(128)
-# cell.add_update()
-net = tflearn.lstm(net, 128, activation='relu', dynamic=True)
-net = cond_dropout(net, 0.8)
-# net = tflearn.fully_connected(net, 18, activation='linear')
+        net = tflearn.input_data(shape=[None] + list(trainX.shape)[1:])
+        # net = tflearn.input_data(shape=[None] + [18, 21])
+        net = tflearn.layers.normalization.batch_normalization(net)
+        # net = tflearn.lstm(net, 128, return_seq=True, dynamic=True, activation='relu')
+        # cell = tflearn.layers.BasicLSTMCell(128)
+        # cell.add_update()
+        net = tflearn.lstm(net, 128, activation='relu', dynamic=True)
+        net = cond_dropout(net, 0.8)
+        # net = tflearn.fully_connected(net, 18, activation='linear')
 
-# net = tflearn.embedding(net, input_dim=10000, output_dim=128)
-# net = tflearn.lstm(net, 128, dropout=0.8)
-# net = tflearn.fully_connected(net, 18, activation='linear')
-# W = tf.Variable(tf.random_normal([784, 256]), name="W")
-# T = tflearn.helpers.add_weights_regularizer(W, 'L2', weight_decay=0.001)
-net = tflearn.fully_connected(net, 8, activation='softmax')
-W=net.W
-save_net = net
-net = tflearn.regression(net, optimizer='adam', learning_rate=0.001, loss='categorical_crossentropy', shuffle_batches=False)
-                         # ,to_one_hot=True, n_classes=8)
+        # net = tflearn.embedding(net, input_dim=10000, output_dim=128)
+        # net = tflearn.lstm(net, 128, dropout=0.8)
+        # net = tflearn.fully_connected(net, 18, activation='linear')
+        # W = tf.Variable(tf.random_normal([784, 256]), name="W")
+        # T = tflearn.helpers.add_weights_regularizer(W, 'L2', weight_decay=0.001)
+        net = tflearn.fully_connected(net, 8, activation='softmax')
+        W=net.W
+        save_net = net
+        net = tflearn.regression(net, optimizer='adam', learning_rate=lr, loss='categorical_crossentropy', shuffle_batches=False)
+                                 # ,to_one_hot=True, n_classes=8)
 
-model = tflearn.DNN(net, tensorboard_verbose=3)
-model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-          batch_size=6, n_epoch=100)
+        model = tflearn.DNN(net, tensorboard_verbose=3)
+        model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
+                  batch_size=6, n_epoch=epoch)
 
-print("Regular:" + str(model.evaluate(testX, testY)))
-predY = model.predict(testX)
-predYnorm = np.zeros_like(predY)
-predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
-print(predYnorm[:100])
+        print("Regular:" + str(model.evaluate(testX, testY)))
+        predY = model.predict(testX)
+        predYnorm = np.zeros_like(predY)
+        predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
+        print(predYnorm[:100])
 
 # new_net = tflearn.regression(save_net, optimizer='adam', learning_rate=0.001, loss='categorical_crossentropy',
 #                          shuffle_batches=False)
-
-W_new = model.get_weights(W)
-W_new[:,0] = [0]*len(W_new)
-model.set_weights(W, W_new)
-# model.save("my_model.tflearn")
-# model = tflearn.DNN(new_net).load("temp.model")
 #
-print("Zeros:" + str(model.evaluate(testX, testY)))
-
-model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
-          batch_size=6, n_epoch=1)
-
-print("One more Iter:" + str(model.evaluate(testX, testY)))
-predY = model.predict(testX)
-predYnorm = np.zeros_like(predY)
-predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
-print(predYnorm[:100])
+# W_new = model.get_weights(W)
+# W_new[:,0] = [0]*len(W_new)
+# model.set_weights(W, W_new)
+# # model.save("my_model.tflearn")
+# # model = tflearn.DNN(new_net).load("temp.model")
+# #
+# print("Zeros:" + str(model.evaluate(testX, testY)))
+#
+# model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True,
+#           batch_size=6, n_epoch=1)
+#
+# print("One more Iter:" + str(model.evaluate(testX, testY)))
+# predY = model.predict(testX)
+# predYnorm = np.zeros_like(predY)
+# predYnorm[np.arange(len(predY)), predY.argmax(1)] = 1
+# print(predYnorm[:100])
 
 
 # predY = to_categorical(predY, nb_classes=7)
