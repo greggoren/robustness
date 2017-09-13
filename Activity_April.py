@@ -209,11 +209,11 @@ for i in range(len(df_new)):
 
 trainX, testX, trainY, testY = train_test_split(df, df_y, test_size=0.24)
 # print(testY[:100])
-trainY = to_categorical(trainY, nb_classes=8)
-testY = to_categorical(testY, nb_classes=8)
+trainY = to_categorical(trainY.ravel(), nb_classes=8)
+testY = to_categorical(testY.ravel(), nb_classes=8)
 print(testY[:100])
-learning_rates = [0.1,0.01,0.001,0.0001]
-epochs=[100,200,500,1000]
+learning_rates = [0.001]
+epochs=[1000]
 for lr in learning_rates:
     for epoch in epochs:
 
