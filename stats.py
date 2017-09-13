@@ -1,5 +1,5 @@
 import preprocess_clueweb as p
-import svm_ent_models_handler_pos as mh
+import svm_ent_models_handler as mh
 import evaluator_ent as e
 import params_ent
 import sys
@@ -26,7 +26,7 @@ if __name__=="__main__":
         Gamma_array = []
         Gamma_array.append(gamma)
 
-        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array)
+        model_handler = mh.svm_ent_models_handler(C_array,Gamma_array)
         validated = set()
         for train,test in folds:
             sys.stdout.flush()
@@ -44,3 +44,4 @@ if __name__=="__main__":
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
 
 
+        ""

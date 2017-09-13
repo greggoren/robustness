@@ -38,6 +38,7 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             lambda_factor = self.C*number_of_examples
         else:
             lambda_factor = number_of_examples
+            self.C=0
         iterations = params_ent.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
@@ -49,9 +50,9 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             y_k = X[random_index]*y[random_index]
             ent =self.entropy_part_for_sgd(number_of_features)
             if not self.check_prediction(y_k):
-                self.w = t*lr*self.w + lr*lambda_factor*y_k-self.Gamma*ent*lr
+                self.w = (1-self.C-self.Gamma)*t*lr*self.w + lr*lambda_factor*y_k-self.Gamma*ent*lr
             else:
-                self.w = t * lr * self.w - self.Gamma*ent*lr
+                self.w = (1-self.C-self.Gamma)*t * lr * self.w - self.Gamma*ent*lr
 
         print ("SGD ended")
 
