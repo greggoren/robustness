@@ -90,7 +90,10 @@ class analysis:
     def transition_to_rank_vector(self,original_list,sorted_list):
         rank_vector = []
         for doc in original_list:
-            rank_vector.append(sorted_list.index(doc) + 1)
+            try:
+                rank_vector.append(sorted_list.index(doc) + 1)
+            except:
+                print(original_list,sorted_list)
         return rank_vector
 
 
@@ -242,17 +245,64 @@ class analysis:
             stat[svm]=(deltas,)
         return stat
 
+    def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking):
+        new_rank = []
+        for rank in range(len(current_ranking)):
+            if rank+1<len(current_ranking):
+                doc_win =current_ranking[rank]
+                doc_lose = current_ranking[rank+1]
+                if doc_win=='32' or doc_lose=='32':
+                    print("here")
+                if last_ranking.index(doc_lose)<last_ranking.index(doc_win) and (scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])<epsilon and  (doc_lose not in new_rank):
+                    new_rank.append(doc_lose)
+                    if doc_win not in new_rank:
+                        new_rank.append(doc_win)
+                elif doc_win not in new_rank:
+                    new_rank.append(doc_win)
+
+            else:
+                if current_ranking[rank] not in new_rank:
+                    new_rank.append(current_ranking[rank])
+                elif current_ranking[rank-1] not in new_rank:
+                    new_rank.append(current_ranking[rank-1])
+        return new_rank
+
+    def rerank_by_epsilon(self,svm,scores,epsilon):
+        rankings_svm = {}
+        last_rank = {}
+        competitors = self.get_competitors(scores[svm])
+        rankings_svm[svm] = {}
+        scores_svm = scores[svm]
+        for epoch in scores_svm:
+            rankings_svm[svm][epoch] = {}
+            for query in scores_svm[epoch]:
+
+                retrieved_list_svm = sorted(competitors[query], key=lambda x: scores_svm[epoch][query][x],
+                                            reverse=True)
+
+                if not last_rank.get(query,False):
+                    last_rank[query] = retrieved_list_svm
+                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query])
+                rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],
+                                                                                     fixed)
+                last_rank[query]=fixed
+        return rankings_svm[svm]
 
     def analyze(self,svms,competition_data):
         scores = self.get_all_scores(svms,competition_data)
         rankings_svm = self.retrieve_ranking(scores)
+        for svm in svms:
+            if svm[2]=="svm_epsilon":
+                rankings_svm[svm] = self.rerank_by_epsilon(svm,scores,1.5)
         kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
-        create_plot("Average Kendall-Tau with last iteration","plt/kt1.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-        create_plot("Average Kendall-Tau with original list","plt/kt1_orig.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-        create_plot("Average RBO measure with original list","plt/rbo1_min_orig.PNG","Epochs","RBO",rbo_min,1,x_axis)
-        create_plot("Average RBO measure with last iteration","plt/rbo1_min.PNG","Epochs","RBO",rbo_min,0,x_axis)
-        create_plot("Number of queries with winner changed", "plt/winner_change1.PNG", "Epochs", "#Queries",cr,0, x_axis)
-        self.extract_score(scores)
+        create_plot("Average Kendall-Tau with last iteration","plt/kt1_eps.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+        create_plot("Average Kendall-Tau with original list","plt/kt1_orig_eps.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+        create_plot("Average RBO measure with original list","plt/rbo1_min_orig_eps.PNG","Epochs","RBO",rbo_min,1,x_axis)
+        create_plot("Average RBO measure with last iteration","plt/rbo1_min_eps.PNG","Epochs","RBO",rbo_min,0,x_axis)
+        create_plot("Number of queries with winner changed", "plt/winner_change1_eps.PNG", "Epochs", "#Queries",cr,0, x_axis)
+        #deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
+        #create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
+        # self.extract_score(scores)
         # metrics=self.calculate_metrics(scores)
         # with open("comd.pickle",'wb') as f:
         #    pickle.dump(metrics,f)
