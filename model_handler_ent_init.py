@@ -65,6 +65,6 @@ class svm_ent_models_handler_pos_init():
 
     def predict_opt(self, X, queries, test_indices, fold,score,eval,gamma):
         C,Gamma = self.chosen_model_per_fold[fold]
-        svm = svm_sgd_ent.svm_sgd_entropy_pos(C,Gamma)
+        svm = svm_sgd_ent.svm_sgd_entropy_pos_init(C,Gamma)
         svm.w = self.weights_index[fold]
         svm.predict_opt(X, queries, test_indices,eval,score,gamma)
