@@ -15,7 +15,7 @@ class svm_sgd_entropy_pos_init(svm_s.svm_sgd_entropy_pos):
         else:
             lambda_factor = number_of_examples
             self.C = 0
-        iterations = int(math.floor(params_ent.iter_factor * number_of_examples))
+        iterations = int(math.ceil(params_ent.iter_factor * number_of_examples))
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
