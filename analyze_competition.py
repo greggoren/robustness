@@ -289,7 +289,7 @@ class analysis:
                 last_rank[query] = fixed
                 new_scores[epoch][query] = {x:(5-fixed.index(x)) for x in fixed}
         scores[svm] = new_scores
-        return rankings_svm[svm]
+        return rankings_svm[svm],scores
 
 
 
@@ -298,7 +298,7 @@ class analysis:
         rankings_svm = self.retrieve_ranking(scores)
         for svm in svms:
             if svm[2]=="svm_epsilon":
-                rankings_svm[svm] = self.rerank_by_epsilon(svm,scores,1.5)
+                rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,1.5)
         # kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
         # create_plot("Average Kendall-Tau with last iteration","plt/kt1_init.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
         # create_plot("Average Kendall-Tau with original list","plt/kt1_orig_init.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
@@ -310,9 +310,9 @@ class analysis:
         self.extract_score(scores)
         metrics=self.calculate_metrics(scores)
         with open("comp.pickle",'wb') as f:
-           pickle.dump(metrics,f)
-        # with open("comd.pickle",'rb') as f:
+          pickle.dump(metrics,f)
+        # with open("comp.pickle",'rb') as f:
         #     metrics = pickle.load(f)
-        #     create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
-        #     create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
+        #     create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5",metrics,0, range(1,9))
+        #     create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5",metrics,1, range(1,9))
 
