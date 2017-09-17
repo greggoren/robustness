@@ -191,7 +191,7 @@ class analysis:
         for svm in scores:
             for epoch in scores[svm]:
                 part = svm[1].split(".pickle")
-                name = part[0]+part[1].replace(".","")
+                name = svm[2]+"_"+part[0]+part[1].replace(".","")
                 f = open(name+str(epoch)+".txt",'w')
                 for query in scores[svm][epoch]:
                     for doc in scores[svm][epoch][query]:
@@ -308,11 +308,11 @@ class analysis:
         #deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
         #create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
         self.extract_score(scores)
-        metrics=self.calculate_metrics(scores)
-        with open("comp.pickle",'wb') as f:
-          pickle.dump(metrics,f)
-        # with open("comp.pickle",'rb') as f:
-        #     metrics = pickle.load(f)
-        #     create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5",metrics,0, range(1,9))
-        #     create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5",metrics,1, range(1,9))
+        # metrics=self.calculate_metrics(scores)
+        # with open("comp.pickle",'wb') as f:
+        #   pickle.dump(metrics,f)
+        with open("comp.pickle",'rb') as f:
+            metrics = pickle.load(f)
+            create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5",metrics,0, range(1,9))
+            create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5",metrics,1, range(1,9))
 
