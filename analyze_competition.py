@@ -309,7 +309,7 @@ class analysis:
         #create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
         self.extract_score(scores)
         metrics=self.calculate_metrics(scores)
-        with open("comd.pickle",'wb') as f:
+        with open("comp.pickle",'wb') as f:
            pickle.dump(metrics,f)
         with open("comd.pickle",'rb') as f:
             metrics = pickle.load(f)
