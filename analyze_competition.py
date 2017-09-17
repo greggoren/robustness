@@ -299,12 +299,12 @@ class analysis:
         for svm in svms:
             if svm[2]=="svm_epsilon":
                 rankings_svm[svm] = self.rerank_by_epsilon(svm,scores,1.5)
-        kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
-        create_plot("Average Kendall-Tau with last iteration","plt/kt1_init.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-        create_plot("Average Kendall-Tau with original list","plt/kt1_orig_init.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-        create_plot("Average RBO measure with original list","plt/rbo1_min_orig_init.PNG","Epochs","RBO",rbo_min,1,x_axis)
-        create_plot("Average RBO measure with last iteration","plt/rbo1_min_init.PNG","Epochs","RBO",rbo_min,0,x_axis)
-        create_plot("Number of queries with winner changed", "plt/winner_change1_init.PNG", "Epochs", "#Queries",cr,0, x_axis)
+        # kendall, cr,rbo_min,x_axis = self.calculate_average_kendall_tau(rankings_svm)
+        # create_plot("Average Kendall-Tau with last iteration","plt/kt1_init.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+        # create_plot("Average Kendall-Tau with original list","plt/kt1_orig_init.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+        # create_plot("Average RBO measure with original list","plt/rbo1_min_orig_init.PNG","Epochs","RBO",rbo_min,1,x_axis)
+        # create_plot("Average RBO measure with last iteration","plt/rbo1_min_init.PNG","Epochs","RBO",rbo_min,0,x_axis)
+        # create_plot("Number of queries with winner changed", "plt/winner_change1_init.PNG", "Epochs", "#Queries",cr,0, x_axis)
         #deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
         #create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
         self.extract_score(scores)
