@@ -308,11 +308,11 @@ class analysis:
         #deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
         #create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
         self.extract_score(scores)
-        # metrics=self.calculate_metrics(scores)
-        # with open("comp.pickle",'wb') as f:
-        #   pickle.dump(metrics,f)
-        with open("comp.pickle",'rb') as f:
-            metrics = pickle.load(f)
-            create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5",metrics,0, range(1,9))
-            create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5",metrics,1, range(1,9))
+        metrics=self.calculate_metrics(scores)
+        with open("comp.pickle",'wb') as f:
+          pickle.dump(metrics,f)
+        # with open("comp.pickle",'rb') as f:
+        #     metrics = pickle.load(f)
+        #     create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5",metrics,0, range(1,9))
+        #     create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5",metrics,1, range(1,9))
 
