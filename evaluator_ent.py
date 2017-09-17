@@ -13,8 +13,9 @@ class eval:
         self.doc_name_index = {}
 
     def remove_score_file_from_last_run(self):
-        if os._exists(params_ent.score_file):
-            os.remove(params_ent.score_file)
+        command = "rm "+params_ent.score_file
+        for line in self.run_command(command):
+            print(line)
 
     def create_trec_eval_file(self, test_indices, queries, results,model,validation=None):#TODO: need to sort file via unix command
         if validation is not None:
