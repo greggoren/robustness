@@ -311,8 +311,8 @@ class analysis:
         metrics=self.calculate_metrics(scores)
         with open("comp.pickle",'wb') as f:
            pickle.dump(metrics,f)
-        with open("comd.pickle",'rb') as f:
-            metrics = pickle.load(f)
-            create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
-            create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
+        # with open("comd.pickle",'rb') as f:
+        #     metrics = pickle.load(f)
+        #     create_plot("NDCG@5 by epochs", "plt/ndcg.jpg", "Epochs", "NDCG@5",metrics,0, range(1,9))
+        #     create_plot("map@5 by epochs", "plt/map5.jpg", "Epochs", "map@5",metrics,1, range(1,9))
 
