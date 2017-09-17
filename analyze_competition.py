@@ -205,7 +205,7 @@ class analysis:
             map_by_epochs = []
             for i in range(1,9):
                 part = svm[1].split(".pickle")
-                name = part[0] + part[1].replace(".", "")
+                name = part[0] + part[1].replace(".", "")+svm[2]
                 score_file =  name+str(i)+".txt"
                 qrels = "rel/rel0"+str(i)+".txt"
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
