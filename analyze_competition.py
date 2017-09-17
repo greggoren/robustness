@@ -310,8 +310,8 @@ class analysis:
             create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
             with open("comp.pickle", 'rb') as f:
                 metrics = pickle.load(f)
-                create_plot("NDCG@5 by epochs", "plt/ndcg_eps.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-                create_plot("map@5 by epochs", "plt/map_eps.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+                create_plot("NDCG@5 by epochs", "plt/ndcg_init.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+                create_plot("map@5 by epochs", "plt/map_init.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
