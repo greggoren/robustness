@@ -1,7 +1,7 @@
 import preprocess_clueweb as p
 import svm_ent_models_handler_pos as mh
 import evaluator_ent as e
-import params_ent
+import params_ent_shrinked_pos as params_ent
 import sys
 import pickle
 def fit_models(X, y, svm):
