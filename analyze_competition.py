@@ -24,7 +24,7 @@ def write_files(svms,kendall,cr,rbo_min):
     c.close()
     r.close()
 
-    
+
 def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
     fig = plt.figure()
     fig.suptitle(title, fontsize=14, fontweight='bold')
@@ -335,5 +335,5 @@ class analysis:
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp.pickle",'wb') as f:
+            with open("comp_sh_pos_minus.pickle",'wb') as f:
                 pickle.dump(metrics,f)
