@@ -400,5 +400,5 @@ class analysis:
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp_minus_sh.pickle",'wb') as f:
+            with open("comp_minus_sh_pos.pickle",'wb') as f:
                 pickle.dump(metrics,f)
