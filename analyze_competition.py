@@ -8,11 +8,14 @@ import subprocess
 import matplotlib.pyplot as plt
 import RBO as r
 import pickle
+import math
+
+
 
 def write_files(svms,kendall,cr,rbo_min):
-    k = open("epslon_kt.txt",'a')
-    r =open("epsilon_rbo.txt",'a')
-    c=open("epsilon_winner_change.txt",'a')
+    k = open("minus_pos_kt.txt",'a')
+    r =open("minus_pos_rbo.txt",'a')
+    c=open("minus_pos_winner_change.txt",'a')
     k.write("Model,Min Kendall-Tau,Max Kendall-Tau,Average Kendall-Tau\n")
     c.write("Model,Min Winner Change,Max Winner Change,Average Winner Change\n")
     r.write("Model,Min RBO,Max RBO,Average RBO\n")
@@ -33,7 +36,6 @@ def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
     ax.set_ylabel(ylabel)
     for svm in models:
         ax.plot(x_axis,models[svm][index],svm[3],label=svm[2])
-    #ax.plot( x_axis,svm_ent, 'b', label='svm_ent')
     plt.legend(loc='best')
     plt.savefig(file_name)
     plt.clf()
@@ -56,10 +58,23 @@ def run_command(command):
                          shell=True)
     return iter(p.stdout.readline,'')
 
+
+def cosine_similarity(v1, v2):
+    sumxx, sumxy, sumyy = 0, 0, 0
+    for i in range(len(v1)):
+        x = v1[i];
+        y = v2[i]
+        sumxx += x * x
+        sumyy += y * y
+        sumxy += x * y
+    return sumxy / math.sqrt(sumxx * sumyy)
+
+
 class analysis:
 
     def __init__(self):
         ""
+
 
     def cosine_distance(self,x,y):
         return spatial.distance.cosine(x,y)
@@ -193,6 +208,53 @@ class analysis:
             average_distances.append(total_average_distance_sum/number_of_queries)
         return average_distances
 
+
+    def calculate_average_distance_from_last_iteration(self,competition_data):
+        weights_for_average = {}
+        average_similarity = []
+        original_similarity = []
+        for epoch in competition_data:
+            nq = 0
+            if epoch == 1:
+                continue
+            sum_average_of_query = 0
+            sum_average_original_of_query = 0
+
+            for query in competition_data[epoch]:
+                nq += 1
+                sum_similarity_query = 0
+                sum_original_similarity_query = 0
+
+                for doc in competition_data[epoch][query]:
+
+                    sum_similarity_query +=(cosine_similarity(competition_data[epoch][query][doc],
+                                                              competition_data[epoch - 1][query][doc]))
+                    sum_original_similarity_query +=(cosine_similarity(competition_data[epoch][query][doc],
+                                                              competition_data[1][query][doc]))
+                sum_average_of_query += (float(sum_similarity_query)/5)
+                sum_average_original_of_query += sum_original_similarity_query/5
+            average_similarity.append(float(sum_average_of_query)/nq)
+            original_similarity.append(sum_average_original_of_query/nq)
+        return average_similarity,original_similarity
+
+
+    def get_average_weight_differences(self,w,indexes):
+        denominator = 0
+        sum_of_differences = 0
+        for i,j in itertools.combinations(indexes, 2):
+            sum_of_differences+=abs(w[i]-w[j])
+            denominator+=1
+        return float(sum_of_differences)/denominator
+
+    def analyze_weights(self,svms):
+        for svm in svms:
+            mh = svm[0]
+            print(svm[2])
+            for i in range(1,6):
+                print("fold ",i)
+                print(self.get_average_weight_differences(mh.weights_index[i],range(25)))
+
+
     def set_qid_for_trec(self,query):
         if query < 10:
             qid = "00" + str(query)
@@ -311,29 +373,32 @@ class analysis:
 
 
     def analyze(self, svms, competition_data, dump):
+        # d,o = self.calculate_average_distance_from_last_iteration(competition_data)
+        # create_single_plot("Average similarity with last iteration", "plt/similarity_last.PNG", "Epochs", "Similarity", d, range(2,9))
+        # create_single_plot("Average similarity with original document", "plt/similarity_orig.PNG", "Epochs", "Similarity", o, range(2,9))
+        # self.analyze_weights(svms)
         scores = self.get_all_scores(svms,competition_data)
         rankings_svm = self.retrieve_ranking(scores)
-
         for svm in svms:
             if svm[2]=="svm_epsilon":
                 rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,1.5)
         if not dump:
 
             kendall, cr, rbo_min, x_axis = self.calculate_average_kendall_tau(rankings_svm)
-
-            create_plot("Average Kendall-Tau with last iteration","plt/kt_minus_pos_sh.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-            create_plot("Average Kendall-Tau with original list","plt/kt_orig_minus_pos_sh.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-            create_plot("Average RBO measure with original list","plt/rbo_min_orig_minus_pos_sh.PNG","Epochs","RBO",rbo_min,1,x_axis)
-            create_plot("Average RBO measure with last iteration","plt/rbo_min_minus_pos_sh.PNG","Epochs","RBO",rbo_min,0,x_axis)
-            create_plot("Number of queries with winner changed", "plt/winner_change_minus_pos_sh.PNG", "Epochs", "#Queries",cr,0, x_axis)
+            write_files(svms,kendall,cr,rbo_min)
+            create_plot("Average Kendall-Tau with last iteration","plt/kt_minus_sh.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            create_plot("Average Kendall-Tau with original list","plt/kt_orig_minus_sh.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+            create_plot("Average RBO measure with original list","plt/rbo_min_minus_sh.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            create_plot("Average RBO measure with last iteration","plt/rbo_min_minus_sh.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            create_plot("Number of queries with winner changed", "plt/winner_change_minus_sh.PNG", "Epochs", "#Queries",cr,0, x_axis)
             # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
             # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
-            # with open("comp_reg.pickle", 'rb') as f:
+            # with open("comp_pos_minus.pickle", 'rb') as f:
             #     metrics = pickle.load(f)
-            #     create_plot("NDCG@5 by epochs", "plt/ndcg_reg.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-            #     create_plot("map@5 by epochs", "plt/map_reg.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+            #     create_plot("NDCG@5 by epochs", "plt/ndcg_pos_minus.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+            #     create_plot("map@5 by epochs", "plt/map_pos_minus.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp_minus.pickle",'wb') as f:
+            with open("comp_minus_sh.pickle",'wb') as f:
                 pickle.dump(metrics,f)
