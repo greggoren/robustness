@@ -50,10 +50,10 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             y_k = X[random_index]*y[random_index]
             ent =self.entropy_part_for_sgd(number_of_features)
             if not self.check_prediction(y_k):
-                self.w = (t+self.C+self.Gamma)*lr*self.w + lr*lambda_factor*y_k+self.Gamma*ent*lr
+                self.w = (t+self.C+self.Gamma)*lr*self.w + lr*lambda_factor*y_k-self.Gamma*ent*lr
                 # self.w = t*lr*self.w + lr*lambda_factor*y_k+self.Gamma*ent*lr
             else:
-                self.w = (t+self.C+self.Gamma)* lr * self.w + self.Gamma*ent*lr
+                self.w = (t+self.C+self.Gamma)* lr * self.w - self.Gamma*ent*lr
                 # self.w = t * lr * self.w + self.Gamma*ent*lr
 
         print ("SGD ended")
