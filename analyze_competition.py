@@ -386,11 +386,11 @@ class analysis:
 
             kendall, cr, rbo_min, x_axis = self.calculate_average_kendall_tau(rankings_svm)
             write_files(svms,kendall,cr,rbo_min)
-            create_plot("Average Kendall-Tau with last iteration","plt/kt_minus_sh.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-            create_plot("Average Kendall-Tau with original list","plt/kt_orig_minus_sh.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-            create_plot("Average RBO measure with original list","plt/rbo_min_minus_sh.PNG","Epochs","RBO",rbo_min,1,x_axis)
-            create_plot("Average RBO measure with last iteration","plt/rbo_min_minus_sh.PNG","Epochs","RBO",rbo_min,0,x_axis)
-            create_plot("Number of queries with winner changed", "plt/winner_change_minus_sh.PNG", "Epochs", "#Queries",cr,0, x_axis)
+            create_plot("Average Kendall-Tau with last iteration","plt/kt_sh.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            create_plot("Average Kendall-Tau with original list","plt/kt_orig_sh.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+            create_plot("Average RBO measure with original list","plt/rbo_min_sh.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            create_plot("Average RBO measure with last iteration","plt/rbo_min_sh.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            create_plot("Number of queries with winner changed", "plt/winner_change_sh.PNG", "Epochs", "#Queries",cr,0, x_axis)
             # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
             # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
             # with open("comp_pos_minus.pickle", 'rb') as f:
@@ -400,5 +400,5 @@ class analysis:
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp_minus_sh_pos.pickle",'wb') as f:
+            with open("comp_sh.pickle",'wb') as f:
                 pickle.dump(metrics,f)
