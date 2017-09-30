@@ -10,6 +10,7 @@ def fit_models(X, y, svm):
 
 if __name__=="__main__":
     g = float(sys.argv[1])
+    s = float(sys.argv[2])
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
     number_of_queries = len(set(queries))
@@ -17,7 +18,9 @@ if __name__=="__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     gammas = []
+    Sigmas = [s,]
     gammas.append(g)
+
     C_array = [0.1,0.01,0.001]
     for gamma in gammas:
         folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
@@ -26,7 +29,7 @@ if __name__=="__main__":
         Gamma_array = []
         Gamma_array.append(gamma)
 
-        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array)
+        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array,Sigmas)
         validated = set()
         for train,test in folds:
             sys.stdout.flush()

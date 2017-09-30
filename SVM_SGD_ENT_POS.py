@@ -5,17 +5,17 @@ import math
 import params_ent
 import sys
 class svm_sgd_entropy_pos(svm_s.svm_sgd):
-    def __init__(self, C=None,Gamma =None):
+    def __init__(self, C=None,Gamma =None,Sigma=None):
         self.C = C
         self.w = None
         self.Gamma = Gamma
+        self.Sigma = Sigma
 
-    def entropy_part_for_sgd(self,number_of_features):
-        r_t_pos, z_t_pos,z_t_neg,r_t_neg = 0, 0,0,0
+    def entropy_part_for_sgd_pos(self,number_of_features):
+        r_t_pos, z_t_pos = 0,0
         for i in self.w:
             if i<0:
-                r_t_neg += (-i) * self.safe_ln(-i)
-                z_t_neg += -i
+                continue
             else:
                 r_t_pos += (i) * self.safe_ln(i)
                 z_t_pos += i
@@ -23,10 +23,28 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
 
         for i,w_i in enumerate(self.w):
             if w_i<0:
-                addition[i] = float((-self.safe_ln(-w_i))/z_t_neg) - (float(r_t_neg)/(z_t_neg ** 2))
+                continue
             else:
                 if z_t_pos>0:
                     addition[i] = (float(self.safe_ln(w_i)) / z_t_pos) + (float(r_t_pos)/ (z_t_pos ** 2))
+        return addition
+
+
+    def entropy_part_for_sgd_neg(self,number_of_features):
+        z_t_neg,r_t_neg = 0, 0,0,0
+        for i in self.w:
+            if i<0:
+                r_t_neg += (-i) * self.safe_ln(-i)
+                z_t_neg += -i
+            else:
+                continue
+        addition = np.zeros(number_of_features)
+
+        for i,w_i in enumerate(self.w):
+            if w_i<0:
+                addition[i] = float((-self.safe_ln(-w_i))/z_t_neg) - (float(r_t_neg)/(z_t_neg ** 2))
+            else:
+                continue
         return addition
 
 
@@ -56,10 +74,10 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
                 # self.w = (t+self.C+self.Gamma)*lr*self.w + lr*lambda_factor*y_k-self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
-                self.w = t*lr*self.w + lr*lambda_factor*y_k+self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
+                self.w = t*lr*self.w + lr*lambda_factor*y_k+self.Gamma*self.entropy_part_for_sgd_pos(number_of_features)*lr + self.Sigma*self.entropy_part_for_sgd_neg(number_of_features)*lr
             else:
                 # self.w = (t+self.C+self.Gamma) * lr * self.w - self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
-                self.w = t * lr * self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
+                self.w = t * lr * self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr+self.Sigma*self.entropy_part_for_sgd_neg(number_of_features)*lr
 
         print ("SGD ended")
 

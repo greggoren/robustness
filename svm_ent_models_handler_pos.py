@@ -4,11 +4,12 @@ import operator
 import sys
 
 class svm_ent_models_handler_pos():
-    def __init__(self, C_array,Gamma_array):
+    def __init__(self, C_array,Gamma_array,Sigma_array):
         self.models = []
         for C in C_array:
             for Gamma in Gamma_array:
-                self.models.append(svm_sgd_ent.svm_sgd_entropy_pos(C,Gamma))
+                for Sigma in Sigma_array:
+                    self.models.append(svm_sgd_ent.svm_sgd_entropy_pos(C,Gamma,Sigma))
 
         self.query_to_fold_index = {}
         self.weights_index = {}
