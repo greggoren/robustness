@@ -2,7 +2,7 @@ import SVM_SGD as svm_s
 import numpy as np
 import random as r
 import math
-import params_ent
+import params_ent_shrinked_pos as params_ent
 import sys
 class svm_sgd_entropy_pos(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None,Sigma=None):
@@ -77,7 +77,7 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
                 self.w = t*lr*self.w + lr*lambda_factor*y_k+self.Gamma*self.entropy_part_for_sgd_pos(number_of_features)*lr + self.Sigma*self.entropy_part_for_sgd_neg(number_of_features)*lr
             else:
                 # self.w = (t+self.C+self.Gamma) * lr * self.w - self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr
-                self.w = t * lr * self.w + self.Gamma*self.entropy_part_for_sgd(number_of_features)*lr+self.Sigma*self.entropy_part_for_sgd_neg(number_of_features)*lr
+                self.w = t * lr * self.w + self.Gamma*self.entropy_part_for_sgd_pos(number_of_features)*lr+self.Sigma*self.entropy_part_for_sgd_neg(number_of_features)*lr
 
         print ("SGD ended")
 
