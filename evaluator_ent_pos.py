@@ -1,7 +1,7 @@
 import shutil
 import subprocess
 import os
-import params_ent
+import params_ent_shrinked_pos as params_ent
 class eval:
 
 

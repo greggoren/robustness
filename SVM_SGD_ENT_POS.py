@@ -31,7 +31,7 @@ class svm_sgd_entropy_pos(svm_s.svm_sgd):
 
 
     def entropy_part_for_sgd_neg(self,number_of_features):
-        z_t_neg,r_t_neg = 0, 0,0,0
+        z_t_neg,r_t_neg = 0, 0
         for i in self.w:
             if i<0:
                 r_t_neg += (-i) * self.safe_ln(-i)
