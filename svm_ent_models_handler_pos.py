@@ -1,5 +1,5 @@
 import SVM_SGD_ENT_POS as svm_sgd_ent
-import evaluator as e
+import evaluator_ent_pos as e
 import operator
 import sys
 
@@ -42,21 +42,21 @@ class svm_ent_models_handler_pos():
         self.weights_index[fold] = weights[(max_C,max_Gamma)]
         self.chosen_model_per_fold[fold] = (max_C,max_Gamma)
 
-    def fit_model_on_train_set_and_choose_best_opt(self, X, X_i, y_i, validation_indices, fold, queries,score_opt,gamma,evaluator):
+    def fit_model_on_train_set_and_choose_best_opt(self, X, X_i, y_i, validation_indices, fold, queries,score_opt,gamma,sigma,evaluator):
         print("fitting models on fold", fold)
         weights = {}
         scores = {}
         for svm in self.models:
             sys.stdout.flush()
             svm.fit(X_i, y_i)
-            weights[(svm.C,svm.Gamma)] = svm.w
-            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,gamma,True)
+            weights[(svm.C,svm.Gamma,svm.Sigma)] = svm.w
+            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,gamma,sigma,True)
             score = evaluator.run_trec_eval(score_file)
-            scores[(svm.C,svm.Gamma)] = score
-        max_C,max_Gamma = max(scores.items(), key=operator.itemgetter(1))[0]
+            scores[(svm.C,svm.Gamma,svm.Sigma)] = score
+        max_C,max_Gamma,max_Sigma = max(scores.items(), key=operator.itemgetter(1))[0]
         print("on fold", str(fold), "the chosen model is", str(max_C),str(max_Gamma))
-        self.weights_index[fold] = weights[(max_C,max_Gamma)]
-        self.chosen_model_per_fold[fold] = (max_C,max_Gamma)
+        self.weights_index[fold] = weights[(max_C,max_Gamma,max_Sigma)]
+        self.chosen_model_per_fold[fold] = (max_C,max_Gamma,max_Sigma)
 
     def predict(self, X, queries, test_indices, fold, eval):
         C,Gamma = self.chosen_model_per_fold[fold]
@@ -64,8 +64,8 @@ class svm_ent_models_handler_pos():
         svm.w = self.weights_index[fold]
         svm.predict(X, queries, test_indices, eval)
 
-    def predict_opt(self, X, queries, test_indices, fold,score,eval,gamma):
-        C,Gamma = self.chosen_model_per_fold[fold]
-        svm = svm_sgd_ent.svm_sgd_entropy_pos(C,Gamma)
+    def predict_opt(self, X, queries, test_indices, fold,score,eval,gamma,sigma):
+        C,Gamma,Sigma = self.chosen_model_per_fold[fold]
+        svm = svm_sgd_ent.svm_sgd_entropy_pos(C,Gamma,Sigma)
         svm.w = self.weights_index[fold]
-        svm.predict_opt(X, queries, test_indices,eval,score,gamma)
+        svm.predict_opt(X, queries, test_indices,eval,score,gamma,sigma)

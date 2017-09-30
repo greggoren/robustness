@@ -1,6 +1,6 @@
 import preprocess_clueweb as p
 import svm_ent_models_handler_pos as mh
-import evaluator_ent as e
+import evaluator_ent_pos as e
 import params_ent_shrinked_pos as params_ent
 import sys
 import pickle
@@ -23,6 +23,7 @@ if __name__=="__main__":
 
     C_array = [0.1,0.01,0.001]
     for gamma in gammas:
+
         folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
         fold_number = 1
         score_file = params_ent.score_file+str(gamma)
@@ -38,10 +39,10 @@ if __name__=="__main__":
                                                                                     number_of_queries, queries)
             X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
             model_handler.set_queries_to_folds(queries,test,fold_number)
-            model_handler.fit_model_on_train_set_and_choose_best_opt(X,X_i,y_i,validation_set,fold_number,queries,score_file,gamma,evaluator)
-            model_handler.predict_opt(X,queries,test,fold_number,score_file,evaluator,gamma)
+            model_handler.fit_model_on_train_set_and_choose_best_opt(X,X_i,y_i,validation_set,fold_number,queries,score_file,gamma,Sigmas[0],evaluator)
+            model_handler.predict_opt(X,queries,test,fold_number,score_file,evaluator,gamma,Sigmas[0])
             fold_number += 1
-        summary_file = params_ent.summary_file+str(gamma)
+        summary_file = params_ent.summary_file+str(gamma)+"_"+str(Sigmas[0])
         evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
         with open(params_ent.model_handler_file+str(gamma), 'wb') as f:
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
