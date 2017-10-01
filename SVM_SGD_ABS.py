@@ -2,7 +2,7 @@ import SVM_SGD as svm_s
 import numpy as np
 import random as r
 import math
-import evaluator_ent
+import evaluator_abs
 import params_abs as params_ent
 import sys
 import itertools
