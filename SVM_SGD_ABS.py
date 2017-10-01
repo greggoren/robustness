@@ -3,23 +3,24 @@ import numpy as np
 import random as r
 import math
 import evaluator_ent
-import params_ent
+import params_abs as params_ent
 import sys
-class svm_sgd_entropy(svm_s.svm_sgd):
+import itertools
+class svm_sgd_abs(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None):
         self.C = C
         self.w = None
         self.Gamma = Gamma
 
-    def entropy_part_for_sgd(self,number_of_features):
-        r_t, z_t = 0, 0
-        for i in self.w:
-            r_t += (i ** 2) * self.safe_ln(i**2)
-            z_t += i ** 2
+    def absolute_value(self, number_of_features):
         addition = np.zeros(number_of_features)
-        if z_t!=0:#avoid division by zero
-            for i,w_i in enumerate(self.w):
-                addition[i] = w_i*((self.safe_ln(w_i**2))/z_t - r_t/(z_t**2))
+        for i,j in itertools.combinations(range(number_of_features),2):
+            if self.w[i] - self.w[j] >= 0:
+                addition[i]+=1
+                addition[j]-=1
+            else:
+                addition[i] -= 1
+                addition[j] += 1
         return addition
 
 
@@ -48,13 +49,11 @@ class svm_sgd_entropy(svm_s.svm_sgd):
 
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
-            ent =self.entropy_part_for_sgd(number_of_features)
+            absolute_value_part =self.absolute_value(number_of_features)
             if not self.check_prediction(y_k):
-                # self.w = (t+self.C+self.Gamma)*lr*self.w + lr*lambda_factor*y_k-self.Gamma*ent*lr
-                self.w = t*lr*self.w + lr*lambda_factor*y_k+self.Gamma*ent*lr
+                self.w = t*lr*self.w + lr*lambda_factor*y_k-self.Gamma*absolute_value_part*lr
             else:
-                # self.w = (t+self.C+self.Gamma)* lr * self.w - self.Gamma*ent*lr
-                self.w = t * lr * self.w + self.Gamma*ent*lr
+                self.w = t * lr * self.w - self.Gamma*absolute_value_part*lr
 
         print ("SGD ended")
 
