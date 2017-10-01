@@ -28,7 +28,7 @@ if __name__=="__main__":
         Gamma_array = []
         Gamma_array.append(gamma)
 
-        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array)
+        model_handler = mh.svm_abs_models_handler(C_array,Gamma_array)
         validated = set()
         for train,test in folds:
             sys.stdout.flush()

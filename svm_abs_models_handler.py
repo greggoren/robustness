@@ -4,7 +4,7 @@ import operator
 import sys
 
 
-class svm_ent_models_handler():
+class svm_abs_models_handler():
     def __init__(self, C_array,Gamma_array):
         self.models = []
         for C in C_array:
@@ -66,6 +66,6 @@ class svm_ent_models_handler():
 
     def predict_opt(self, X, queries, test_indices, fold,score,eval,gamma):
         C,Gamma = self.chosen_model_per_fold[fold]
-        svm = svm_sgd_abs.svm_sgd_entropy(C, Gamma)
+        svm = svm_sgd_abs.svm_sgd_abs(C, Gamma)
         svm.w = self.weights_index[fold]
         svm.predict_opt(X, queries, test_indices,eval,score,gamma)
