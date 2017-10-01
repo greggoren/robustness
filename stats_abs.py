@@ -17,7 +17,6 @@ if __name__=="__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     gammas = []
-    Sigmas = [s,]
     gammas.append(g)
 
     C_array = [0.1,0.01,0.001]
@@ -25,11 +24,11 @@ if __name__=="__main__":
 
         folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
         fold_number = 1
-        score_file = params_ent.score_file+str(gamma)+"_"+str(Sigmas[0])
+        score_file = params_ent.score_file+str(gamma)
         Gamma_array = []
         Gamma_array.append(gamma)
 
-        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array,Sigmas)
+        model_handler = mh.svm_ent_models_handler_pos(C_array,Gamma_array)
         validated = set()
         for train,test in folds:
             sys.stdout.flush()
