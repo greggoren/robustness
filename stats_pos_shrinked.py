@@ -26,7 +26,7 @@ if __name__=="__main__":
 
         folds = preprocess.create_folds(X, y, queries, params_ent.number_of_folds)
         fold_number = 1
-        score_file = params_ent.score_file+str(gamma)
+        score_file = params_ent.score_file+str(gamma)+"_"+str(Sigmas[0])
         Gamma_array = []
         Gamma_array.append(gamma)
 
@@ -44,7 +44,7 @@ if __name__=="__main__":
             fold_number += 1
         summary_file = params_ent.summary_file+str(gamma)+"_"+str(Sigmas[0])
         evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
-        with open(params_ent.model_handler_file+str(gamma), 'wb') as f:
+        with open(params_ent.model_handler_file+str(gamma)+"_"+str(Sigmas[0]), 'wb') as f:
             pickle.dump(model_handler, f, pickle.HIGHEST_PROTOCOL)
 
 
