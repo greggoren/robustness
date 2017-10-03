@@ -4,11 +4,13 @@ import evaluator_abs as e
 import params_abs as params_ent
 import sys
 import pickle
+import random as r
 def fit_models(X, y, svm):
     svm.fit(X, y)
     return svm
 
 if __name__=="__main__":
+    r.seed(params_ent.random_seed)  # traceability reasons
     g = float(sys.argv[1])
     preprocess = p.preprocess()
     X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
