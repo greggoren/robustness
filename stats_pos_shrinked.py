@@ -30,7 +30,7 @@ if __name__=="__main__":
     validated = set()
     for train,test in folds:
         sys.stdout.flush()
-        validation_folder = params_ent.validation_folder+"/"+str(sigma)+"_"+str(gamma)
+        validation_folder = params_ent.validation_folder+"/"+str(gamma)+"_"+str(sigma)
         evaluator.empty_validation_files(validation_folder)
         validated, validation_set, train_set = preprocess.create_validation_set(params_ent.number_of_folds, validated, set(train),
                                                                                 number_of_queries, queries)

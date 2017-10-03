@@ -50,7 +50,7 @@ class svm_ent_models_handler_pos():
             sys.stdout.flush()
             svm.fit(X_i, y_i)
             weights[(svm.C,svm.Gamma,svm.Sigma)] = svm.w
-            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,True)
+            score_file = svm.predict_opt(X, queries, validation_indices, evaluator, score_opt,fold,True)
             score = evaluator.run_trec_eval(score_file)
             scores[(svm.C,svm.Gamma,svm.Sigma)] = score
         max_C,max_Gamma,max_Sigma = max(scores.items(), key=operator.itemgetter(1))[0]
