@@ -4,11 +4,13 @@ import evaluator_ent_pos as e
 import params_ent_shrinked_pos as params_ent
 import sys
 import pickle
+import random as r
 def fit_models(X, y, svm):
     svm.fit(X, y)
     return svm
 
 if __name__=="__main__":
+    r.seed(params_ent.random_seed)  # traceability reasons
     gamma = float(sys.argv[1])
     sigma = float(sys.argv[2])
     preprocess = p.preprocess()
