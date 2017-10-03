@@ -35,7 +35,7 @@ class eval:
 
     def create_trec_eval_file_opt(self, test_indices, queries, results,model,score,gamma,sigma,validation=None):
         if validation is not None:
-            trec_file = params_ent.validation_folder+str(sigma)+"_"+str(gamma)+"/trec_file_"+model+".txt"
+            trec_file = params_ent.validation_folder+"/"+str(gamma)+"_"+str(sigma)+"/trec_file_"+model+".txt"
             if not os.path.exists(os.path.dirname(trec_file)):
                 os.makedirs(os.path.dirname(trec_file))
 
