@@ -36,8 +36,8 @@ if __name__=="__main__":
                                                                                 number_of_queries, queries)
         X_i, y_i = preprocess.create_data_set(X[train_set], y[train_set], queries[train_set])
         model_handler.set_queries_to_folds(queries,test,fold_number)
-        model_handler.fit_model_on_train_set_and_choose_best_opt(X, X_i, y_i, validation_set, fold_number, queries, score_file, gamma, sigmas[0], evaluator)
-        model_handler.predict_opt(X, queries, test, fold_number, score_file, evaluator, gamma, sigmas[0])
+        model_handler.fit_model_on_train_set_and_choose_best_opt(X, X_i, y_i, validation_set, fold_number, queries, score_file, evaluator)
+        model_handler.predict_opt(X, queries, test, fold_number, score_file, evaluator)
         fold_number += 1
     summary_file = params_ent.summary_file+str(gamma)+"_"+str(sigma)
     evaluator.run_trec_eval_on_test_for_opt(score_file,summary_file)
