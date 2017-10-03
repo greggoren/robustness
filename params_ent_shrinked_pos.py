@@ -1,5 +1,5 @@
 qrels = "qrels"
-validation_folder = "validation_ent_pos_minus"
+validation_folder = "validation_ent_pos_minus/"
 score_file = "trec_file_asr_ent_pos_minus.txt"
 recovery =False
 data_set_file ="featuresCB_asr"

@@ -13,18 +13,18 @@ import math
 
 
 def write_files(svms,kendall,cr,rbo_min):
-    k = open("minus_pos_kt.txt",'a')
-    r =open("minus_pos_rbo.txt",'a')
-    c=open("minus_pos_winner_change.txt",'a')
-    k.write("Model,Min Kendall-Tau,Max Kendall-Tau,Average Kendall-Tau\n")
-    c.write("Model,Min Winner Change,Max Winner Change,Average Winner Change\n")
+    # k = open("minus_sh_pos_kt.txt",'a')
+    r =open("files/eps_rbo.txt",'a')
+    # c=open("minus_sh_pos_winner_change.txt",'a')
+    # k.write("Model,Min Kendall-Tau,Max Kendall-Tau,Average Kendall-Tau\n")
+    # c.write("Model,Min Winner Change,Max Winner Change,Aversage Winner Change\n")
     r.write("Model,Min RBO,Max RBO,Average RBO\n")
     for svm in svms:
-        k.write(svm[2]+","+str(min(kendall[svm][0]))+","+str(max(kendall[svm][0]))+","+str(float(sum(kendall[svm][0]))/len((kendall[svm][0])))+"\n")
-        c.write(svm[2]+","+str(min(cr[svm][0]))+","+str(max(cr[svm][0]))+","+str(float(sum(cr[svm][0]))/len((cr[svm][0])))+"\n")
+        # k.write(svm[2]+","+str(min(kendall[svm][0]))+","+str(max(kendall[svm][0]))+","+str(float(sum(kendall[svm][0]))/len((kendall[svm][0])))+"\n")
+        # c.write(svm[2]+","+str(min(cr[svm][0]))+","+str(max(cr[svm][0]))+","+str(float(sum(cr[svm][0]))/len((cr[svm][0])))+"\n")
         r.write(svm[2]+","+str(min(rbo_min[svm][0]))+","+str(max(rbo_min[svm][0]))+","+str(float(sum(rbo_min[svm][0]))/len((rbo_min[svm][0])))+"\n")
-    k.close()
-    c.close()
+    # k.close()
+    # c.close()
     r.close()
 
 
@@ -123,13 +123,14 @@ class analysis:
         rank_vector = []
         for doc in original_list:
             try:
-                rank_vector.append(sorted_list.index(doc) + 1)
+                rank_vector.append(6-(sorted_list.index(doc)+1))
+                # rank_vector.append(sorted_list.index(doc) + 1)
             except:
                 print(original_list,sorted_list)
         return rank_vector
 
 
-    def calculate_average_kendall_tau(self, rankings):
+    def calculate_average_kendall_tau(self, rankings,weights):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
@@ -156,8 +157,8 @@ class analysis:
                         last_list_index_svm[query]=current_list_svm
                         original_list_index_svm[query]=current_list_svm
                         continue
-                    if current_list_svm.index(1)!=last_list_index_svm[query].index(1):
-                        change_rate_svm +=1
+                    if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
+                        change_rate_svm +=1*weights[epoch][query]
                     n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
@@ -165,27 +166,27 @@ class analysis:
                     rbo_orig_average=0
                     rbo_average = 0
                     for i in range(1):
-                        rbo_orig_average+= r.rbo_dict({x:i for x,i in enumerate(original_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)} , 0.1)["min"]
-                        rbo_average += r.rbo_dict({x:i for x,i in enumerate(last_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)},0.1)["min"]
+                        rbo_orig_average+= r.rbo_dict({x:i for x,i in enumerate(original_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)} , 0.95)["min"]
+                        rbo_average += r.rbo_dict({x:i for x,i in enumerate(last_list_index_svm[query])},{x:i for x,i in enumerate(current_list_svm)},0.95)["min"]
                         d+=1
 
-                    rbo_measure_orig = float(rbo_orig_average)/d
-                    rbo_measure = float(rbo_average)/d
+                    rbo_measure_orig = (float(rbo_orig_average)/d)* weights[epoch][query]
+                    rbo_measure = (float(rbo_average)/d)* weights[epoch][query]
                     sum_rbo_min+=rbo_measure
                     sum_rbo_min_orig+=rbo_measure_orig
                     if not np.isnan(kt):
-                        sum_svm+=kt
+                        sum_svm+=kt#*weights[epoch][query]
                     if not np.isnan(kt_orig):
-                        sum_svm_original+=kt_orig
+                        sum_svm_original+=kt_orig*weights[epoch][query]
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q==0:
                     continue
                 change_rate_svm_epochs.append(change_rate_svm)
                 kt_svm.append(float(sum_svm)/n_q)
-                kt_svm_orig.append(float(sum_svm_original)/n_q)
-                rbo_min.append(float(sum_rbo_min)/n_q)
-                rbo_min_orig.append(float(sum_rbo_min_orig)/n_q)
+                kt_svm_orig.append(float(sum_svm_original))
+                rbo_min.append(float(sum_rbo_min))
+                rbo_min_orig.append(float(sum_rbo_min_orig))
             kendall[svm]=(kt_svm,kt_svm_orig)
             rbo_min_models[svm] = (rbo_min,rbo_min_orig)
             change_rate[svm]=(change_rate_svm_epochs,)
@@ -214,12 +215,13 @@ class analysis:
         average_similarity = []
         original_similarity = []
         for epoch in competition_data:
+            total_epoch_sum = 0
             nq = 0
             if epoch == 1:
                 continue
             sum_average_of_query = 0
             sum_average_original_of_query = 0
-
+            weights_for_average[epoch]={}
             for query in competition_data[epoch]:
                 nq += 1
                 sum_similarity_query = 0
@@ -231,11 +233,15 @@ class analysis:
                                                               competition_data[epoch - 1][query][doc]))
                     sum_original_similarity_query +=(cosine_similarity(competition_data[epoch][query][doc],
                                                               competition_data[1][query][doc]))
+                total_epoch_sum+=sum_similarity_query
                 sum_average_of_query += (float(sum_similarity_query)/5)
                 sum_average_original_of_query += sum_original_similarity_query/5
+                weights_for_average[epoch][query]= sum_similarity_query
+            for query in weights_for_average[epoch]:
+                weights_for_average[epoch][query]=weights_for_average[epoch][query]/total_epoch_sum
             average_similarity.append(float(sum_average_of_query)/nq)
             original_similarity.append(sum_average_original_of_query/nq)
-        return average_similarity,original_similarity
+        return average_similarity,original_similarity,weights_for_average
 
 
     def get_average_weight_differences(self,w,indexes):
@@ -373,10 +379,10 @@ class analysis:
 
 
     def analyze(self, svms, competition_data, dump):
-        # d,o = self.calculate_average_distance_from_last_iteration(competition_data)
+        d,o,w = self.calculate_average_distance_from_last_iteration(competition_data)
         # create_single_plot("Average similarity with last iteration", "plt/similarity_last.PNG", "Epochs", "Similarity", d, range(2,9))
         # create_single_plot("Average similarity with original document", "plt/similarity_orig.PNG", "Epochs", "Similarity", o, range(2,9))
-        # self.analyze_weights(svms)
+        self.analyze_weights(svms)
         scores = self.get_all_scores(svms,competition_data)
         rankings_svm = self.retrieve_ranking(scores)
         for svm in svms:
@@ -384,19 +390,19 @@ class analysis:
                 rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,1.5)
         if not dump:
 
-            kendall, cr, rbo_min, x_axis = self.calculate_average_kendall_tau(rankings_svm)
-            write_files(svms,kendall,cr,rbo_min)
-            create_plot("Average Kendall-Tau with last iteration","plt/kt_sh.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            kendall, cr, rbo_min, x_axis = self.calculate_average_kendall_tau(rankings_svm,w)
+            # write_files(svms,kendall,cr,rbo_min)
+            create_plot("Average Kendall-Tau with last iteration","plt/kt_minus.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
             create_plot("Average Kendall-Tau with original list","plt/kt_orig_sh.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-            create_plot("Average RBO measure with original list","plt/rbo_min_sh.PNG","Epochs","RBO",rbo_min,1,x_axis)
-            create_plot("Average RBO measure with last iteration","plt/rbo_min_sh.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            create_plot("Average RBO measure with last iteration","plt/rbo_min_eps.PNG","Epochs","RBO",rbo_min,0,x_axis)
             create_plot("Number of queries with winner changed", "plt/winner_change_sh.PNG", "Epochs", "#Queries",cr,0, x_axis)
             # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
             # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
-            # with open("comp_pos_minus.pickle", 'rb') as f:
+            # with open("comp_sh_pos_minus.pickle", 'rb') as f:
             #     metrics = pickle.load(f)
-            #     create_plot("NDCG@5 by epochs", "plt/ndcg_pos_minus.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-            #     create_plot("map@5 by epochs", "plt/map_pos_minus.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+            #     create_plot("NDCG@5 by epochs", "plt/ndcg_sh_pos_minus.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+            #     create_plot("map@5 by epochs", "plt/map_sh_pos_minus.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)

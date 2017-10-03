@@ -12,8 +12,8 @@ class eval:
         self.validation_metric = "ndcg_cut.20"
         self.doc_name_index = {}
 
-    def remove_score_file_from_last_run(self):
-        command = "rm "+params_ent.score_file
+    def remove_score_file_from_last_run(self,score_file):
+        command = "rm "+score_file
         for line in self.run_command(command):
             print(line)
 
@@ -63,9 +63,9 @@ class eval:
             break
         return score
 
-    def empty_validation_files(self):
+    def empty_validation_files(self,validation_folder):
         try:
-            shutil.rmtree(params_ent.validation_folder)
+            shutil.rmtree(validation_folder)
         except:
             print("no validation folder")
 
