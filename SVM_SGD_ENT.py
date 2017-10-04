@@ -30,7 +30,6 @@ class svm_sgd_entropy(svm_s.svm_sgd):
 
 
     def fit(self,X,y):
-        r.seed(params_ent.random_seed)#traceability reasons
         print ("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
         self.w = np.zeros(number_of_features)#weights initialization
@@ -65,8 +64,8 @@ class svm_sgd_entropy(svm_s.svm_sgd):
             results[index] = np.dot(self.w,X[index].T)
         return eval.create_trec_eval_file(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),validation)
 
-    def predict_opt(self,X,queries,test_indices,eval,score,gamma,validation=None):
+    def predict_opt(self,X,queries,test_indices,eval,score,validation=None):
         results = {}
         for index in test_indices:
             results[index] = np.dot(self.w,X[index].T)
-        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),score,gamma,validation)
+        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.C)+"_"+str(self.Gamma),score,self.Gamma,validation)
