@@ -1,0 +1,5 @@
+METRIC	SCORE
+map	b"'map'"
+ndcg_cut.20	b"'ndcg_cut'"
+P.5	b"'P'"
+P.10	b"'P'"

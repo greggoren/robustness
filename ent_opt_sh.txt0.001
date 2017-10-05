@@ -1,0 +1,5 @@
+METRIC	SCORE
+map	b'0.2070'
+ndcg_cut.20	b'0.2391'
+P.5	b'0.2545'
+P.10	b'0.2722'
