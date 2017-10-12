@@ -1,6 +1,16 @@
-def rbo(l1, l2, p=0.98):
+#
+# @author: Ritesh Agrawal
+# @Date: 13 Feb 2013
+# @Description: This is an implementation of rank biased overlap score 
+# (Refererence: http://www.umiacs.umd.edu/~wew/papers/wmz10_tois.pdf). 
+# This is a modified implementation of  https://github.com/maslinych/linis-scripts/blob/master/rbo_calc.py
+# It is a linear implementation of the RBO and assumes there are no
+# duplicates and doesn't handle for ties. 
+#
+
+def score(l1, l2, p=0.98):
     """
-        Calculates Ranked Biased Overlap (RBO) score.
+        Calculates Ranked Biased Overlap (RBO) score. 
         l1 -- Ranked List 1
         l2 -- Ranked List 2
     """
@@ -12,7 +22,7 @@ def rbo(l1, l2, p=0.98):
     l, L = ll
     if s == 0: return 0
 
-    # Calculate the overlaps at ranks 1 through l
+    # Calculate the overlaps at ranks 1 through l 
     # (the longer of the two lists)
     ss = set([])  # contains elements from the smaller list till depth i
     ls = set([])  # contains elements from the longer list till depth i
@@ -23,7 +33,7 @@ def rbo(l1, l2, p=0.98):
         y = S[i] if i < s else None
         d = i + 1
 
-        # if two elements are same then
+        # if two elements are same then 
         # we don't need to add to either of the set
         if x == y:
             x_d[d] = x_d[d - 1] + 1.0
@@ -45,13 +55,12 @@ def rbo(l1, l2, p=0.98):
 
     # Equation 32
     rbo_ext = (1 - p) / p * (sum1 + sum2) + sum3
-    r = {}
-    print (rbo_ext)
-    r["min"] = rbo_ext
-    return r
+    return rbo_ext
+
 
 if __name__ == "__main__":
-    list1 = [0,1,2,3,4,5]
-    list2 = [1,0,2,3,5,4]
-    print(rbo(list1,list2,0.1))
+    list1=["1","2","3","4","5"]
+    list2=["5","4","3","2","1"]
+    print(score(list1, list2, p=0.9))
+
 

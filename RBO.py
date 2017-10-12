@@ -17,10 +17,8 @@ def set_at_depth(lst, depth):
 
 
 def raw_overlap(list1, list2, depth):
-
     set1, set2 = set_at_depth(list1, depth), set_at_depth(list2, depth)
     return len(set1.intersection(set2)), len(set1), len(set2)
-
 
 def overlap(list1, list2, depth):
 
