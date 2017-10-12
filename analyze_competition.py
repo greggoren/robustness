@@ -378,27 +378,27 @@ class analysis:
             return pair[1],pair[0]
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking):
-        new_rank =[]
-        for rank in range(len(current_ranking)):
-            if rank + 1 < len(current_ranking):
-                if not new_rank:
-                    doc_win =current_ranking[rank]
-                else:
-                    doc_win=new_rank[rank]
+        # new_rank =[]
+        # for rank in range(len(current_ranking)):
+        #     if rank + 1 < len(current_ranking):
+        #         if not new_rank:
+        #             doc_win =current_ranking[rank]
+        #         else:
+        #             doc_win=new_rank[rank]
+        #
+        #         doc_lose = current_ranking[rank+1]
+        #         if doc_win in new_rank:
+        #             new_rank = new_rank[:-1]
+        #     if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+        #         scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+        #         new_rank.append(doc_lose)
+        #         new_rank.append(doc_win)
+        #     else:
+        #         new_rank.append(doc_win)
+        #         new_rank.append(doc_lose)
 
-                doc_lose = current_ranking[rank+1]
-                if doc_win in new_rank:
-                    new_rank = new_rank[:-1]
-            if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                new_rank.append(doc_lose)
-                new_rank.append(doc_win)
-            else:
-                new_rank.append(doc_win)
-                new_rank.append(doc_lose)
 
-
-        # condorcet_count = {doc:0 for doc in current_ranking}
+        condorcet_count = {doc:0 for doc in current_ranking}
         # for rank in range(len(current_ranking)):
         #     if rank+1<len(current_ranking):
         #         doc_win =current_ranking[rank]
@@ -415,15 +415,15 @@ class analysis:
         #             new_rank.append(current_ranking[rank])
         #         elif current_ranking[rank-1] not in new_rank:
         #             new_rank.append(current_ranking[rank-1])
-        # doc_pairs = list(itertools.combinations(current_ranking,2))
-        # for pair in doc_pairs:
-        #     doc_win,doc_lose=self.determine_order(pair,current_ranking)
-        #     if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-        #         scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-        #         condorcet_count[doc_lose]+=1
-        #     else:
-        #         condorcet_count[doc_win]+=1
-        # new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],x),reverse = True)
+        doc_pairs = list(itertools.combinations(current_ranking,2))
+        for pair in doc_pairs:
+            doc_win,doc_lose=self.determine_order(pair,current_ranking)
+            if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                condorcet_count[doc_lose]+=1
+            else:
+                condorcet_count[doc_win]+=1
+        new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
 
         return new_rank
 
@@ -613,19 +613,19 @@ class analysis:
                 # print("a_cr",float(sum(cr[svm][0]))/len(cr[svm][0]))
                 # print("m_cr",min(cr[svm][0]))
             # write_files(svms,kendall,cr,rbo_min)
-            create_plot("Average Kendall-Tau with last iteration","plt/kt_epsilon.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-            create_plot("Average Kendall-Tau with original list","plt/kt_orig_epsilon.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-            create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps.PNG","Epochs","RBO",rbo_min,1,x_axis)
-            create_plot("Average RBO measure with last iteration","plt/rbo_min_epsilon.PNG","Epochs","RBO",rbo_min,0,x_axis)
-            create_plot("Number of queries with winner changed", "plt/winner_change_epsilon.PNG", "Epochs", "#Queries",cr,0, x_axis)
+            create_plot("Average Kendall-Tau with last iteration","plt/kt_epsilon1.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            create_plot("Average Kendall-Tau with original list","plt/kt_orig_epsilon1.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+            create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps1.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            create_plot("Average RBO measure with last iteration","plt/rbo_min_epsilon1.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            create_plot("Number of queries with winner changed", "plt/winner_change_epsilon1.PNG", "Epochs", "#Queries",cr,0, x_axis)
             # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
             # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
-            # with open("comp_sh_pos_minus.pickle", 'rb') as f:
+            # with open("comp_epsilon.pickle", 'rb') as f:
             #     metrics = pickle.load(f)
-            #     create_plot("NDCG@5 by epochs", "plt/ndcg_sh_pos_minus.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-            #     create_plot("map@5 by epochs", "plt/map_sh_pos_minus.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+            #     create_plot("NDCG@5 by epochs", "plt/ndcg_epsilon.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+            #     create_plot("map@5 by epochs", "plt/map_epsilon.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp_sh_pos.pickle",'wb') as f:
+            with open("comp_epsilon1.pickle",'wb') as f:
                 pickle.dump(metrics,f)
