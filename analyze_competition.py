@@ -14,19 +14,20 @@ import os
 
 
 def write_files(svms,kendall,cr,rbo_min):
-    # k = open("minus_sh_pos_kt.txt",'a')
-    r =open("files/eps_rbo.txt",'a')
-    # c=open("minus_sh_pos_winner_change.txt",'a')
-    # k.write("Model,Min Kendall-Tau,Max Kendall-Tau,Average Kendall-Tau\n")
-    # c.write("Model,Min Winner Change,Max Winner Change,Aversage Winner Change\n")
+    k = open("results/epsilon1_kt.txt",'a')
+    r =open("results/epsilon1_rbo.txt",'a')
+    c=open("results/epsilon1_wc.txt",'a')
+    k.write("Model,Min Kendall-Tau,Max Kendall-Tau,Average Kendall-Tau\n")
+    c.write("Model,Min Winner Change,Max Winner Change,Aversage Winner Change\n")
     r.write("Model,Min RBO,Max RBO,Average RBO\n")
     for svm in svms:
-        # k.write(svm[2]+","+str(min(kendall[svm][0]))+","+str(max(kendall[svm][0]))+","+str(float(sum(kendall[svm][0]))/len((kendall[svm][0])))+"\n")
-        # c.write(svm[2]+","+str(min(cr[svm][0]))+","+str(max(cr[svm][0]))+","+str(float(sum(cr[svm][0]))/len((cr[svm][0])))+"\n")
-        r.write(svm[2]+","+str(min(rbo_min[svm][0]))+","+str(max(rbo_min[svm][0]))+","+str(float(sum(rbo_min[svm][0]))/len((rbo_min[svm][0])))+"\n")
-    # k.close()
-    # c.close()
+        k.write(svm[2].replace("_"," ")+","+str(round(min(kendall[svm][0]),3))+","+str(round(max(kendall[svm][0]),3))+","+str(round(float(sum(kendall[svm][0]))/len((kendall[svm][0])),3))+"\n")
+        c.write(svm[2].replace("_"," ")+","+str(round(min(cr[svm][0]),3))+","+str(round(max(cr[svm][0]),3))+","+str(round(float(sum(cr[svm][0]))/len((cr[svm][0])),3))+"\n")
+        r.write(svm[2].replace("_"," ")+","+str(round(min(rbo_min[svm][0]),3))+","+str(round(max(rbo_min[svm][0]),3))+","+str(round(float(sum(rbo_min[svm][0]))/len((rbo_min[svm][0])),3))+"\n")
+    k.close()
+    c.close()
     r.close()
+
 
 
 def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
@@ -377,57 +378,60 @@ class analysis:
         else:
             return pair[1],pair[0]
 
-    def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking):
-        # new_rank =[]
-        # for rank in range(len(current_ranking)):
-        #     if rank + 1 < len(current_ranking):
-        #         if not new_rank:
-        #             doc_win =current_ranking[rank]
-        #         else:
-        #             doc_win=new_rank[rank]
-        #
-        #         doc_lose = current_ranking[rank+1]
-        #         if doc_win in new_rank:
-        #             new_rank = new_rank[:-1]
-        #     if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-        #         scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-        #         new_rank.append(doc_lose)
-        #         new_rank.append(doc_win)
-        #     else:
-        #         new_rank.append(doc_win)
-        #         new_rank.append(doc_lose)
+    def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
+        new_rank =[]
+        if model==1:
+            for rank in range(len(current_ranking)):
+                if rank + 1 < len(current_ranking):
+                    if not new_rank:
+                        doc_win =current_ranking[rank]
+                    else:
+                        doc_win=new_rank[rank]
 
+                    doc_lose = current_ranking[rank+1]
+                    if doc_win in new_rank:
+                        new_rank = new_rank[:-1]
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                    new_rank.append(doc_lose)
+                    new_rank.append(doc_win)
+                else:
+                    new_rank.append(doc_win)
+                    new_rank.append(doc_lose)
 
-        condorcet_count = {doc:0 for doc in current_ranking}
-        # for rank in range(len(current_ranking)):
-        #     if rank+1<len(current_ranking):
-        #         doc_win =current_ranking[rank]
-        #         doc_lose = current_ranking[rank+1]
-        #         if last_ranking.index(doc_lose)<last_ranking.index(doc_win) and (scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])<epsilon and  (doc_lose not in new_rank):
-        #             new_rank.append(doc_lose)
-        #             if doc_win not in new_rank:
-        #                 new_rank.append(doc_win)
-        #         elif doc_win not in new_rank:
-        #             new_rank.append(doc_win)
-        #
-        #     else:
-        #         if current_ranking[rank] not in new_rank:
-        #             new_rank.append(current_ranking[rank])
-        #         elif current_ranking[rank-1] not in new_rank:
-        #             new_rank.append(current_ranking[rank-1])
-        doc_pairs = list(itertools.combinations(current_ranking,2))
-        for pair in doc_pairs:
-            doc_win,doc_lose=self.determine_order(pair,current_ranking)
-            if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                condorcet_count[doc_lose]+=1
-            else:
-                condorcet_count[doc_win]+=1
-        new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
+        if model==0:
+
+            for rank in range(len(current_ranking)):
+                if rank+1<len(current_ranking):
+                    doc_win =current_ranking[rank]
+                    doc_lose = current_ranking[rank+1]
+                    if last_ranking.index(doc_lose)<last_ranking.index(doc_win) and (scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])<epsilon and  (doc_lose not in new_rank):
+                        new_rank.append(doc_lose)
+                        if doc_win not in new_rank:
+                            new_rank.append(doc_win)
+                    elif doc_win not in new_rank:
+                        new_rank.append(doc_win)
+
+                else:
+                    if current_ranking[rank] not in new_rank:
+                        new_rank.append(current_ranking[rank])
+                    elif current_ranking[rank-1] not in new_rank:
+                        new_rank.append(current_ranking[rank-1])
+        if model==2:
+            condorcet_count = {doc: 0 for doc in current_ranking}
+            doc_pairs = list(itertools.combinations(current_ranking,2))
+            for pair in doc_pairs:
+                doc_win,doc_lose=self.determine_order(pair,current_ranking)
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                    condorcet_count[doc_lose]+=1
+                else:
+                    condorcet_count[doc_win]+=1
+            new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
 
         return new_rank
 
-    def rerank_by_epsilon(self,svm,scores,epsilon):
+    def rerank_by_epsilon(self,svm,scores,epsilon,model):
         rankings_svm = {}
         new_scores ={}
         last_rank = {}
@@ -443,7 +447,7 @@ class analysis:
 
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
-                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query])
+                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
 
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
@@ -603,7 +607,7 @@ class analysis:
         for svm in svms:
             if svm[2].__contains__("svm_epsilon"):
                 epsilon = float(svm[2].split("_")[2])
-                rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,epsilon)
+                rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,epsilon,0)
         if not dump:
             kendall, cr, rbo_min, x_axis,a = self.calculate_average_kendall_tau(rankings_svm,[])
                 # print("max_rbo",max(rbo_min[svm][0]))
@@ -612,20 +616,75 @@ class analysis:
                 # print("a_k",sum(kendall[svm][0])/len(kendall[svm][0]))
                 # print("a_cr",float(sum(cr[svm][0]))/len(cr[svm][0]))
                 # print("m_cr",min(cr[svm][0]))
-            # write_files(svms,kendall,cr,rbo_min)
-            create_plot("Average Kendall-Tau with last iteration","plt/kt_epsilon1.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
-            create_plot("Average Kendall-Tau with original list","plt/kt_orig_epsilon1.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
-            create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps1.PNG","Epochs","RBO",rbo_min,1,x_axis)
-            create_plot("Average RBO measure with last iteration","plt/rbo_min_epsilon1.PNG","Epochs","RBO",rbo_min,0,x_axis)
-            create_plot("Number of queries with winner changed", "plt/winner_change_epsilon1.PNG", "Epochs", "#Queries",cr,0, x_axis)
+            write_files(svms,kendall,cr,rbo_min)
+            # create_plot("Average Kendall-Tau with last iteration","plt/kt_epsilon2.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            # create_plot("Average Kendall-Tau with original list","plt/kt_orig_epsilon2.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+            # create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps2.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            # create_plot("Average RBO measure with last iteration","plt/rbo_min_epsilon2.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            # create_plot("Number of queries with winner changed", "plt/winner_change_epsilon2.PNG", "Epochs", "#Queries",cr,0, x_axis)
             # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
             # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
-            # with open("comp_epsilon.pickle", 'rb') as f:
-            #     metrics = pickle.load(f)
-            #     create_plot("NDCG@5 by epochs", "plt/ndcg_epsilon.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-            #     create_plot("map@5 by epochs", "plt/map_epsilon.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+            with open("comp_epsilon1.pickle", 'rb') as f:
+                metrics = pickle.load(f)
+                create_plot("NDCG@5 by epochs", "plt/ndcg_epsilon1.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+                create_plot("map@5 by epochs", "plt/map_epsilon1.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
-            with open("comp_epsilon1.pickle",'wb') as f:
+            with open("comp_epsilon0.pickle",'wb') as f:
                 pickle.dump(metrics,f)
+
+
+    def create_table_for_epsilons(self,epsilons,competition_data):
+        names = {0:"Naive",1:"Basic",2:"Modified"}
+        table_file = open("out/table_value_epsilons.tex", 'w')
+        table_file.write("\\begin{longtable}{*{9}{c}}\n")
+        table_file.write(
+            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & SIM \\\\\\\\ \n")
+        scores = self.get_all_scores(epsilons, competition_data)
+        rankings_svm = self.retrieve_ranking(scores)
+        for epsilon_model in range(3):
+            for svm in epsilons:
+                if svm[2].__contains__("svm_epsilon"):
+                    epsilon = float(svm[2].split("_")[2])
+                    rankings_svm[svm], scores = self.rerank_by_epsilon(svm, scores, epsilon,epsilon_model)
+            kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings_svm, [])
+
+            a_kt = []
+            m_kt = []
+            a_rbo = []
+            m_rbo = []
+            a_cr = []
+            nd = []
+            m_cr = []
+            for svm in epsilons:
+                sim = "-"
+
+                model = names[epsilon_model]+"_"+svm[2]
+
+                kt_avg = float(sum(kendall[svm][0])) / len((kendall[svm][0]))
+                a_kt.append((svm, kt_avg))
+                max_kt = max(kendall[svm][0])
+                m_kt.append((svm, max_kt))
+                avg_rbo = float(sum(rbo_min[svm][0])) / len((rbo_min[svm][0]))
+                a_rbo.append((svm, avg_rbo))
+                max_rbo = max(rbo_min[svm][0])
+                m_rbo.append((svm, max_rbo))
+                change = float(sum(cr[svm][0])) / len(cr[svm][0])
+                m_change = min(cr[svm][0])
+                a_cr.append((svm, change))
+                m_cr.append((svm, m_change))
+                ndcg = "-"  # score_dict[svm[1].split("/")[0]][svm[2]]
+                nd.append((svm, ndcg))
+
+                table_file.write(model.replace("_"," ")+" & $" + str(
+                    round(float(sum(kendall[svm][0])) / len((kendall[svm][0])), 3)) + \
+                                 "$ & $" + str(round(max(kendall[svm][0]), 3)) + "$ & $" + str(
+                    round(float(sum(rbo_min[svm][0])) / len((rbo_min[svm][0])), 3)) + "$ & $" + \
+                                 str(round(max(rbo_min[svm][0]), 3)) + "$ & $" + str(
+                    round(float(sum(cr[svm][0])) / len(cr[svm][0]), 3)) + "$ & $" + str(
+                    round(min(cr[svm][0]), 3)) + "$ & $" + ndcg + "$ & $" + sim +"$ \\\\  \n")
+
+        table_file.write("\hline\n")
+        table_file.write("\\end{longtable}\n")
+        table_file.close()
