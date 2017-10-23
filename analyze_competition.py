@@ -726,9 +726,11 @@ class analysis:
     def get_metrices_for_table(self,meta_svms,competition_data):
         for svms in meta_svms:
             scores = self.get_all_scores(svms, competition_data)
+            c=""
             for svm in svms:
                 self.extract_score(scores)
                 metrics = self.calculate_metrics(scores)
-            name = svm[1].split("/")[0]
+                c =svm
+            name = c[1].split("/")[0]
             with open(name+".pickle", 'wb') as f:
                 pickle.dump(metrics, f)
