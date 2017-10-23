@@ -26,7 +26,7 @@ if __name__=="__main__":
     baselines_model_objects=preprocess.load_model_handlers(baselines)
     for mhs in meta_mhs:
         meta_model_objects.append(preprocess.load_model_handlers(mhs))
-    baseline = preprocess.load_model_handlers([create_mhs("regular")][0])
+    #baseline = preprocess.load_model_handlers([create_mhs("regular")][0])
     cd = preprocess.extract_features_by_epoch("data/features_asr")
     #analyze.create_table(meta_model_objects,cd,name_dict,scores_dict,baseline,baselines_model_objects)
     analyze.get_metrices_for_table(meta_model_objects,cd)
