@@ -221,6 +221,20 @@ class analysis:
             line =names[svm[1].split("/")[0]] + " & " + gamma + " & " + sigma + " & "+k+" & " +" & ".join(results)+" \\\\ \n"
             table_file.write(line)
 
+    def create_rbo_table_baseline(self,svms,kendall,meta_rbo,values,table_file):
+        for svm in svms:
+            results = [str(round(sum(meta_rbo[svm][p])/len(meta_rbo[svm][p]),4)) for p in values]
+            k = str(round(sum(kendall[svm][0])/len(kendall[svm][0]),4))
+            line ="" + " & " + "-" + " & " + "-" + " & "+k+" & " +" & ".join(results)+" \\\\ \n"
+            table_file.write(line)
+
+    def create_rbo_table_max_baseline(self,svms,kendall,meta_rbo,values,table_file):
+        for svm in svms:
+            results = [str(round(max(meta_rbo[svm][p]),4)) for p in values]
+            k = str(round(max(kendall[svm][0]),4))
+            line ="" + " & " + "-" + " & " + "-" + " & "+k+" & " +" & ".join(results)+" \\\\ \n"
+            table_file.write(line)
+
     def create_rbo_table_max(self,svms,kendall,meta_rbo,values,names,table_file):
         for svm in svms:
             results = [str(round(max(meta_rbo[svm][p]),4)) for p in values]
@@ -400,7 +414,6 @@ class analysis:
                     new_rank.append(doc_lose)
 
         if model==0:
-
             for rank in range(len(current_ranking)):
                 if rank+1<len(current_ranking):
                     doc_win =current_ranking[rank]
@@ -633,17 +646,33 @@ class analysis:
             metrics=self.calculate_metrics(scores)
             with open("comp_epsilon0.pickle",'wb') as f:
                 pickle.dump(metrics,f)
-
+    def create_rbo_baseline(self,svms,competition_data):
+        values = [0.25, 0.5, 0.75, 0.9, 0.95]
+        table_rbo = open("out/rbo_table_base.tex", 'w')
+        table_rbo_max = open("out/rbo_table_max_base.tex", 'w')
+        scores = self.get_all_scores(svms, competition_data)
+        rankings_svm = self.retrieve_ranking(scores)
+        for svm in svms:
+            if svm[2] == "svm_epsilon":
+                rankings_svm[svm], scores = self.rerank_by_epsilon(svm, scores, 1.5,0)
+        kendall, cr, rbo_min, x_axis, meta_rbo = self.calculate_average_kendall_tau(rankings_svm, values)
+        self.create_rbo_table_baseline(svms, kendall, meta_rbo, values, table_rbo)
+        self.create_rbo_table_max_baseline(svms, kendall, meta_rbo, values, table_rbo_max)
+        table_rbo.close()
+        table_rbo.close()
 
     def create_table_for_epsilons(self,epsilons,competition_data):
+
         names = {0:"Naive",1:"Basic",2:"Modified"}
+        metrics = {0:pickle.load(open("comp_epsilon0.pickle", 'rb')),1:pickle.load(open("comp_epsilon1.pickle", 'rb')),2:pickle.load(open("comp_epsilon2.pickle", 'rb'))}
         table_file = open("out/table_value_epsilons.tex", 'w')
-        table_file.write("\\begin{longtable}{*{9}{c}}\n")
+        table_file.write("\\begin{longtable}{*{11}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & SIM \\\\\\\\ \n")
-        scores = self.get_all_scores(epsilons, competition_data)
-        rankings_svm = self.retrieve_ranking(scores)
+            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & Max NDCG@5 & Avg MAP@5 & Max MAP@5 \\\\\\\\ \n")
+
         for epsilon_model in range(3):
+            scores = self.get_all_scores(epsilons, competition_data)
+            rankings_svm = self.retrieve_ranking(scores)
             for svm in epsilons:
                 if svm[2].__contains__("svm_epsilon"):
                     epsilon = float(svm[2].split("_")[2])
@@ -674,8 +703,13 @@ class analysis:
                 m_change = min(cr[svm][0])
                 a_cr.append((svm, change))
                 m_cr.append((svm, m_change))
-                ndcg = "-"  # score_dict[svm[1].split("/")[0]][svm[2]]
-                nd.append((svm, ndcg))
+                for k in metrics[epsilon_model]:
+                    if k[2]==svm[2]:
+                        a_ndcg = round(sum([float(a) for a in metrics[epsilon_model][k][0]])/len(metrics[epsilon_model][k][0]),3)
+                        a_map = round(sum([float(a) for a in metrics[epsilon_model][k][1]])/len(metrics[epsilon_model][k][1]),3)
+                        m_ndcg = round(max([float(a) for a in metrics[epsilon_model][k][0]]),3)
+                        m_map = round(max([float(a) for a in metrics[epsilon_model][k][1]]),3)
+                #nd.append((svm, ndcg))
 
                 table_file.write(model.replace("_"," ")+" & $" + str(
                     round(float(sum(kendall[svm][0])) / len((kendall[svm][0])), 3)) + \
@@ -683,8 +717,18 @@ class analysis:
                     round(float(sum(rbo_min[svm][0])) / len((rbo_min[svm][0])), 3)) + "$ & $" + \
                                  str(round(max(rbo_min[svm][0]), 3)) + "$ & $" + str(
                     round(float(sum(cr[svm][0])) / len(cr[svm][0]), 3)) + "$ & $" + str(
-                    round(min(cr[svm][0]), 3)) + "$ & $" + ndcg + "$ & $" + sim +"$ \\\\  \n")
+                    round(min(cr[svm][0]), 3)) + "$ & $" + str(a_ndcg) + "$ & $" + str(m_ndcg) +"$ & $"+str(a_map)+"$ & $"+str(m_map)+"$ \\\\  \n")
 
         table_file.write("\hline\n")
         table_file.write("\\end{longtable}\n")
         table_file.close()
+
+    def get_metrices_for_table(self,meta_svms,competition_data):
+        for svms in meta_svms:
+            scores = self.get_all_scores(svms, competition_data)
+            for svm in svms:
+                self.extract_score(scores)
+                metrics = self.calculate_metrics(scores)
+            name = svm[1].split("/")[0]
+            with open(name+".pickle", 'wb') as f:
+                pickle.dump(metrics, f)
