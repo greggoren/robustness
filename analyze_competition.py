@@ -1,4 +1,6 @@
+from copy import copy
 import svm_ent_models_handler
+import numpy as np
 import svm_models_handler
 import numpy as np
 from scipy.stats import kendalltau
@@ -11,7 +13,7 @@ import RBO_EXT as rob
 import pickle
 import math
 import os
-
+from sklearn.datasets import dump_svmlight_file
 
 def write_files(svms,kendall,cr,rbo_min):
     k = open("results/epsilon1_kt.txt",'a')
@@ -623,24 +625,19 @@ class analysis:
                 rankings_svm[svm],scores = self.rerank_by_epsilon(svm,scores,epsilon,0)
         if not dump:
             kendall, cr, rbo_min, x_axis,a = self.calculate_average_kendall_tau(rankings_svm,[])
-                # print("max_rbo",max(rbo_min[svm][0]))
-                # print("a_rbo",sum(rbo_min[svm][0])/len(rbo_min[svm][0]))
-                # print("m_k",max(kendall[svm][0]))
-                # print("a_k",sum(kendall[svm][0])/len(kendall[svm][0]))
-                # print("a_cr",float(sum(cr[svm][0]))/len(cr[svm][0]))
-                # print("m_cr",min(cr[svm][0]))
-            write_files(svms,kendall,cr,rbo_min)
+
+            # write_files(svms,kendall,cr,rbo_min)
             # create_plot("Average Kendall-Tau with last iteration","plt/kt_epsilon2.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
             # create_plot("Average Kendall-Tau with original list","plt/kt_orig_epsilon2.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
             # create_plot("Average RBO measure with original list","plt/rbo_min_orig_eps2.PNG","Epochs","RBO",rbo_min,1,x_axis)
             # create_plot("Average RBO measure with last iteration","plt/rbo_min_epsilon2.PNG","Epochs","RBO",rbo_min,0,x_axis)
             # create_plot("Number of queries with winner changed", "plt/winner_change_epsilon2.PNG", "Epochs", "#Queries",cr,0, x_axis)
-            # deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
-            # create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
-            with open("comp_epsilon1.pickle", 'rb') as f:
-                metrics = pickle.load(f)
-                create_plot("NDCG@5 by epochs", "plt/ndcg_epsilon1.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
-                create_plot("map@5 by epochs", "plt/map_epsilon1.png", "Epochs", "map@5", metrics, 1, range(1, 9))
+            deltas = self.get_average_epsilon(number_of_competitors=5,scores=scores)
+            create_plot("Average epsilon by epoch", "plt/eps.PNG", "Epochs", "Average epsilon", deltas, 0,  range(1,9))
+            # with open("comp_epsilon1.pickle", 'rb') as f:
+            #     metrics = pickle.load(f)
+            #     create_plot("NDCG@5 by epochs", "plt/ndcg_epsilon1.png", "Epochs", "NDCG@5", metrics, 0, range(1, 9))
+            #     create_plot("map@5 by epochs", "plt/map_epsilon1.png", "Epochs", "map@5", metrics, 1, range(1, 9))
         else:
             self.extract_score(scores)
             metrics=self.calculate_metrics(scores)
@@ -731,3 +728,80 @@ class analysis:
             name = svms[0][1].split("/")[0]
             with open(name+".pickle", 'wb') as f:
                 pickle.dump(metrics, f)
+
+    def append_data_retrieval(self,metrics,names):
+        file = open("out/output.txt",'w')
+        with open("out/table_b.tex") as table:
+            for line in table:
+                if line.__contains__("POS"):
+                    tmp=copy(line.split(" & ")[:3])
+                    tmp[0]=names[tmp[0]]
+                    table_model = "_".join(tmp)
+                    for metric in metrics:
+                        for model in metric:
+                            name = model[1].split("/")[0]+"_"+model[2]
+                            if name==table_model:
+                                new_line = line.replace("\\\\","")+" & $"+str(round(np.mean([float(a) for a in metric[model][0]]),4))+"$"
+                                file.write(new_line+" \\\\ \n ")
+            file.close()
+
+
+
+    def run_lambda_mart(self,features,epoch):
+        java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
+        jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/Ranklib.jar"
+        score_file = "score"+str(epoch)
+        model_path  = "/lv_local/home/sgregory/robustness/model"
+        command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
+        for line in run_command(command):
+            print(line)
+        return score_file
+
+    def create_lambdaMart_scores(self,competition_data):
+        scores={e :{} for e in competition_data}
+        for epoch in competition_data:
+            scores[epoch]={q for q in competition_data[epoch]}
+            order = {_e: {} for _e in competition_data}
+            data_set = []
+            queries=[]
+            index = 0
+            for query in competition_data[epoch]:
+                for doc in competition_data[epoch][query]:
+                    data_set.append(competition_data[epoch][query][doc])
+                    queries.append(query)
+                    order[epoch][index]=doc+"@@@"+query
+                    index+=1
+            features_file = "features"+str(epoch)
+            self.create_data_set_file(data_set,queries,features_file)
+            score_file=self.run_lambda_mart(features_file,epoch)
+            scores=self.retrieve_scores(score_file,order,epoch,scores)
+        return scores
+
+    def create_data_set_file(self,X,queries,feature_file_name):
+        with open(feature_file_name,'w') as feature_file:
+            for i,doc in enumerate(X):
+                features = " ".join([str(a+1)+":"+str(b) for a,b in enumerate(doc)])
+                line = "1 qid:"+queries[i]+" "+features+"\n"
+                feature_file.write(line)
+
+
+    def retrieve_scores(self,score_file,order,epoch,result):
+        with open(score_file,'r') as scores:
+            index = 0
+            for score in scores:
+                value = float(score.split()[2])
+                doc,query = tuple(order[epoch][index].split("@@@"))
+                result[epoch][query][doc]=value
+        return result
+
+    def get_results(self,scores):
+        rankings = self.retrieve_ranking(scores)
+        kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
+
+    def compare_rankers(self,svm,competition_data):
+        scores = self.get_all_scores(svm,competition_data)
+        scores[("","","LambdaMart","b")] = self.create_lambdaMart_scores(competition_data)
+        rankings = self.retrieve_ranking(scores)
+        results = self.calculate_average_kendall_tau(rankings, [])
+        with open("results.pickle",'wb') as res:
+            pickle.dump(results,res)
