@@ -58,8 +58,8 @@ def create_single_plot(title,file_name,xlabel,ylabel,y,x):
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         shell=True)
+                         stderr=subprocess.STDOUT
+                         )
     return iter(p.stdout.readline,'')
 
 
