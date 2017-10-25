@@ -55,6 +55,12 @@ def create_single_plot(title,file_name,xlabel,ylabel,y,x):
     plt.clf()
 
 
+def run_bash_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,shell=True
+                         )
+    return iter(p.stdout.readline,'')
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -352,12 +358,12 @@ class analysis:
                 score_file =  name+str(i)+".txt"
                 qrels = "rel/rel0"+str(i)+".txt"
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
-                for line in run_command(command):
+                for line in run_bash_command(command):
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
                 command1 = "./trec_eval -m map " + qrels + " " + score_file
-                for line in run_command(command1):
+                for line in run_bash_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
                     map_by_epochs.append(map_score)
@@ -753,10 +759,11 @@ class analysis:
         score_file = "/lv_local/home/sgregory/robustness/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/model"
+        for line in run_bash_command('touch '+score_file):
+            print(line)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
-        #for line in run_command(command):
-        #    print(line)
-        os.popen(command)
+        for line in run_command(command):
+           print(line)
         return score_file
 
     def create_lambdaMart_scores(self,competition_data):
@@ -793,6 +800,7 @@ class analysis:
             for score in scores:
                 value = float(score.split()[2])
                 doc,query = tuple(order[epoch][index].split("@@@"))
+                print (doc,query)
                 result[epoch][query][doc]=value
         return result
 
