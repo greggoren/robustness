@@ -58,9 +58,10 @@ def create_single_plot(title,file_name,xlabel,ylabel,y,x):
 def run_bash_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,shell=True
-                         )
-    return iter(p.stdout.readline,'')
+                         stderr=subprocess.STDOUT,shell=True)
+    out,err = p.communicate()
+    print(out)
+    #return iter(p.stdout.readline,'')
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -759,9 +760,9 @@ class analysis:
         score_file = "/lv_local/home/sgregory/robustness/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/model"
-        os.popen('/bin/bash touch '+score_file)
+        #os.popen('/bin/bash touch '+score_file)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
-        os.popen(command)
+        run_bash_command(command)
         return score_file
 
     def create_lambdaMart_scores(self,competition_data):
