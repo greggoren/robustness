@@ -759,17 +759,15 @@ class analysis:
         score_file = "/lv_local/home/sgregory/robustness/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/model"
-        for line in run_command('/bin/bash touch '+score_file):
-            print(line)
+        os.popen('/bin/bash touch '+score_file)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
-        for line in run_command(command):
-           print(line)
+        os.popen(command)
         return score_file
 
     def create_lambdaMart_scores(self,competition_data):
         scores={e :{} for e in competition_data}
         for epoch in competition_data:
-            scores[epoch]={q for q in competition_data[epoch]}
+            scores[epoch]={q:{} for q in competition_data[epoch]}
             order = {_e: {} for _e in competition_data}
             data_set = []
             queries=[]
