@@ -759,7 +759,7 @@ class analysis:
         score_file = "/lv_local/home/sgregory/robustness/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/model"
-        for line in run_command('touch '+score_file):
+        for line in run_command('/bin/bash touch '+score_file):
             print(line)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
         for line in run_command(command):
