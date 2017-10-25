@@ -798,8 +798,8 @@ class analysis:
             for score in scores:
                 value = float(score.split()[2])
                 doc,query = tuple(order[epoch][index].split("@@@"))
-                print (doc,query)
                 result[epoch][query][doc]=value
+                index+=1
         return result
 
     def get_results(self,scores):
