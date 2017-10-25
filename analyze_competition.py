@@ -754,8 +754,9 @@ class analysis:
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/model"
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
-        for line in run_command(command):
-            print(line)
+        #for line in run_command(command):
+        #    print(line)
+        os.popen(command)
         return score_file
 
     def create_lambdaMart_scores(self,competition_data):
