@@ -810,7 +810,31 @@ class analysis:
     def compare_rankers(self,svm,competition_data):
         scores = self.get_all_scores(svm,competition_data)
         scores[("","","LambdaMart","b")] = self.create_lambdaMart_scores(competition_data)
+        self.extract_score(scores)
+        metrics = self.calculate_metrics(scores)
+        print(sum(metrics[("","","LambdaMart","b")][0])/len(metrics[("","","LambdaMart","b")][0]))
         rankings = self.retrieve_ranking(scores)
         results = self.calculate_average_kendall_tau(rankings, [])
         with open("results.pickle",'wb') as res:
             pickle.dump(results,res)
+    def create_comparison_plots(self,results):
+        with open(results,'rb') as res:
+            kendall, cr, rbo_min, x_axis, a = pickle.load(res)
+            kt_avg = float(sum(kendall[("","","LambdaMart","b")][0])) / len((kendall[("","","LambdaMart","b")][0]))
+            max_kt = max(kendall[("","","LambdaMart","b")][0])
+            avg_rbo = float(sum(rbo_min[("","","LambdaMart","b")][0])) / len((rbo_min[("","","LambdaMart","b")][0]))
+            max_rbo = max(rbo_min[("","","LambdaMart","b")][0])
+            change = float(sum(cr[("","","LambdaMart","b")][0])) / len(cr[("","","LambdaMart","b")][0])
+            m_change = min(cr[("","","LambdaMart","b")][0])
+            print ("kt=",kt_avg)
+            print ("max kt=",max_kt)
+            print ("avg rbo =",avg_rbo)
+            print ("max rbo=",max_rbo)
+            print ("cr = ",change)
+            print ("min cr=",m_change)
+
+            """create_plot("Average Kendall-Tau with last iteration","plt/kt_cmp.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            create_plot("Average Kendall-Tau with original list","plt/kt_orig_cmp.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
+            create_plot("Average RBO measure with original list","plt/rbo_min_orig_cmp.PNG","Epochs","RBO",rbo_min,1,x_axis)
+            create_plot("Average RBO measure with last iteration","plt/rbo_min_cmp.PNG","Epochs","RBO",rbo_min,0,x_axis)
+            create_plot("Number of queries with winner changed", "plt/winner_change_cmp.PNG", "Epochs", "#Queries",cr,0, x_axis)"""

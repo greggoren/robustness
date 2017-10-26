@@ -23,4 +23,5 @@ if __name__=="__main__":
     #analyze.analyze(mh_svm,cd,dump)
     #analyze.create_table_for_epsilons(mh_svm,cd)
     #analyze.create_rbo_baseline(mh_svm,cd)
-    analyze.compare_rankers(mh_svm,cd)
+    # analyze.compare_rankers(mh_svm,cd)
+    analyze.create_comparison_plots("results.pickle")
