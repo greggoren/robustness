@@ -61,6 +61,7 @@ def run_bash_command(command):
                          stderr=subprocess.STDOUT,shell=True)
     out,err = p.communicate()
     print(out)
+    return out
     #return iter(p.stdout.readline,'')
 def run_command(command):
     p = subprocess.Popen(command,
