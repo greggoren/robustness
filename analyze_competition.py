@@ -66,7 +66,7 @@ def run_bash_command(command):
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT
+                         stderr=subprocess.STDOUT,shell=True
                          )
     return iter(p.stdout.readline,'')
 
@@ -360,12 +360,12 @@ class analysis:
                 score_file =  name+str(i)+".txt"
                 qrels = "rel/rel0"+str(i)+".txt"
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
-                for line in run_bash_command(command):
+                for line in run_command(command):
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
                 command1 = "./trec_eval -m map " + qrels + " " + score_file
-                for line in run_bash_command(command1):
+                for line in run_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
                     map_by_epochs.append(map_score)
