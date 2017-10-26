@@ -813,7 +813,7 @@ class analysis:
         scores[("","l.pickle1","LambdaMart","b")] = self.create_lambdaMart_scores(competition_data)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
-        print(sum(metrics[("","l.pickle1","LambdaMart","b")][0])/len(metrics[("","","LambdaMart","b")][0]))
+        print(sum(metrics[("","l.pickle1","LambdaMart","b")][0])/len(metrics[("","l.pickle1","LambdaMart","b")][0]))
         rankings = self.retrieve_ranking(scores)
         results = self.calculate_average_kendall_tau(rankings, [])
         with open("results.pickle",'wb') as res:
