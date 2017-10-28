@@ -25,4 +25,4 @@ if __name__=="__main__":
     #analyze.create_rbo_baseline(mh_svm,cd)
     # analyze.compare_rankers(mh_svm,cd)
     # analyze.create_comparison_plots("results.pickle")
-    analyze.create_trec_eval_file("data/featuresCB_asr")
+    analyze.get_score_for_LambdaMart_on_clueWeb("data/featuresCB_asr")
