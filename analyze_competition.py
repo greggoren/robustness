@@ -850,10 +850,10 @@ class analysis:
         with open(score_file) as scores:
             scores_index = {i:score.split()[2] for i,score in enumerate(scores)}
             query_index = {i:score.split()[0] for i,score in enumerate(scores)}
-        for index in scores_index:
-            line = query_index[index]+" Q0 "+names_index[index]+" 0 "+scores_index[index]+" seo\n"
-            trec.write(line)
-        trec.close()
+            for index in scores_index:
+                line = query_index[index]+" Q0 "+names_index[index]+" 0 "+scores_index[index]+" seo\n"
+                trec.write(line)
+            trec.close()
 
 
     def get_score_for_LambdaMart_on_clueWeb(self,clueweb_path):
