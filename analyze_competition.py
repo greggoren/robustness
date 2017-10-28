@@ -849,7 +849,9 @@ class analysis:
         trec = open("trec_Lambda_mart",'w')
         with open(score_file) as scores:
             scores_index = {i:score.split()[2].rstrip() for i,score in enumerate(scores)}
+        with open(score_file) as scores:
             query_index = {i:score.split()[0].rstrip() for i,score in enumerate(scores)}
+
             for index in scores_index:
                 line = query_index[index]+" Q0 "+names_index[index]+" 0 "+scores_index[index]+" seo\n"
                 trec.write(line)
