@@ -842,14 +842,14 @@ class analysis:
 
     def get_doc_names_clueWeb(self,clueweb_path):
         with open(clueweb_path) as features:
-            name_index = {i:doc.split(" # ")[1] for i,doc in enumerate(features)}
+            name_index = {i:doc.split(" # ")[1].rstrip() for i,doc in enumerate(features)}
             return name_index
 
     def create_trec_eval_file(self,score_file,names_index):
         trec = open("trec_Lambda_mart",'w')
         with open(score_file) as scores:
-            scores_index = {i:score.split()[2] for i,score in enumerate(scores)}
-            query_index = {i:score.split()[0] for i,score in enumerate(scores)}
+            scores_index = {i:score.split()[2].rstrip() for i,score in enumerate(scores)}
+            query_index = {i:score.split()[0].rstrip() for i,score in enumerate(scores)}
             for index in scores_index:
                 line = query_index[index]+" Q0 "+names_index[index]+" 0 "+scores_index[index]+" seo\n"
                 trec.write(line)
