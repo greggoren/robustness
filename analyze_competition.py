@@ -839,3 +839,24 @@ class analysis:
             create_plot("Average RBO measure with original list","plt/rbo_min_orig_cmp.PNG","Epochs","RBO",rbo_min,1,x_axis)
             create_plot("Average RBO measure with last iteration","plt/rbo_min_cmp.PNG","Epochs","RBO",rbo_min,0,x_axis)
             create_plot("Number of queries with winner changed", "plt/winner_change_cmp.PNG", "Epochs", "#Queries",cr,0, x_axis)"""
+
+    def get_doc_names_clueWeb(self,clueweb_path):
+        with open(clueweb_path) as features:
+            name_index = {i:doc.split(" # ")[1] for i,doc in enumerate(features)}
+            return name_index
+
+    def create_trec_eval_file(self,score_file,names_index):
+        trec = open("trec_Lambda_mart",'w')
+        with open(score_file) as scores:
+            scores_index = {i:score.split()[2] for i,score in enumerate(scores)}
+            query_index = {i:score.split()[0] for i,score in enumerate(scores)}
+        for index in scores_index:
+            line = query_index[index]+" Q0 "+names_index[index]+" 0 "+scores_index[index]+" seo\n"
+            trec.write(line)
+        trec.close()
+
+
+    def get_score_for_LambdaMart_on_clueWeb(self,clueweb_path):
+        name_index = self.get_doc_names_clueWeb(clueweb_path)
+        score_file = self.run_lambda_mart(clueweb_path,0)
+        self.create_trec_eval_file(score_file,name_index)
