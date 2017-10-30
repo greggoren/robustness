@@ -11,7 +11,7 @@ class single_model_handler():
 
 
     def fit_model_on_train_set_and_choose_best_for_competition(self,X,y,X_i,y_i,validation_indices,queries,evaluator,preprocess):
-
+        evaluator.empty_validation_files()
         weights = {}
         scores={}
         for C in self.models:
