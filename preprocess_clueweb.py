@@ -85,6 +85,15 @@ class preprocess:
         return train_indices,test_indices
 
 
+    def create_train_file(self,X,y,queries):
+        train_file = "LambdaMart_features"
+        with open(train_file,'w') as feature_file:
+            for i,doc in enumerate(X):
+                features = " ".join([str(a+1)+":"+str(b) for a,b in enumerate(doc)])
+                line = str(y[i])+" qid:"+queries[i]+" "+features+"\n"
+                feature_file.write(line)
+        return train_file
+
     def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries,queries):
         validation_queries = set()
         number_of_queries_in_set = math.floor(float(float(number_of_queries)/number_of_folds))
