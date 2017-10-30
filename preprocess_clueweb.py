@@ -77,7 +77,7 @@ class preprocess:
         train_indices=[]
         unique_groups = set(groups)
         for group in unique_groups:
-            relevant_indices = np.where(groups==group)
+            relevant_indices = np.where(groups==group)[0]
             if group<=150:
                 train_indices.extend(relevant_indices)
             else:
