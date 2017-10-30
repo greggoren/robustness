@@ -15,7 +15,7 @@ if __name__=="__main__":
     train,validation = preprocess.create_test_train_split_cluweb(queries)
     sys.stdout.flush()
     train_file=preprocess.create_train_file(X[train], y[train], queries[train])
-    test_file = preprocess.create_train_file(X[validation], y[validation], queries[validation])
+    test_file = preprocess.create_train_file(X[validation], y[validation], queries[validation],True)
     sys.stdout.flush()
     number_of_trees = [250,500]
     number_of_leaves = [5,10]
