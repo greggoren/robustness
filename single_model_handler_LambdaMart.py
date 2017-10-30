@@ -9,7 +9,7 @@ class single_model_handler_LambdaMart():
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         self.jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
 
-    def run_bash_command(command):
+    def run_bash_command(self,command):
         p = subprocess.Popen(command,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT, shell=True)
