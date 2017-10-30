@@ -45,13 +45,11 @@ class eval:
 
 
     def run_command(self, command):
-
         p = subprocess.Popen(command,
                              stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, shell=True)
-        out, err = p.communicate()
-        print(out)
-        return out
+                             stderr=subprocess.STDOUT,
+                             shell=True)
+        return iter(p.stdout.readline, b'')
 
     def run_trec_eval(self, score_file):
         command = "./trec_eval -m " + self.validation_metric + " " + params.qrels + " " + score_file
@@ -62,12 +60,10 @@ class eval:
         return score
 
     def empty_validation_files(self):
-        # try:
-        #     shutil.rmtree(params.validation_folder)
-        # except:
-        # except    print("no validation folder")
-        command = "rm -r "+params.validation_folder
-        print(self.run_command(command))
+        try:
+            shutil.rmtree(params.validation_folder)
+        except:
+            print("no validation folder")
 
 
     def run_trec_eval_on_test(self):
