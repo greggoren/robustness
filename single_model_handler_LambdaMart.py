@@ -32,7 +32,7 @@ class single_model_handler_LambdaMart():
                   ' -save '+add+'model_' + str(number_of_trees) + "_" + str(
             number_of_leaves)
         print("command = ", command)
-        self.run_command(command)
+        self.run_bash_command(command)
 
     def run_model(self,test_file,trees,leaves,):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
