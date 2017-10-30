@@ -4,6 +4,7 @@ import itertools
 from sklearn.datasets import load_svmlight_file
 from sklearn.model_selection import GroupKFold
 import math
+from sklearn.model_selection import train_test_split
 
 class preprocess:
 
@@ -66,9 +67,15 @@ class preprocess:
         print ("number of points",len(data))
         return data,labels
 
+
     def create_folds(self,X,y,groups,number_of_folds):
         kf = GroupKFold(number_of_folds)
         return kf.split(X,y,groups)
+
+    def create_test_train_split_cluweb(self, groups):
+        train_indices = np.where(groups>=1 and groups<=150)
+        test_indices = np.where(groups>150)
+        return train_indices,test_indices
 
 
     def create_validation_set(self,number_of_folds,already_been_in_validation_indices,train_indices,number_of_queries,queries):
