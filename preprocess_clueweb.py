@@ -85,12 +85,15 @@ class preprocess:
         return train_indices,test_indices
 
 
-    def create_train_file(self,X,y,queries):
-        train_file = "LambdaMart_features"
+    def create_train_file(self,X,y,queries,test=False):
+        add=""
+        if test:
+            add="_test"
+        train_file = "LambdaMart_features"+add
         with open(train_file,'w') as feature_file:
             for i,doc in enumerate(X):
                 features = " ".join([str(a+1)+":"+str(b) for a,b in enumerate(doc)])
-                line = str(y[i])+" qid:"+str(queries[i]).zfill(3)+" "+features+"\n"
+                line = str(int(y[i]))+" qid:"+str(queries[i]).zfill(3)+" "+features+"\n"
                 feature_file.write(line)
         return train_file
 
