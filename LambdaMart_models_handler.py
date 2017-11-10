@@ -1,7 +1,7 @@
 import params
 import operator
 import subprocess
-class single_model_handler_LambdaMart():
+class model_handler_LambdaMart():
 
     def __init__(self,leaves,trees):
         self.leaves_param = leaves

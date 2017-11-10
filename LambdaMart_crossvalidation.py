@@ -22,7 +22,7 @@ if __name__=="__main__":
     fold_number = 1
     trees = [250,500]
     leaves=[5,10]
-    model_handler = mh.models_handler(trees,leaves)
+    model_handler = mh.model_handler_LambdaMart(trees,leaves)
     validated = set()
     for train,test in folds:
         evaluator.empty_validation_files()
