@@ -33,7 +33,7 @@ if __name__=="__main__":
         train_file = preprocess.create_train_file(X[train_set], y[train_set], queries[train_set])
         validation_file = preprocess.create_train_file(X[list(validation_set)], y[list(validation_set)], queries[list(validation_set)], True)
         model_handler.fit_model_on_train_set_and_choose_best(train_file,validation_file,fold_number,params.qrels,evaluator)
-        trees_number,leaf_number=model_handler.self.chosen_model_per_fold[fold_number]
+        trees_number,leaf_number=model_handler.chosen_model_per_fold[fold_number]
         test_file = preprocess.create_train_file(X[test], y[test], queries[test], True)
         scores_file=model_handler.run_model(test_file,trees_number,leaf_number)
         results = get_results(scores_file,test)
