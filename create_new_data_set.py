@@ -35,5 +35,5 @@ def create_data_set(data_records,scores):
 
 
 data_records,queries=read_original_data_set("featuresCB_asr")
-scores=retrieve_spam_score("clueweb09spam.Fusion")
+scores=retrieve_spam_score("clueweb09spam.Fusion",queries)
 create_data_set(data_records,scores)
