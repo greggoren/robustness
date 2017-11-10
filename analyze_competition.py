@@ -843,6 +843,7 @@ class analysis:
     def get_doc_names_clueWeb(self,clueweb_path):
         with open(clueweb_path) as features:
             name_index = {i:doc.split(" # ")[1].rstrip() for i,doc in enumerate(features)}
+        with open(clueweb_path) as features:
             return name_index
 
     def create_trec_eval_file(self,score_file,names_index):
@@ -862,3 +863,5 @@ class analysis:
         name_index = self.get_doc_names_clueWeb(clueweb_path)
         score_file = self.run_lambda_mart(clueweb_path,0)
         self.create_trec_eval_file(score_file,name_index)
+
+
