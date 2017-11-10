@@ -9,6 +9,7 @@ class model_handler_LambdaMart():
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         self.jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         self.query_to_fold_index={}
+        chosen_model_per_fold ={}
     def run_bash_command(self,command):
         p = subprocess.Popen(command,
                              stdout=subprocess.PIPE,
@@ -38,7 +39,8 @@ class model_handler_LambdaMart():
     def run_model(self,test_file,trees,leaves,):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
+        # score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
+        score_file = params.score_file
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
