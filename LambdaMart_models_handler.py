@@ -9,7 +9,7 @@ class model_handler_LambdaMart():
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         self.jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         self.query_to_fold_index={}
-        chosen_model_per_fold ={}
+        self.chosen_model_per_fold ={}
     def run_bash_command(self,command):
         p = subprocess.Popen(command,
                              stdout=subprocess.PIPE,
