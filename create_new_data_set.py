@@ -14,7 +14,7 @@ def retrieve_spam_score(spam_file,queries):
     scores={}
     with open(spam_file) as spam_scores:
         for spam_score in spam_scores:
-            score,doc=tuple(spam_score.split())
+            score,doc=spam_score.split()[0],spam_score.split()[1]
             score = int(score)
             if queries.get(doc,False):
                 scores[doc]=score
