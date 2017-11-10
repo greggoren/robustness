@@ -36,11 +36,21 @@ class model_handler_LambdaMart():
         print("command = ", command)
         self.run_bash_command(command)
 
-    def run_model(self,test_file,trees,leaves,):
+    def run_model(self,test_file,trees,leaves):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        # score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
-        score_file = params.score_file
+        score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
+        features = "/lv_local/home/sgregory/robustness/" + test_file
+        model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
+        self.run_bash_command('touch '+score_file)
+        command = java_path + " -jar " + jar_path + " -load " + model_path + " -rank " + features + " -score " + score_file
+        self.run_bash_command(command)
+        return score_file
+
+    def run_model_on_test(self,test_file,fold,trees,leaves):
+        java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
+        jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
+        score_file = "/lv_local/home/sgregory/robustness/score"+"_"+fold+"_" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
