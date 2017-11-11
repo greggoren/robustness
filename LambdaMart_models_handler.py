@@ -24,7 +24,7 @@ class model_handler_LambdaMart():
         self.query_to_fold_index.update(tmp)
 
     def create_model_LambdaMart(self, number_of_trees, number_of_leaves, train_file,
-                                query_relevance_file,test=False):
+                                query_relevance_file,fold,test=False):
 
         if test:
             add="test"
@@ -32,16 +32,16 @@ class model_handler_LambdaMart():
             add=""
 
         command = self.java_path+' -jar '+self.jar_path+' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
-                                                               ' -tree ' + str(number_of_trees) + ' -leaf ' + str(number_of_leaves) +' -save '+add+'model_' + str(number_of_trees) + "_" + str(number_of_leaves)
+                                                               ' -tree ' + str(number_of_trees) + ' -leaf ' + str(number_of_leaves) +' -save '+"models/"+str(fold)+"/"+add+'model_' + str(number_of_trees) + "_" + str(number_of_leaves)
         print("command = ", command)
         self.run_bash_command(command)
 
-    def run_model(self,test_file,trees,leaves):
+    def run_model(self,test_file,fold,trees,leaves):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
-        model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
+        model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
         command = java_path + " -jar " + jar_path + " -load " + model_path + " -rank " + features + " -score " + score_file
         self.run_bash_command(command)
@@ -52,7 +52,7 @@ class model_handler_LambdaMart():
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/score"+"_"+str(fold)+"_" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
-        model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
+        model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
         command = java_path + " -jar " + jar_path + " -load " + model_path + " -rank " + features + " -score " + score_file
         self.run_bash_command(command)
@@ -90,9 +90,9 @@ class model_handler_LambdaMart():
         scores={}
         for trees_number in self.trees_param:
             for leaf_number in self.leaves_param:
-                self.create_model_LambdaMart(trees_number,leaf_number,train_file,query_relevance_file)
+                self.create_model_LambdaMart(trees_number,leaf_number,train_file,query_relevance_file,fold)
                 # weights[svm.C]=svm.w
-                score_file = self.run_model(test_file,trees_number,leaf_number)
+                score_file = self.run_model(test_file,fold,trees_number,leaf_number)
                 results = self.retrieve_scores(validation_indices,score_file)
                 trec_file=evaluator.create_trec_eval_file(validation_indices,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]),True)
                 score = evaluator.run_trec_eval(trec_file)
