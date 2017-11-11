@@ -59,7 +59,8 @@ class single_model_handler_LambdaMart():
                 score_file=self.run_model(test_file,trees_number,leaf_number)
                 results = self.retrieve_scores(validation_indices,score_file)
                 trec_file=evaluator.create_trec_eval_file(validation_indices, queries, results, "model_"+str(trees_number)+"_"+str(leaf_number), validation=True)
-                score = evaluator.run_trec_eval(trec_file)
+                ordered_trec_file = evaluator.order_trec_file(trec_file)
+                score = evaluator.run_trec_eval(ordered_trec_file)
                 scores[(trees_number,leaf_number)] = score
         trees,leaves=max(scores.items(), key=operator.itemgetter(1))[0]
         print("the chosen model is trees=",trees," leaves=",leaves)
