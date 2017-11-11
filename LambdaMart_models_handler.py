@@ -41,7 +41,8 @@ class model_handler_LambdaMart():
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/score" + str(trees)+"_"+str(leaves)
-        os.makedirs("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/")
+        if not os.path.exists("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/"):
+            os.makedirs("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/")
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
@@ -53,7 +54,8 @@ class model_handler_LambdaMart():
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/score"+"_"+str(fold)+"_" + str(trees)+"_"+str(leaves)
-        os.makedirs("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/")
+        if not os.path.exists("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/"):
+            os.makedirs("/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/")
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
