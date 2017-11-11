@@ -35,7 +35,7 @@ if __name__=="__main__":
         model_handler.fit_model_on_train_set_and_choose_best(train_file,validation_file,validation_set,queries,fold_number,params.qrels,evaluator)
         trees_number,leaf_number=model_handler.chosen_model_per_fold[fold_number]
         test_file = preprocess.create_train_file_cv(X[test], y[test], queries[test],fold_number, True)
-        scores_file=model_handler.run_model_on_test(test_file,trees_number,leaf_number)
+        scores_file=model_handler.run_model_on_test(test_file,fold_number,trees_number,leaf_number)
         results = model_handler.retrieve_scores(test,scores_file)
         evaluator.create_trec_eval_file(test,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]))
         fold_number += 1
