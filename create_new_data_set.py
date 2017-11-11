@@ -30,7 +30,7 @@ def retrieve_spam_score(spam_file,queries):
 def create_data_set(data_records,scores):
     with open("ClueWeb09Extra",'w') as file:
         for doc in data_records:
-            line = data_records[doc]+" 26:"+str(scores[doc])+" # "+doc
+            line = data_records[doc]+" 26:"+str(scores[doc])+" # "+doc+"\n"
             file.write(line)
 
 
