@@ -11,20 +11,21 @@ def read_original_data_set(data_set_file):
 
 def retrieve_spam_score(spam_file,queries):
     minimum,maximum={},{}
-    scores={}
+    scores_tmp={}
     with open(spam_file) as spam_scores:
         for spam_score in spam_scores:
             score,doc=spam_score.split()[0],spam_score.split()[1].rstrip()
             score = int(score)
             if queries.get(doc,False):
-                scores[doc]=score
+                scores_tmp[doc]=score
                 if score>=maximum.get(queries[doc],score):
                     maximum[queries[doc]]=score
                 elif score<=minimum.get(queries[doc],score):
                     minimum[queries[doc]] = score
-    for doc in scores:
+    scores={}
+    for doc in scores_tmp:
         query = queries[doc]
-        scores[doc]=float(scores[doc]-minimum[query])/(maximum[query]-minimum[query])
+        scores[doc]=float(scores_tmp[doc]-minimum[query])/(maximum[query]-minimum[query])
     return scores
 
 def create_data_set(data_records,scores):
