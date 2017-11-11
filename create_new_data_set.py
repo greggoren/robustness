@@ -20,7 +20,7 @@ def retrieve_spam_score(spam_file,queries):
                 scores[doc]=score
                 if score>=maximum.get(queries[doc],score):
                     maximum[queries[doc]]=score
-                elif score<=maximum.get(queries[doc],score):
+                elif score<=minimum.get(queries[doc],score):
                     minimum[queries[doc]] = score
     for doc in scores:
         query = queries[doc]
