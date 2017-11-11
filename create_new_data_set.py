@@ -16,12 +16,13 @@ def retrieve_spam_score(spam_file,queries):
         for spam_score in spam_scores:
             score,doc=spam_score.split()[0],spam_score.split()[1].rstrip()
             score = int(score)
-            if queries.get(doc,False):
-                scores_tmp[doc]=score
-                if score>=maximum.get(queries[doc],score):
-                    maximum[queries[doc]]=score
-                elif score<=minimum.get(queries[doc],score):
-                    minimum[queries[doc]] = score
+            if not queries.get(doc,False):
+                continue
+            scores_tmp[doc]=score
+            if score>=maximum.get(queries[doc],score):
+                maximum[queries[doc]]=score
+            elif score<=minimum.get(queries[doc],score):
+                minimum[queries[doc]] = score
     scores={}
     for doc in scores_tmp:
         query = queries[doc]
