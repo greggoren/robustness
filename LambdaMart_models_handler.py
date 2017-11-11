@@ -50,7 +50,7 @@ class model_handler_LambdaMart():
     def run_model_on_test(self,test_file,fold,trees,leaves):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        score_file = "/lv_local/home/sgregory/robustness/score"+"_"+fold+"_" + str(trees)+"_"+str(leaves)
+        score_file = "/lv_local/home/sgregory/robustness/score"+"_"+str(fold)+"_" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
