@@ -3,7 +3,7 @@ def read_original_data_set(data_set_file):
     queries ={}
     with open(data_set_file) as data_set:
         for data in data_set:
-            name = data.split(" # ")[1]
+            name = data.split(" # ")[1].rstrip()
             query = data.split()[1].split("qid:")[0]
             data_records[name] = data.split(" # ")[0]
             queries[name]=query
@@ -14,7 +14,7 @@ def retrieve_spam_score(spam_file,queries):
     scores={}
     with open(spam_file) as spam_scores:
         for spam_score in spam_scores:
-            score,doc=spam_score.split()[0],spam_score.split()[1]
+            score,doc=spam_score.split()[0],spam_score.split()[1].rstrip()
             score = int(score)
             if queries.get(doc,False):
                 scores[doc]=score
