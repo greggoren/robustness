@@ -15,7 +15,7 @@ class model_handler_LambdaMart():
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT, shell=True)
         out, err = p.communicate()
-        print(out)
+        # print(out)
         return out
 
     def set_queries_to_folds(self,queries,test_indices,fold):
