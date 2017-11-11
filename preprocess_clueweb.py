@@ -101,7 +101,7 @@ class preprocess:
         add=""
         if test:
             add="_test"
-        train_file = "LambdaMart_features"+fold+"_"+add
+        train_file = "LambdaMart_features"+str(fold)+"_"+add
         with open(train_file,'w') as feature_file:
             for i,doc in enumerate(X):
                 features = " ".join([str(a+1)+":"+str(b) for a,b in enumerate(doc)])
