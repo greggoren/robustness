@@ -38,10 +38,11 @@ if __name__=="__main__":
         scores_file=model_handler.run_model_on_test(test_file,fold_number,trees_number,leaf_number)
         results = model_handler.retrieve_scores(test,scores_file)
         evaluator.create_trec_eval_file(test,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]))
+        # final_trec_eval = evaluator.order_trec_file(trec_file)
         fold_number += 1
-    evaluator.run_trec_eval_on_test()
-    with open(params.model_handler_file,'wb') as f:
-        pickle.dump(model_handler,f,pickle.HIGHEST_PROTOCOL)
+    final=evaluator.order_trec_file(params.score_file)
+    evaluator.run_trec_eval_on_test(final)
+
 
 
 

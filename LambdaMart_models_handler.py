@@ -39,7 +39,7 @@ class model_handler_LambdaMart():
     def run_model(self,test_file,fold,trees,leaves):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        score_file = "/lv_local/home/sgregory/robustness/score" + str(trees)+"_"+str(leaves)
+        score_file = "/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/score" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
@@ -50,7 +50,7 @@ class model_handler_LambdaMart():
     def run_model_on_test(self,test_file,fold,trees,leaves):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        score_file = "/lv_local/home/sgregory/robustness/score"+"_"+str(fold)+"_" + str(trees)+"_"+str(leaves)
+        score_file = "/lv_local/home/sgregory/robustness/scores/"+str(fold)+"/score"+"_"+str(fold)+"_" + str(trees)+"_"+str(leaves)
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/models/"+str(fold)+"/model_"+str(trees)+"_"+str(leaves)
         self.run_bash_command('touch '+score_file)
@@ -83,19 +83,17 @@ class model_handler_LambdaMart():
         self.create_model_LambdaMart(trees,leaves,params.data_set_file,params.qrels,True)
 
 
-
-
     def fit_model_on_train_set_and_choose_best(self,train_file,test_file,validation_indices,queries,fold,query_relevance_file,evaluator):
         print("fitting models on fold",fold)
         scores={}
         for trees_number in self.trees_param:
             for leaf_number in self.leaves_param:
                 self.create_model_LambdaMart(trees_number,leaf_number,train_file,query_relevance_file,fold)
-                # weights[svm.C]=svm.w
                 score_file = self.run_model(test_file,fold,trees_number,leaf_number)
                 results = self.retrieve_scores(validation_indices,score_file)
                 trec_file=evaluator.create_trec_eval_file(validation_indices,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]),True)
-                score = evaluator.run_trec_eval(trec_file)
+                final_trec_eval = evaluator.order_trec_file(trec_file)
+                score = evaluator.run_trec_eval(final_trec_eval)
                 scores[((trees_number,leaf_number))] = score
         trees, leaves = max(scores.items(), key=operator.itemgetter(1))[0]
         print("the chosen model is trees=", trees, " leaves=", leaves)

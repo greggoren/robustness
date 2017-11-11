@@ -42,7 +42,11 @@ class eval:
             order.extend(ordered_queries)
         return order"""
 
-
+    def order_trec_file(self,trec_file):
+        final = trec_file.replace(".txt","")
+        command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
+        self.run_command(command)
+        return final
 
     def run_command(self, command):
         p = subprocess.Popen(command,
@@ -66,11 +70,13 @@ class eval:
             print("no validation folder")
 
 
-    def run_trec_eval_on_test(self):
+    def run_trec_eval_on_test(self,trec_file=None):
+        if trec_file is None:
+            trec_file=params.score_file
         score_data = []
         print("last stats:")
         for metric in self.metrics:
-            command = "./trec_eval -m " + metric + " " + params.qrels + " " + params.score_file
+            command = "./trec_eval -m " + metric + " " + params.qrels + " " + trec_file
             for output_line in self.run_command(command):
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
