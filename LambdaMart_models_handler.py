@@ -93,7 +93,7 @@ class model_handler_LambdaMart():
                 self.create_model_LambdaMart(trees_number,leaf_number,train_file,query_relevance_file)
                 # weights[svm.C]=svm.w
                 score_file = self.run_model(test_file,trees_number,leaf_number)
-                results = self.retrieve_scores(score_file)
+                results = self.retrieve_scores(validation_indices,score_file)
                 trec_file=evaluator.create_trec_eval_file(validation_indices,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]),True)
                 score = evaluator.run_trec_eval(trec_file)
                 scores[((trees_number,leaf_number))] = score
