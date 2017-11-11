@@ -18,7 +18,7 @@ if __name__=="__main__":
     test_file = preprocess.create_train_file(X[validation], y[validation], queries[validation],True)
     sys.stdout.flush()
     number_of_trees = [250,500]
-    number_of_leaves = [50,100]
+    number_of_leaves = [50,25]
     single_model_handler = mh.single_model_handler_LambdaMart(number_of_leaves,number_of_trees)
 
     single_model_handler.fit_model_on_train_set_and_choose_best_for_competition(train_file,test_file,validation,queries,evaluator)
