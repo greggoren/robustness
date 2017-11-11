@@ -44,8 +44,8 @@ def create_data_set(data_records,scores):
                 file.write(line)
 
 
-data_records,queries=read_original_data_set("data/featuresCB_asr")
-scores=retrieve_spam_score("debug",queries)
+data_records,queries=read_original_data_set("featuresCB_asr")
+scores=retrieve_spam_score("clueweb09spam.Fusion",queries)
 #"clueweb09spam.Fusion"
 print("scores=",scores)
 print("queries",queries)
