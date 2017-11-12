@@ -818,6 +818,7 @@ class analysis:
         results = self.calculate_average_kendall_tau(rankings, [])
         with open("results.pickle",'wb') as res:
             pickle.dump(results,res)
+
     def create_comparison_plots(self,results):
         with open(results,'rb') as res:
             kendall, cr, rbo_min, x_axis, a = pickle.load(res)

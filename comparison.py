@@ -21,7 +21,7 @@ mhs = [("regular/model_handler_asr_cmp.pickle", 'SVM', 'k')]
 
 mh_svm = preprocess.load_model_handlers(mhs)
 print(mh_svm[0][0].query_to_fold_index)
-mh_svm=[(svm,"svm","SVM",'k')]
+mh_svm=[(svm,"svm.pickle1","SVM",'k')]
 cd = preprocess.extract_features_by_epoch("features_asr_modified")
 #analyze.analyze(mh_svm,cd,dump)
 #analyze.create_table_for_epsilons(mh_svm,cd)
