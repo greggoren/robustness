@@ -11,7 +11,7 @@ class single_model_handler_svm_entropy_minmax():
                     self.models[(C,Gamma,Sigma)]=svm_sgd_entropy_pos_minmax.svm_sgd_entropy_pos_minmax(C,Gamma,Sigma)
 
 
-    def fit_model_on_train_set_and_choose_best_for_competition(self,X,y,X_i,y_i,validation_indices,queries,evaluator,preprocess):
+    def fit_model_on_train_set_and_choose_best_for_competition(self,X,y,X_i,y_i,validation_indices,queries,evaluator,preprocess,score_file):
         evaluator.empty_validation_files(params_ent_pos_minmax.validation_folder)
         weights = {}
         scores={}
@@ -20,7 +20,7 @@ class single_model_handler_svm_entropy_minmax():
             svm = self.models[(C,Gamma,Sigma)]
             svm.fit(X_i,y_i)
             weights[svm.C]=svm.w
-            score_file = svm.predict(X, queries, validation_indices,evaluator, True)
+            score_file = svm.predict_opt(X, queries, validation_indices,evaluator, score_file,True)
             score = evaluator.run_trec_eval(score_file)
             scores[(svm.C,svm.Gamma,svm.Sigma)] = score
         max_C,max_Gamma,max_Sigma=max(scores.items(), key=operator.itemgetter(1))[0]
@@ -32,10 +32,5 @@ class single_model_handler_svm_entropy_minmax():
         with open("svm_model_"+str(max_C)+"_"+str(max_Gamma)+"_"+str(max_Sigma),'wb') as model_file:
             pickle.dump(chosen_model,model_file)
 
-
-    def predict(self,X,queries,test_indices,fold,eval):
-        svm = svm_sgd_entropy_pos_minmax.svm_sgd(C=self.chosen_model_per_fold[fold])
-        svm.w = self.weights_index[fold]
-        svm.predict(X,queries,test_indices,eval)
 
 
