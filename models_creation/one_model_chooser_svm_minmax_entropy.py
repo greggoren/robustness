@@ -1,9 +1,11 @@
 from models_creation import preprocess_clueweb as p
 from models_creation import single_model_handler_svm_entropy as mh
 from models_creation import evaluator_ent_pos_minmax as e
-import params
+from models_creation import params_ent_pos_minmax as params_ent
 import sys
+import random as r
 if __name__=="__main__":
+    r.seed(params_ent.random_seed)  # traceability reasons
     gamma = float(sys.argv[1])
     sigma = float(sys.argv[2])
     Sigma_array=[sigma]

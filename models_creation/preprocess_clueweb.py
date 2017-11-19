@@ -1,4 +1,4 @@
-import params
+from models_creation import params_ent_pos_minmax
 import numpy as np
 import itertools
 from sklearn.datasets import load_svmlight_file
