@@ -23,7 +23,7 @@ if __name__=="__main__":
     X_i,y_i=preprocess.create_data_set(X[train], y[train], queries[train])
     sys.stdout.flush()
     C_array = [0.1,0.01,0.001]
-    single_model_handler = mh.svm_sgd_entropy_pos_minmax(C_array, Gamma_array, Sigma_array)
+    single_model_handler = mh.single_model_handler_svm_entropy_minmax(C_array, Gamma_array, Sigma_array)
     single_model_handler.fit_model_on_train_set_and_choose_best_for_competition(X,y,X_i,y_i,validation,queries,evaluator,preprocess)
     print("learning is finished")
 
