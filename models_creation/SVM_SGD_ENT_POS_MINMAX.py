@@ -2,7 +2,7 @@ import SVM_SGD as svm_s
 import numpy as np
 import random as r
 import math
-from . import params_ent_pos_minmax as params_ent
+from models_creation import params_ent_pos_minmax as params_ent
 import sys
 class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
     def __init__(self, C=None,Gamma =None,Sigma=None):

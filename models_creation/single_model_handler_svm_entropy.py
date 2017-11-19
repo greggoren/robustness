@@ -1,4 +1,4 @@
-from . import SVM_SGD_ENT_POS_MINMAX as svm_sgd_entropy_pos_minmax
+from models_creation import SVM_SGD_ENT_POS_MINMAX as svm_sgd_entropy_pos_minmax
 import operator
 import pickle
 

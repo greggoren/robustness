@@ -1,7 +1,7 @@
 import shutil
 import subprocess
 import os
-from . import params_ent_pos_minmax as params_ent
+from models_creation import params_ent_pos_minmax as params_ent
 
 
 class eval:
