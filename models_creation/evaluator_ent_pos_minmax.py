@@ -1,11 +1,10 @@
 import shutil
 import subprocess
 import os
-from models_creation import params_ent_pos_minmax as params_ent
+from . import params_ent_pos_minmax as params_ent
+
+
 class eval:
-
-
-
 
     def __init__(self):
         self.metrics = ["map","ndcg_cut.20","P.5","P.10"]
