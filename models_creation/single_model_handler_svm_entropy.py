@@ -1,7 +1,7 @@
 from models_creation import SVM_SGD_ENT_POS_MINMAX as svm_sgd_entropy_pos_minmax
 import operator
 import pickle
-
+from models_creation import params_ent_pos_minmax
 class single_model_handler_svm_entropy_minmax():
     def __init__(self,C_array,Gamma_array,Sigma_array):
         self.models = {}
@@ -12,7 +12,7 @@ class single_model_handler_svm_entropy_minmax():
 
 
     def fit_model_on_train_set_and_choose_best_for_competition(self,X,y,X_i,y_i,validation_indices,queries,evaluator,preprocess):
-        evaluator.empty_validation_files()
+        evaluator.empty_validation_files(params_ent_pos_minmax.validation_folder)
         weights = {}
         scores={}
         for C,Gamma,Sigma in self.models:
