@@ -11,7 +11,7 @@ if __name__=="__main__":
     Sigma_array=[sigma]
     Gamma_array=[gamma]
     preprocess = p.preprocess()
-    X,y,queries=preprocess.retrieve_data_from_file(params.data_set_file,params.normalized)
+    X,y,queries=preprocess.retrieve_data_from_file(params_ent.data_set_file,params_ent.normalized)
     sys.stdout.flush()
     number_of_queries = len(set(queries))
     evaluator = e.eval()
