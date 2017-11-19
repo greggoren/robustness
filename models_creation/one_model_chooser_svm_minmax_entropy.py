@@ -16,7 +16,7 @@ if __name__=="__main__":
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
-    evaluator.remove_score_file_from_last_run()
+    evaluator.remove_score_file_from_last_run(params_ent.score_file)
     sys.stdout.flush()
     train,validation = preprocess.create_test_train_split_cluweb(queries)
     sys.stdout.flush()
