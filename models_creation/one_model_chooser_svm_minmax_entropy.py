@@ -4,6 +4,7 @@ from models_creation import evaluator_ent_pos_minmax as e
 from models_creation import params_ent_pos_minmax as params_ent
 import sys
 import random as r
+
 if __name__=="__main__":
     r.seed(params_ent.random_seed)  # traceability reasons
     gamma = float(sys.argv[1])
