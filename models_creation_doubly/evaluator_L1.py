@@ -1,7 +1,7 @@
 import shutil
 import subprocess
 import os
-from models_creation_minmax import params_ent_pos_minmax as params_ent
+from models_creation_doubly import params_L1 as params_l1
 
 
 class eval:
@@ -18,12 +18,12 @@ class eval:
 
     def create_trec_eval_file(self, test_indices, queries, results,model,validation=None):#TODO: need to sort file via unix command
         if validation is not None:
-            trec_file = params_ent.validation_folder+"/trec_file_"+model+".txt"
+            trec_file = params_l1.validation_folder + "/trec_file_" + model + ".txt"
             if not os.path.exists(os.path.dirname(trec_file)):
                 os.makedirs(os.path.dirname(trec_file))
 
         else:
-            trec_file = params_ent.score_file
+            trec_file = params_l1.score_file
         trec_file_access = open(trec_file,'a')
         for index in test_indices:
             trec_file_access.write(self.set_qid_for_trec(queries[index])+" Q0 "+self.doc_name_index[index]+" "+str(0)+" "+str(results[index])+" seo\n")
@@ -34,7 +34,7 @@ class eval:
 
     def create_trec_eval_file_opt(self, test_indices, queries, results,model,score,Lambda,validation=None):
         if validation is not None:
-            trec_file = params_ent.validation_folder+"/"+str(Lambda)+"/trec_file_"+model+".txt"
+            trec_file = params_l1.validation_folder + "/" + str(Lambda) + "/trec_file_" + model + ".txt"
             if not os.path.exists(os.path.dirname(trec_file)):
                 os.makedirs(os.path.dirname(trec_file))
 
@@ -55,7 +55,7 @@ class eval:
         return iter(p.stdout.readline, b'')
 
     def run_trec_eval(self, score_file):
-        command = "./trec_eval -m " + self.validation_metric + " " + params_ent.qrels + " " + score_file
+        command = "./trec_eval -m " + self.validation_metric + " " + params_l1.qrels + " " + score_file
         for output_line in self.run_command(command):
             print("output line=",output_line)
             score = output_line.split()[-1].rstrip()
@@ -73,12 +73,12 @@ class eval:
         score_data = []
         print("last stats:")
         for metric in self.metrics:
-            command = "./trec_eval -m " + metric + " " + params_ent.qrels + " " + params_ent.score_file
+            command = "./trec_eval -m " + metric + " " + params_l1.qrels + " " + params_l1.score_file
             for output_line in self.run_command(command):
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
                 score_data.append((metric, str(score)))
-        summary_file = open(params_ent.summary_file, 'w')
+        summary_file = open(params_l1.summary_file, 'w')
         summary_file.write("METRIC\tSCORE\n")
         for score_record in score_data:
             next_line = score_record[0] + "\t" + score_record[1] + "\n"
@@ -89,7 +89,7 @@ class eval:
         score_data = []
         print("last stats:")
         for metric in self.metrics:
-            command = "./trec_eval -m " + metric + " " + params_ent.qrels + " " + score_file
+            command = "./trec_eval -m " + metric + " " + params_l1.qrels + " " + score_file
             for output_line in self.run_command(command):
                 print(metric,output_line)
                 score = output_line.split()[-1].rstrip()
@@ -103,7 +103,7 @@ class eval:
 
     def create_index_to_doc_name_dict(self):
         index =0
-        with open(params_ent.data_set_file) as ds:
+        with open(params_l1.data_set_file) as ds:
             for line in ds:
                 rec = line.split("# ")
                 doc_name = rec[1].rstrip()
@@ -121,7 +121,7 @@ class eval:
 
     def create_qrels_file(self,X,y,queries):
         print("creating qrels file")
-        qrels = open(params_ent.qrels,'w')
+        qrels = open(params_l1.qrels, 'w')
         for i in range(len(X)):
             qrels.write(self.set_qid_for_trec(queries[i]) + " 0 " + self.doc_name_index[i] + " " + str(int(y[i])) + "\n")
         qrels.close()
