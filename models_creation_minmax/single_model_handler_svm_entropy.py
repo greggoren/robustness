@@ -1,7 +1,7 @@
-from models_creation import SVM_SGD_ENT_POS_MINMAX as svm_sgd_entropy_pos_minmax
+from models_creation_minmax import SVM_SGD_ENT_POS_MINMAX as svm_sgd_entropy_pos_minmax
 import operator
 import pickle
-from models_creation import params_ent_pos_minmax
+from models_creation_minmax import params_ent_pos_minmax
 class single_model_handler_svm_entropy_minmax():
     def __init__(self,C_array,Gamma_array,Sigma_array):
         self.models = {}

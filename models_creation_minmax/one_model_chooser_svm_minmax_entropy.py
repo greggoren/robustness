@@ -1,7 +1,7 @@
-from models_creation import preprocess_clueweb as p
-from models_creation import single_model_handler_svm_entropy as mh
-from models_creation import evaluator_ent_pos_minmax as e
-from models_creation import params_ent_pos_minmax as params_ent
+from models_creation_minmax import preprocess_clueweb as p
+from models_creation_minmax import single_model_handler_svm_entropy as mh
+from models_creation_minmax import evaluator_ent_pos_minmax as e
+from models_creation_minmax import params_ent_pos_minmax as params_ent
 import sys
 import random as r
 

@@ -1,0 +1,10 @@
+qrels = "qrels"
+validation_folder = "C:/study/svm_test/validation_ent/"
+score_file = "C:/study/svm_test/trec_file_asr_ent.txt"
+recovery =False
+data_set_file ="data/featuresCB_asr"
+number_of_folds=5
+normalized = True
+number_of_competitors = 10
+random_seed = 9001
+iter_factor = 1
