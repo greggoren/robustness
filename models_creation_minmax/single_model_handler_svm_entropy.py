@@ -29,7 +29,7 @@ class single_model_handler_svm_entropy_minmax():
         data_set,tags=preprocess.create_data_set(X, y, queries)
         chosen_model.fit(data_set,tags)
 
-        with open("svm_model_maxmin.pickle"+str(max_C)+"_"+str(max_Gamma)+"_"+str(max_Sigma),'wb') as model_file:
+        with open("svm_model_minmax.pickle"+str(max_C)+"_"+str(max_Gamma)+"_"+str(max_Sigma),'wb') as model_file:
             pickle.dump(chosen_model,model_file)
 
 
