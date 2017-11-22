@@ -26,7 +26,7 @@ class single_model_handler_svm_L1():
             scores[svm.Lambda] = score
             print("weights=",svm.w)
         max_Lambda=max(scores.items(), key=operator.itemgetter(1))[0]
-        print("the chosen model is C=",max_Lambda)
+        print("the chosen model is Lambda=",max_Lambda)
         chosen_model = self.models[max_Lambda]
         data_set,tags=preprocess.create_data_set(X, y, queries)
         chosen_model.fit(data_set,tags)
