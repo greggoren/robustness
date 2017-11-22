@@ -47,6 +47,12 @@ class eval:
         trec_file_access.close()
         return trec_file
 
+    def order_trec_file(self,trec_file):
+        final = trec_file.replace(".txt","")
+        command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
+        for line in self.run_command(command):
+            print(line)
+        return final
 
     def run_command(self, command):
         p = subprocess.Popen(command,
