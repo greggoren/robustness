@@ -20,7 +20,7 @@ class single_model_handler_svm_L1():
             print("fitting model on Lambda=", Lambda)
             svm = self.models[Lambda]
             svm.fit(X_i,y_i)
-            weights[svm.C]=svm.w
+            weights[svm.Lambda]=svm.w
             score_file = svm.predict_opt(X, queries, validation_indices,evaluator, score_file,True)
             score = evaluator.run_trec_eval(score_file)
             scores[svm.Lambda] = score
