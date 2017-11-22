@@ -7,12 +7,8 @@ import random as r
 
 if __name__=="__main__":
     r.seed(params_L1.random_seed)  # traceability reasons
-    gamma = float(sys.argv[1])
-    sigma = float(sys.argv[2])
-    Sigma_array=[sigma]
-    Gamma_array=[gamma]
     preprocess = p.preprocess()
-    score_file = params_L1.score_file + str(gamma) + "_" + str(sigma)
+    score_file = params_L1.score_file
     X,y,queries=preprocess.retrieve_data_from_file(params_L1.data_set_file,params_L1.normalized)
     sys.stdout.flush()
     number_of_queries = len(set(queries))
