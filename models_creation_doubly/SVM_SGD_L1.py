@@ -17,7 +17,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
             if w_i<=0:
                 subgradient[i]=-1
             else:
-                subgradient=[i]=1
+                subgradient[i]=1
         return subgradient
 
 
