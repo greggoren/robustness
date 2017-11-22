@@ -7,7 +7,11 @@ import random as r
 
 if __name__=="__main__":
     r.seed(params_L1.random_seed)  # traceability reasons
-    labda = float(sys.argv[1])
+    labda = sys.argv[1]
+    if labda=="N":
+        labda=None
+    else:
+        labda = float(labda)
     preprocess = p.preprocess()
     score_file = params_L1.score_file
     X,y,queries=preprocess.retrieve_data_from_file(params_L1.data_set_file,params_L1.normalized)
