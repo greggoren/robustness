@@ -22,7 +22,8 @@ class single_model_handler_svm_L1():
             svm.fit(X_i,y_i)
             weights[svm.Lambda]=svm.w
             score_file = svm.predict_opt(X, queries, validation_indices,evaluator, score_file,True)
-            score = evaluator.run_trec_eval(score_file)
+            ordered_trec_file = evaluator.order_trec_file(score_file)
+            score = evaluator.run_trec_eval(ordered_trec_file)
             scores[svm.Lambda] = score
             print("weights=",[str(round(a,3)) for a in svm.w])
         max_Lambda=max(scores.items(), key=operator.itemgetter(1))[0]

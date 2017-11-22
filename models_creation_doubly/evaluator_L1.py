@@ -6,6 +6,7 @@ from models_creation_doubly import params_L1 as params_l1
 
 class eval:
 
+
     def __init__(self):
         self.metrics = ["map","ndcg_cut.20","P.5","P.10"]
         self.validation_metric = "ndcg_cut.20"
