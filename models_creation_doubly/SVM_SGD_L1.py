@@ -22,27 +22,24 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
 
     def fit(self,X,y):
-
         print ("started SGD")
+        Lambda=self.Lambda
         number_of_examples,number_of_features = len(X),len(X[0])
         if self.Lambda is None:
-            self.Lambda = 1.0/math.sqrt(number_of_examples)
+            Lambda = 1.0/math.sqrt(number_of_examples)
         self.w = np.zeros(number_of_features)#weights initialization
-        population_number = number_of_examples
         iterations = params_L1.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
                 sys.stdout.flush()
             lr = 1.0/(t+1)
-
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
-                self.w = self.w-lr*self.Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k
+                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k
             else:
-                self.w = self.w-lr*self.Lambda*self.L1_norm_subgradient(number_of_features)
-        self.Lambda=None
+                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
         print ("SGD ended")
 
 
