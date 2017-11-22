@@ -14,7 +14,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
     def L1_norm_subgradient(self,number_of_features):
         subgradient = np.zeros(number_of_features)
         for i,w_i in enumerate(self.w):
-            if w_i<=0:
+            if w_i<0:
                 subgradient[i]=-1
             else:
                 subgradient[i]=1
