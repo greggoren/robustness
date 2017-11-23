@@ -10,7 +10,7 @@ if __name__=="__main__":
     labda1 = sys.argv[1]
     labda2 = float(sys.argv[2])
     if labda1=="N":
-        labda=None
+        labda1=None
     else:
         labda1 = float(labda1)
     preprocess = p.preprocess()
