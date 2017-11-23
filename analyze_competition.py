@@ -100,11 +100,11 @@ class analysis:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    fold = svm[0].query_to_fold_index[int(query)]
-                    weights_svm = svm[0].weights_index[fold]
+                    # fold = svm[0].query_to_fold_index[int(query)]
+                    # weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(features_vector, weights_svm.T)
+                        scores[svm][epoch][query][doc] = np.dot(features_vector, svm[0].w.T)
         return scores
 
     def get_competitors(self,scores_svm):
@@ -497,23 +497,25 @@ class analysis:
                 round(float(sum(cr[svm][0])) / len(cr[svm][0]), 3)) + "$ & $" + str(
                 round(min(cr[svm][0]), 3)) + "$ & $" + score_dict[svm[1].split("/")[0]][svm[2]] + "$ & - \\\\  \n")
             file.write("\hline\n")
-    def create_table(self, meta_svms, competition_data,names,score_dict,baseline,baselines_model_object):
+
+
+    def create_table(self, meta_svms, competition_data,names,score_dict=None,baseline=None,baselines_model_object=None):
         values=[0.25,0.5,0.75,0.9,0.95]
-        table_file = open("out/table_big2.tex",'w')
-        table_best = open("out/bestbig.tex",'w')
-        table_rbo = open("out/rbo_table_big.tex",'w')
-        table_rbo_max = open("out/rbo_table_max_big.tex",'w')
-        table_file.write("\\begin{longtable}{*{11}{c}\n")#to \linewidth {l|X[3,c]X[3,c]X[3,c]X[3,c]X[4,c]X[4,c]X[5,c]X[5,c]X[5,c]X[5,r]}\n")
-        table_best.write("\\begin{longtabu} to \linewidth {ccccc}\n")
-        table_rbo.write("\\begin{longtable}{ccccccccc}\n")
-        table_rbo_max.write("\\begin{longtable}{ccccccccc}\n")
+        table_file = open("out/table_big_extra_doubly.tex",'w')
+        table_best = open("out/bestbig_extra_doubly.tex",'w')
+        #table_rbo = open("out/rbo_table_big.tex",'w')
+        #table_rbo_max = open("out/rbo_table_max_big.tex",'w')
+        table_file.write("\\begin{longtable}{*{9}{c}\n")#to \linewidth {l|X[3,c]X[3,c]X[3,c]X[3,c]X[4,c]X[4,c]X[5,c]X[5,c]X[5,c]X[5,r]}\n")
+        table_best.write("\\begin{longtable}{ccccc}\n")
+        #table_rbo.write("\\begin{longtable}{ccccccccc}\n")
+        #table_rbo_max.write("\\begin{longtable}{ccccccccc}\n")
         table_best.write("Ranker & Metric & $\gamma$ & $\sigma$ & Value \\\\\\\\ \n")
         table_file.write(
-            "Ranker & $\gamma$ & $\sigma$ & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & SIM \\\\\\\\ \n")
-        table_rbo_max.write("Ranker & $\gamma$ & $\sigma$ Max KT & "+" & ".join([str(p) for p in values])+"\n")
-        table_rbo_max.write("\hline\n")
-        table_rbo.write("Ranker & $\gamma$ & $\sigma$ Avg KT & "+" & ".join([str(p) for p in values])+"\n")
-        table_rbo.write("\hline\n")
+            "Ranker & $\gamma$ & $\sigma$ & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC  \\\\\\\\ \n")
+        #table_rbo_max.write("Ranker & $\gamma$ & $\sigma$ Max KT & "+" & ".join([str(p) for p in values])+"\n")
+        #table_rbo_max.write("\hline\n")
+        #table_rbo.write("Ranker & $\gamma$ & $\sigma$ Avg KT & "+" & ".join([str(p) for p in values])+"\n")
+        #table_rbo.write("\hline\n")
         for svms in meta_svms:
             table_best.write("\hline\n")
 
@@ -526,8 +528,8 @@ class analysis:
                 if svm[2] == "svm_epsilon":
                     rankings_svm[svm], scores = self.rerank_by_epsilon(svm, scores, 1.5)
             kendall, cr, rbo_min, x_axis,meta_rbo = self.calculate_average_kendall_tau(rankings_svm,values)
-            self.create_rbo_table(svms,kendall,meta_rbo,values,names,table_rbo)
-            self.create_rbo_table_max(svms,kendall,meta_rbo,values,names,table_rbo_max)
+            # self.create_rbo_table(svms,kendall,meta_rbo,values,names,table_rbo)
+            # self.create_rbo_table_max(svms,kendall,meta_rbo,values,names,table_rbo_max)
             #self.add_baselines(table_file, baselines_model_object, kendall, rbo_min, cr, score_dict, names)
 
             a_kt = []
@@ -538,7 +540,7 @@ class analysis:
             nd = []
             m_cr = []
             for svm in svms:
-                sim = self.get_average_weights_similarity_from_baseline(baseline,svm[0],range(1,6))
+                # sim = self.get_average_weights_similarity_from_baseline(baseline,svm[0],range(1,6))
                 model=svm[2].split("_")
                 gamma = model[0]
                 if len(model)==1:
@@ -558,12 +560,11 @@ class analysis:
                 m_change = min(cr[svm][0])
                 a_cr.append((svm,(gamma,sigma),change))
                 m_cr.append((svm,(gamma,sigma),m_change))
-                ndcg = "-"#score_dict[svm[1].split("/")[0]][svm[2]]
-                nd.append((svm,(gamma,sigma),ndcg))
-
+                # ndcg = "-"#score_dict[svm[1].split("/")[0]][svm[2]]
+                # nd.append((svm,(gamma,sigma),ndcg))
                 table_file.write(names[svm[1].split("/")[0]]+ " & "+gamma+" & "+sigma+" & $"+str(round(float(sum(kendall[svm][0]))/len((kendall[svm][0])),3))+\
                                  "$ & $"+str(round(max(kendall[svm][0]),3))+"$ & $"+str(round(float(sum(rbo_min[svm][0]))/len((rbo_min[svm][0])),3))+"$ & $"+\
-                                 str(round(max(rbo_min[svm][0]),3))+"$ & $"+str(round(float(sum(cr[svm][0]))/len(cr[svm][0]),3))+"$ & $"+str(round(min(cr[svm][0]),3))+"$ & $"+ndcg +"$ & $"+sim+"$ \\\\  \n")
+                                 str(round(max(rbo_min[svm][0]),3))+"$ & $"+str(round(float(sum(cr[svm][0]))/len(cr[svm][0]),3))+"$ & $"+str(round(min(cr[svm][0]),3))+"  \\\\  \n")
             table_file.write("\hline\n")
             svm,model,v = sorted(a_kt,key=lambda x:x[2],reverse=True)[0]
             table_best.write(names[svm[1].split("/")[0]] + " & Average Kendall-$\\tau$ & "+model[0] + " & " + model[1]+" & "+ str(
@@ -584,17 +585,17 @@ class analysis:
             svm, model, v = sorted(m_cr, key=lambda x: x[2], reverse=False)[0]
             table_best.write(
                 names[svm[1].split("/")[0]] + " & Min Winner Change Ratio & " + model[0] + " & " + model[1] + " & " + str(round(min(cr[svm][0]),3)) + " \\\\ \n")
-            svm,model,v = sorted(nd,key=lambda x:x[2],reverse=True)[0]
-            table_best.write(names[svm[1].split("/")[0]] + " & Max NDCG@20 & "+ model[0] + " & " + model[1]+" & - \\\\ \n")
+            # svm,model,v = sorted(nd,key=lambda x:x[2],reverse=True)[0]
+            # table_best.write(names[svm[1].split("/")[0]] + " & Max NDCG@20 & "+ model[0] + " & " + model[1]+" & - \\\\ \n")
 
         table_file.write("\end{longtable}")
-        table_best.write("\end{longtabu}")
-        table_rbo.write("\end{longtabu}")
-        table_rbo_max.write("\end{longtabu}")
+        table_best.write("\end{longtable}")
+        # table_rbo.write("\end{longtabu}")
+        # table_rbo_max.write("\end{longtabu}")
         table_file.close()
         table_best.close()
-        table_rbo.close()
-        table_rbo_max.close()
+        # table_rbo.close()
+        # table_rbo_max.close()
 
     def read_retrieval_scores(self,dir):
         scores_dict = {}
