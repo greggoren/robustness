@@ -37,7 +37,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
-                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k
+                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k*number_of_examples
             else:
                 self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
         print ("SGD ended")
