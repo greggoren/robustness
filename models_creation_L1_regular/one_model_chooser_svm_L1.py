@@ -12,6 +12,7 @@ if __name__=="__main__":
         labda=None
     else:
         labda = float(labda)
+    C_array=[0.1,0.01,0.001,0.0001]
     preprocess = p.preprocess()
     score_file = params_L1.score_file
     X,y,queries=preprocess.retrieve_data_from_file(params_L1.data_set_file,params_L1.normalized)
@@ -26,7 +27,7 @@ if __name__=="__main__":
     X_i,y_i=preprocess.create_data_set(X[train], y[train], queries[train])
     sys.stdout.flush()
     Lambda_array = [labda]
-    single_model_handler = mh.single_model_handler_svm_L1(Lambda_array)
+    single_model_handler = mh.single_model_handler_svm_L1(Lambda_array,C_array)
     single_model_handler.fit_model_on_train_set_and_choose_best_for_competition(X,y,X_i,y_i,validation,queries,evaluator,preprocess,score_file)
     print("learning is finished")
 

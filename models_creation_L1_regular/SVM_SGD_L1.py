@@ -5,8 +5,9 @@ import math
 from models_creation_L1_regular import params_L1
 import sys
 class svm_sgd_L1(svm_s.svm_sgd):
-    def __init__(self, Lambda=None):
+    def __init__(self, Lambda=None,C=None):
         self.Lambda = Lambda
+        self.C=C
         self.w = None
 
 
@@ -37,7 +38,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
-                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k*number_of_examples
+                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k*number_of_examples*self.C
             else:
                 self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
         print ("SGD ended")
@@ -53,4 +54,4 @@ class svm_sgd_L1(svm_s.svm_sgd):
         results = {}
         for index in test_indices:
             results[index] = np.dot(self.w,X[index].T)
-        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.Lambda),score,self.Lambda,validation)
+        return eval.create_trec_eval_file_opt(test_indices,queries,results,str(self.Lambda)+"_"+str(self.C),score,self.Lambda,self.C,validation)
