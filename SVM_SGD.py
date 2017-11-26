@@ -17,8 +17,7 @@ class svm_sgd:
 
 
     def fit(self,X,y):
-        r.seed(params.random_seed)  # traceability reasons
-        print ("started SGD")
+        print("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
         self.w = np.zeros(number_of_features)#weights initialization
         if self.C is not None:

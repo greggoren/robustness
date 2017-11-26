@@ -738,20 +738,31 @@ class analysis:
             with open(name+".pickle", 'wb') as f:
                 pickle.dump(metrics, f)
 
-    def append_data_retrieval(self,metrics,names):
-        file = open("out/output.txt",'w')
-        with open("out/table_b.tex") as table:
+    def append_data_retrieval(self, metrics1,metrics2, names):
+        file = open("out/table_minmax.tex",'w')
+        with open("out/table_big_extra.tex") as table:
             for line in table:
-                if line.__contains__("POS"):
+                if line.__contains__("Min Max"):
                     tmp=copy(line.split(" & ")[:3])
                     tmp[0]=names[tmp[0]]
                     table_model = "_".join(tmp)
-                    for metric in metrics:
-                        for model in metric:
-                            name = model[1].split("/")[0]+"_"+model[2]
-                            if name==table_model:
-                                new_line = line.replace("\\\\","")+" & $"+str(round(np.mean([float(a) for a in metric[model][0]]),4))+"$"
-                                file.write(new_line+" \\\\ \n ")
+                    for metric in metrics2:
+                        name = metric[1].split("/")[0]+"_"+"_".join(metric[2].split("_")[1:])
+                        if name==table_model:
+                            new_line = line.replace("\\\\","")+" & $"+str(round(np.mean([float(a) for a in metrics2[metric][0]]),4))+"$"
+                            file.write(new_line+" \\\\ \n ")
+                elif line.__contains__("Max Min"):
+                    tmp=copy(line.split(" & ")[:3])
+                    tmp[0]=names[tmp[0]]
+                    table_model = "_".join(tmp)
+                    for metric in metrics1:
+                        name = metric[1].split("/")[0]+"_"+"_".join(metric[2].split("_")[1:])
+
+                        if name==table_model:
+                            new_line = line.replace("\\\\ ","")+" & $"+str(round(np.mean([float(a) for a in metrics1[metric][0]]),4))+"$"
+                            file.write(new_line+" \\\\ \n ")
+                else:
+                    file.write(line)
             file.close()
 
 
