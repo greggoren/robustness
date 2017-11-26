@@ -30,7 +30,7 @@ class svm_sgd_doubly(svm_s.svm_sgd):
         if self.Lambda1 is None:
             Lambda1 = 1.0/math.sqrt(number_of_examples)
         self.w = np.zeros(number_of_features)#weights initialization
-        iterations = params_L1.iter_factor * number_of_examples
+        iterations = params_doubly.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
