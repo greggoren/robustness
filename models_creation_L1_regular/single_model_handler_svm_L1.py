@@ -33,7 +33,7 @@ class single_model_handler_svm_L1():
         data_set,tags=preprocess.create_data_set(X, y, queries)
         chosen_model.fit(data_set,tags)
 
-        with open("svm_model_L1.pickle"+str(max_Lambda)+"_"+str(max_C),'wb') as model_file:
+        with open("svm_model_L1.pickle"+str(max_C)+"_"+str(max_Lambda),'wb') as model_file:
             pickle.dump(chosen_model,model_file)
 
 
