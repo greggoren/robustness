@@ -27,7 +27,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
         number_of_examples,number_of_features = len(X),len(X[0])
         if self.Lambda is None:
             Lambda = 1.0/math.sqrt(number_of_examples)
-        self.w = np.zeros(number_of_features)#weights initialization
+        w = np.zeros(number_of_features)#weights initialization
         iterations = params_L1.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
@@ -37,9 +37,12 @@ class svm_sgd_L1(svm_s.svm_sgd):
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
-                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k*number_of_examples
+                w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features) + lr*y_k*number_of_examples
             else:
-                self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
+                w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
+            self.w+=w
+        self.w=self.w*(1.0/iterations)
+
         print ("SGD ended")
 
 
