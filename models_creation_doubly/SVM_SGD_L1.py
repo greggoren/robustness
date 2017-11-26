@@ -47,8 +47,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features,w) + lr*y_k
             else:
                 w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features,w)
-            self.w=self.w+w
-        self.w=self.w / iterations
+            self.w=((self.w*t)+w)/(t+1)
         print ("SGD ended")
 
 
