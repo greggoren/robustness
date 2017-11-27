@@ -27,14 +27,14 @@ class single_model_handler_svm_doubly():
             ordered_trec_file = evaluator.order_trec_file(score_file)
             score = evaluator.run_trec_eval(ordered_trec_file)
             scores[(svm.Lambda1,svm.Lambda2,svm.C)] = score
-            print("weights=",[str(round(a,3)) for a in svm.w])
         max_Lambda1,max_Lambda2,max_C=max(scores.items(), key=operator.itemgetter(1))[0]
         print("the chosen model is Lambda1=", max_Lambda1,"Lambda2=",max_Lambda2,"C=",max_C)
         chosen_model = self.models[(max_Lambda1,max_Lambda2,max_C)]
         data_set,tags=preprocess.create_data_set(X, y, queries)
         chosen_model.fit(data_set,tags)
+        print("chosen weights=", [str(round(a, 3)) for a in chosen_model.w])
 
-        with open("svm_model_L1.pickle"+str(C)+"_"+str(max_Lambda1)+"_"+str(max_Lambda2),'wb') as model_file:
+        with open("svm_model_doubly.pickle"+str(max_C)+"_"+str(max_Lambda1)+"_"+str(max_Lambda2),'wb') as model_file:
             pickle.dump(chosen_model,model_file)
 
 
