@@ -28,7 +28,7 @@ if __name__=="__main__":
     sys.stdout.flush()
     Lambda1_array = [labda1]
     Lambda2_array = [labda2]
-    C_array=[0.01]
+    C_array=[0.01,0.001]
     single_model_handler = mh.single_model_handler_svm_doubly(Lambda1_array, Lambda2_array, C_array)
     single_model_handler.fit_model_on_train_set_and_choose_best_for_competition(X,y,X_i,y_i,validation,queries,evaluator,preprocess,score_file)
     print("learning is finished")
