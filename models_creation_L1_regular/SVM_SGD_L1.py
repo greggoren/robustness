@@ -62,13 +62,14 @@ class svm_sgd_L1(svm_s.svm_sgd):
             Lambda = 1.0/math.sqrt(number_of_examples)
         self.w = np.zeros(number_of_features)#weights initialization
         iterations = params_L1.iter_factor * number_of_examples
+        lr_0 = 0.01
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
                 loss = self.check_validation(validation,y,X)
                 print("loss is ",loss)
                 sys.stdout.flush()
-            lr = 0.001#1.0/(t+1)
+            lr = lr_0/(1+float(t)/number_of_examples)#1.0/(t+1)
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
