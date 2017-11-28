@@ -47,7 +47,8 @@ class svm_sgd_L1(svm_s.svm_sgd):
         hinge_loss=0
         norm=0
         for index in validation[:10000]:
-            tmp=self.w*X[index]*tags[index]
+            y_k=self.w*X[index]*tags[index]
+            tmp=np.dot(self.w,y_k.T)
             if tmp<1:
                 hinge_loss+=(1-tmp)
         for w_i in self.w:
