@@ -41,7 +41,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 sys.stdout.flush()
                 loss = self.check_validation(validation, y, X)
                 print("loss is ", loss)
-            lr = 0.1/(t+1)
+            lr = 0.1/(float(t)/number_of_examples+1)
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
