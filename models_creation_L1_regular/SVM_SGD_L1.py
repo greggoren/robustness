@@ -40,7 +40,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 print ("in iteration",t,"out of",iterations)
                 sys.stdout.flush()
             if t%50000==0:
-                loss = self.check_validation(validation, y, X)
+                loss = self.check_validation(tmp, y, X)
                 print("loss is ", loss)
                 sys.stdout.flush()
             lr = 0.0001
