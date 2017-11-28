@@ -27,7 +27,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
         Lambda=self.Lambda
         number_of_examples,number_of_features = len(X),len(X[0])
-        tmp= range(number_of_examples)
+        tmp= list(range(number_of_examples))
         r.shuffle(tmp)
         validation = tmp[:50000]
 
@@ -55,7 +55,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
         for index in validation:
             y_k=self.w*X[index]*tags[index]
             tmp=np.dot(self.w,y_k.T)
-            if tmp<1:
+            if tmp<0:
                 hinge_loss+=1
 
         return float(hinge_loss)/len(validation)
