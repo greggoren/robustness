@@ -26,7 +26,7 @@ class single_model_handler_svm_L1():
             ordered_trec_file = evaluator.order_trec_file(score_file)
             score = evaluator.run_trec_eval(ordered_trec_file)
             scores[(svm.Lambda,svm.C)] = score
-
+        print("weights=", [str(round(a, 3)) for a in svm.w])
         max_Lambda,max_C=max(scores.items(), key=operator.itemgetter(1))[0]
         print("the chosen model is Lambda=",max_Lambda,"C=",max_C)
         chosen_model = self.models[(max_Lambda,max_C)]
