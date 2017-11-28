@@ -501,8 +501,8 @@ class analysis:
 
     def create_table(self, meta_svms, competition_data,names,score_dict=None,baseline=None,baselines_model_object=None):
         values=[0.25,0.5,0.75,0.9,0.95]
-        table_file = open("out/table_big_extra_doubly.tex",'w')
-        table_best = open("out/bestbig_extra_doubly.tex",'w')
+        table_file = open("out/table_big_extra_doubly_c.tex",'w')
+        table_best = open("out/bestbig_extra_doubly_c.tex",'w')
         #table_rbo = open("out/rbo_table_big.tex",'w')
         #table_rbo_max = open("out/rbo_table_max_big.tex",'w')
         table_file.write("\\begin{longtable}{*{9}{c}\n")#to \linewidth {l|X[3,c]X[3,c]X[3,c]X[3,c]X[4,c]X[4,c]X[5,c]X[5,c]X[5,c]X[5,r]}\n")
