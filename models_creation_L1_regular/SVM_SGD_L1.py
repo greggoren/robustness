@@ -62,7 +62,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
             Lambda = 1.0/math.sqrt(number_of_examples)
         self.w = np.zeros(number_of_features)#weights initialization
         iterations = params_L1.iter_factor * number_of_examples
-        lr_0 = 0.01
+        lr_0 = 1
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
