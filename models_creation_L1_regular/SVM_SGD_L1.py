@@ -45,13 +45,14 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
     def check_validation(self,validation,tags,X):
         hinge_loss=0
+
         for index in validation:
             y_k=self.w*X[index]*tags[index]
             tmp=np.dot(self.w,y_k.T)
             if tmp<1:
-                hinge_loss+=(1-tmp)
+                hinge_loss+=1
 
-        return hinge_loss
+        return float(hinge_loss)/len(validation)
 
     def fit_final(self,X,y,validation):
         print ("started SGD")
