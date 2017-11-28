@@ -45,15 +45,13 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
     def check_validation(self,validation,tags,X):
         hinge_loss=0
-        norm=0
-        for index in validation[:10000]:
+        for index in validation:
             y_k=self.w*X[index]*tags[index]
             tmp=np.dot(self.w,y_k.T)
             if tmp<1:
                 hinge_loss+=(1-tmp)
-        for w_i in self.w:
-            norm+=abs(w_i)
-        return self.Lambda*norm+self.C*hinge_loss
+
+        return hinge_loss
 
     def fit_final(self,X,y,validation):
         print ("started SGD")
@@ -62,7 +60,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
         if self.Lambda is None:
             Lambda = 1.0/math.sqrt(number_of_examples)
         self.w = np.zeros(number_of_features)#weights initialization
-        iterations = params_L1.iter_factor * number_of_examples+number_of_examples
+        iterations = params_L1.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
