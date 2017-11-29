@@ -21,6 +21,15 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 subgradient[i]=1
         return subgradient
 
+    def get_random_initialization(self,number_of_features):
+        vec=[]
+        for i in range(number_of_features):
+            random = r.random()
+            if random < 0.5:
+                vec.append(1000)
+            else:
+                vec.append(10000)
+        return vec
 
     def fit(self,X,y):
         print ("started SGD")
@@ -33,7 +42,8 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
         if self.Lambda is None:
             Lambda = 1.0/math.sqrt(number_of_examples)
-        self.w = np.ones(number_of_features)*1000#weights initialization
+        random_vector = self.get_random_initialization(number_of_features)
+        self.w = np.zeros(number_of_features)+random_vector
         iterations = params_L1.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
