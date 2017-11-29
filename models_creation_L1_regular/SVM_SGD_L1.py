@@ -28,7 +28,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
             if random < 0.8:
                 vec.append(1000)
             else:
-                vec.append(5000)
+                vec.append(5500)
         return vec
 
     def fit(self,X,y):
