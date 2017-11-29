@@ -2,6 +2,7 @@ import numpy as np
 import random as r
 import params
 import evaluator
+import sys
 class svm_sgd:
 
     def __init__(self,C=None):
@@ -30,6 +31,9 @@ class svm_sgd:
     def fit(self,X,y):
         print("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
+        tmp = list(range(number_of_examples))
+        # r.shuffle(tmp)
+        validation = tmp[:100000]
         self.w = np.zeros(number_of_features)#weights initialization
         if self.C is not None:
             lambda_factor = self.C*number_of_examples
@@ -40,7 +44,10 @@ class svm_sgd:
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
             lr = 1.0/(t+1)
-
+            if t%50000==0:
+                error_rate = self.check_validation(validation, y, X)
+                print("error_rate is ", error_rate)
+                sys.stdout.flush()
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
