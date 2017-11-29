@@ -31,7 +31,7 @@ class single_model_handler_svm_L1():
         print("the chosen model is Lambda=",max_Lambda,"C=",max_C)
         chosen_model = self.models[(max_Lambda,max_C)]
         data_set,tags=preprocess.create_data_set(X, y, queries)
-        chosen_model.fit_final(data_set,tags,validation_indices)
+        chosen_model.fit(data_set,tags)
         print("weights=", [str(round(a, 3)) for a in chosen_model.w])
         with open("svm_model_L1.pickle"+str(max_C)+"_"+str(max_Lambda),'wb') as model_file:
             pickle.dump(chosen_model,model_file)
