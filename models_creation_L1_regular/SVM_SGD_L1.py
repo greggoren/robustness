@@ -33,7 +33,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
 
         if self.Lambda is None:
             Lambda = 1.0/math.sqrt(number_of_examples)
-        self.w = np.ones(number_of_features)*10000#weights initialization
+        self.w = np.ones(number_of_features)*1000#weights initialization
         iterations = params_L1.iter_factor * number_of_examples
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
