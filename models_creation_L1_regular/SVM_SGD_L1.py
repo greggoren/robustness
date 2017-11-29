@@ -28,7 +28,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
         Lambda=self.Lambda
         number_of_examples,number_of_features = len(X),len(X[0])
         tmp= list(range(number_of_examples))
-        r.shuffle(tmp)
+        # r.shuffle(tmp)
         validation = tmp[:100000]
 
         if self.Lambda is None:
@@ -40,8 +40,8 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 print ("in iteration",t,"out of",iterations)
                 sys.stdout.flush()
             if t%50000==0:
-                loss = self.check_validation(validation, y, X)
-                print("loss is ", loss)
+                error_rate = self.check_validation(validation, y, X)
+                print("error_rate is ", error_rate)
                 sys.stdout.flush()
             lr = 1.0/(t+1)
             random_index = r.randint(0,number_of_examples-1)
@@ -52,16 +52,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
                 self.w = self.w-lr*Lambda*self.L1_norm_subgradient(number_of_features)
         print ("SGD ended")
 
-    def check_validation(self,validation,tags,X):
-        hinge_loss=0
 
-        for index in validation:
-            y_k=X[index]*tags[index]
-            tmp=np.dot(self.w,y_k.T)
-            if tmp<0:
-                hinge_loss+=1
-
-        return float(hinge_loss)/len(validation)
 
 
     def predict(self,X,queries,test_indices,eval,validation=None):

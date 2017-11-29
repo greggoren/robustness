@@ -16,6 +16,17 @@ class svm_sgd:
         return False
 
 
+    def check_validation(self,validation,tags,X):
+        errors=0
+
+        for index in validation:
+            y_k=X[index]*tags[index]
+            tmp=np.dot(self.w,y_k.T)
+            if tmp<0:
+                errors+=1
+
+        return float(errors)/len(validation)
+
     def fit(self,X,y):
         print("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
