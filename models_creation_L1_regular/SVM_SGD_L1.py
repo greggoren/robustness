@@ -25,7 +25,7 @@ class svm_sgd_L1(svm_s.svm_sgd):
         vec=[]
         for i in range(number_of_features):
             random = r.random()
-            if random < 0.5:
+            if random < 0.8:
                 vec.append(1000)
             else:
                 vec.append(6000)
