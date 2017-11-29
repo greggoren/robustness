@@ -770,9 +770,9 @@ class analysis:
     def run_lambda_mart(self,features,epoch):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
-        score_file = "/lv_local/home/sgregory/robustness/score"+str(epoch)
+        score_file = "/lv_local/home/sgregory/robustness/coodinate_ascent/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
-        model_path  = "/lv_local/home/sgregory/robustness/testmodel_250_50"
+        model_path  = "/lv_local/home/sgregory/robustness/coodinate_ascent/testmodel_0.001"
         #os.popen('/bin/bash touch '+score_file)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
         run_bash_command(command)
