@@ -12,7 +12,7 @@ if __name__=="__main__":
         labda=None
     else:
         labda = float(labda)
-    C_array=[0.1,0.01,0.001]
+    C_array=[0.01]
     preprocess = p.preprocess()
     score_file = params_L1.score_file
     X,y,queries=preprocess.retrieve_data_from_file(params_L1.data_set_file,params_L1.normalized)
