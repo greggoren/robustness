@@ -836,12 +836,12 @@ class analysis:
     def create_comparison_plots(self,results):
         with open(results,'rb') as res:
             kendall, cr, rbo_min, x_axis, a = pickle.load(res)
-            kt_avg = float(sum(kendall[("","","LambdaMart","b")][0])) / len((kendall[("","","LambdaMart","b")][0]))
-            max_kt = max(kendall[("","","LambdaMart","b")][0])
-            avg_rbo = float(sum(rbo_min[("","","LambdaMart","b")][0])) / len((rbo_min[("","","LambdaMart","b")][0]))
-            max_rbo = max(rbo_min[("","","LambdaMart","b")][0])
-            change = float(sum(cr[("","","LambdaMart","b")][0])) / len(cr[("","","LambdaMart","b")][0])
-            m_change = min(cr[("","","LambdaMart","b")][0])
+            kt_avg = float(sum(kendall[("","l.pickle1","LambdaMart","b")][0])) / len((kendall[("","l.pickle1","LambdaMart","b")][0]))
+            max_kt = max(kendall[("","l.pickle1","LambdaMart","b")][0])
+            avg_rbo = float(sum(rbo_min[("","l.pickle1","LambdaMart","b")][0])) / len((rbo_min[("","l.pickle1","LambdaMart","b")][0]))
+            max_rbo = max(rbo_min[("","l.pickle1","LambdaMart","b")][0])
+            change = float(sum(cr[("","l.pickle1","LambdaMart","b")][0])) / len(cr[("","l.pickle1","LambdaMart","b")][0])
+            m_change = min(cr[("","l.pickle1","LambdaMart","b")][0])
             print ("kt=",kt_avg)
             print ("max kt=",max_kt)
             print ("avg rbo =",avg_rbo)
