@@ -833,7 +833,7 @@ class analysis:
         with open("results.pickle",'wb') as res:
             pickle.dump(results,res)
 
-    def create_comparison_plots(self,results):
+    def create_comparison_plots(self,results,svm):
         with open(results,'rb') as res:
             kendall, cr, rbo_min, x_axis, a = pickle.load(res)
             kt_avg = float(sum(kendall[("","l.pickle1","LambdaMart","b")][0])) / len((kendall[("","l.pickle1","LambdaMart","b")][0]))
@@ -842,14 +842,33 @@ class analysis:
             max_rbo = max(rbo_min[("","l.pickle1","LambdaMart","b")][0])
             change = float(sum(cr[("","l.pickle1","LambdaMart","b")][0])) / len(cr[("","l.pickle1","LambdaMart","b")][0])
             m_change = min(cr[("","l.pickle1","LambdaMart","b")][0])
+            print("LAMBDA_MART")
             print ("kt=",kt_avg)
             print ("max kt=",max_kt)
             print ("avg rbo =",avg_rbo)
             print ("max rbo=",max_rbo)
             print ("cr = ",change)
             print ("min cr=",m_change)
-
-            """create_plot("Average Kendall-Tau with last iteration","plt/kt_cmp.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
+            for key in kendall:
+                if key!=("","l.pickle1","LambdaMart","b"):
+                    kt_avg = float(sum(kendall[key][0])) / len(
+                        (kendall[key][0]))
+                    max_kt = max(kendall[key][0])
+                    avg_rbo = float(sum(rbo_min[key][0])) / len(
+                        (rbo_min[key][0]))
+                    max_rbo = max(rbo_min[key][0])
+                    change = float(sum(cr[key][0])) / len(
+                        cr[key][0])
+                    m_change = min(cr[key][0])
+                    print("SVM")
+                    print("kt=", kt_avg)
+                    print("max kt=", max_kt)
+                    print("avg rbo =", avg_rbo)
+                    print("max rbo=", max_rbo)
+                    print("cr = ", change)
+                    print("min cr=", m_change)
+            """
+            create_plot("Average Kendall-Tau with last iteration","plt/kt_cmp.PNG","Epochs","Kendall-Tau",kendall,0,x_axis)
             create_plot("Average Kendall-Tau with original list","plt/kt_orig_cmp.PNG","Epochs","Kendall-Tau",kendall,1,x_axis)
             create_plot("Average RBO measure with original list","plt/rbo_min_orig_cmp.PNG","Epochs","RBO",rbo_min,1,x_axis)
             create_plot("Average RBO measure with last iteration","plt/rbo_min_cmp.PNG","Epochs","RBO",rbo_min,0,x_axis)

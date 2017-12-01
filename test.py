@@ -1,4 +1,3 @@
-s = "t.txt"
-a=s.replace(".txt","")
-print(s)
-print(a)
+import pickle
+model = pickle.load(open("svm_model",'rb'))
+print(model)
