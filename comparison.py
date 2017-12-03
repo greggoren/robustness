@@ -33,7 +33,7 @@ analyze = a.analysis()
 svm = mh.models_handler([])
 model_file = open("svm_model",'rb')
 
-w = recover_model("model_light_svm")#pickle.load(model_file)
+w = pickle.load(model_file)#recover_model("model_light_svm")#pickle.load(model_file)
 print(w)
 for i in range(1,201):
     svm.query_to_fold_index[i]=1
@@ -46,4 +46,4 @@ mh_svm = preprocess.load_model_handlers(mhs)
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
 cd = preprocess.extract_features_by_epoch("features_asr_modified")
 analyze.compare_rankers(mh_svm,cd)
-# analyze.create_comparison_plots("results.pickle",svm)
+analyze.create_comparison_plots("results.pickle",svm)
