@@ -59,7 +59,7 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
                 error_rate = self.check_validation(validation, y, X)
                 print("error_rate is ", error_rate)
                 sys.stdout.flush()
-            lr = 0.0001
+            lr = 0.001
 
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
