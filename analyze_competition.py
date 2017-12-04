@@ -830,7 +830,7 @@ class analysis:
             scores[key] = tmp
             rankings[key], scores = self.rerank_by_epsilon(key, scores, epsilon, 2)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
-        self.extract_sco(scores)
+        self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{8}{c}}\n")
