@@ -843,7 +843,7 @@ class analysis:
             max_rbo =str(round(max(rbo_min[key][0]),3))
             change = str(round(np.mean(cr[key][0]),3))
             m_change =str(round(min(cr[key][0]),3))
-            nd=str(round(np.mean(metrics[key][0]),3))
+            nd=str(round(np.mean([float(a) for a in metrics[key][0]]),3))
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd]
             line=key[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
