@@ -6,7 +6,7 @@ class single_model_handler_coordinate_ascent():
     def __init__(self,regularization_array):
         self.regularization_param = regularization_array
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
-        self.jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
+        self.jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib1.jar"
 
     def run_bash_command(self,command):
         p = subprocess.Popen(command,
@@ -31,7 +31,7 @@ class single_model_handler_coordinate_ascent():
 
     def run_model(self,test_file,regularization):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
-        jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
+        jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib1.jar"
         score_file = "/lv_local/home/sgregory/robustness/coodinate_ascent/score" + str(regularization)
         features = "/lv_local/home/sgregory/robustness/" + test_file
         model_path = "/lv_local/home/sgregory/robustness/coodinate_ascent/model_"+ str(regularization)
