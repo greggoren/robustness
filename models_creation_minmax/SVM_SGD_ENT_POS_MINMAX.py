@@ -29,7 +29,7 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
             else:
                 if z_t_pos>0:
                     addition_pos[i] = (float(self.safe_ln(w_i)) / z_t_pos) + (float(r_t_pos)/ (z_t_pos ** 2))
-        return self.Gamma*addition_pos-self.Sigma*addition_neg
+        return -self.Gamma*addition_pos-self.Sigma*addition_neg
 
 
     def safe_ln(self,x):
@@ -42,6 +42,9 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
         print ("started SGD")
         number_of_examples,number_of_features = len(X),len(X[0])
         self.w = np.zeros(number_of_features)#weights initialization
+        tmp = list(range(number_of_examples))
+        # r.shuffle(tmp)
+        validation = tmp[:100000]
         if self.C is not None:
             lambda_factor = self.C*number_of_examples
         else:
@@ -51,6 +54,10 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
         for t in range(iterations):#itarating over examples
             if t%1000000==0:
                 print ("in iteration",t,"out of",iterations)
+                sys.stdout.flush()
+            if t%50000==0:
+                error_rate = self.check_validation(validation, y, X)
+                print("error_rate is ", error_rate)
                 sys.stdout.flush()
             lr = 1.0/(t+1)
 
