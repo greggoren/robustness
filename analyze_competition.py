@@ -824,7 +824,7 @@ class analysis:
     def create_epsilon_for_Lambda_mart(self, competition_data,svm):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
-        tmp2= self.get_all_scores([svm],competition_data)[svm]
+        tmp2= self.get_all_scores([(svm)],competition_data)[(svm)]
 
         rankings = self.retrieve_ranking(scores)
         epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
