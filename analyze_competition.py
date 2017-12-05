@@ -100,11 +100,11 @@ class analysis:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    fold = svm[0].query_to_fold_index[int(query)]
-                    weights_svm = svm[0].weights_index[fold]
+                    # fold = svm[0].query_to_fold_index[int(query)]
+                    # weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(weights_svm,features_vector.T )
+                        scores[svm][epoch][query][doc] = np.dot(svm[0].w,features_vector.T )
         return scores
 
     def get_competitors(self,scores_svm):
@@ -820,15 +820,20 @@ class analysis:
         rankings = self.retrieve_ranking(scores)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
 
-    def create_epsilon_for_Lambda_mart(self, competition_data):
+    def create_epsilon_for_Lambda_mart(self, competition_data,svm):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
+        tmp2= self.get_all_scores(svm,competition_data)
+
         rankings = self.retrieve_ranking(scores)
         epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
         for epsilon in epsilons:
-            key = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
-            scores[key] = tmp
-            rankings[key], scores = self.rerank_by_epsilon(key, scores, epsilon, 2)
+            key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
+            key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
+            scores[key_lambdaMart] = tmp
+            scores[key_svm] = tmp2
+            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 2)
+            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 2)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
@@ -836,17 +841,18 @@ class analysis:
         table_file.write("\\begin{longtable}{*{8}{c}}\n")
         table_file.write(
             "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5\\\\\\\\ \n")
-        for key in kendall:
-            kt_avg = str(round(np.mean(kendall[key][0]),3))
-            max_kt = str(round(max(kendall[key][0]),3))
-            avg_rbo = str(round(np.mean(rbo_min[key][0]),3))
-            max_rbo =str(round(max(rbo_min[key][0]),3))
-            change = str(round(np.mean(cr[key][0]),3))
-            m_change =str(round(min(cr[key][0]),3))
-            nd=str(round(np.mean([float(a) for a in metrics[key][0]]),3))
+        for key_lambdaMart in kendall:
+            kt_avg = str(round(np.mean(kendall[key_lambdaMart][0]),3))
+            max_kt = str(round(max(kendall[key_lambdaMart][0]),3))
+            avg_rbo = str(round(np.mean(rbo_min[key_lambdaMart][0]),3))
+            max_rbo =str(round(max(rbo_min[key_lambdaMart][0]),3))
+            change = str(round(np.mean(cr[key_lambdaMart][0]),3))
+            m_change =str(round(min(cr[key_lambdaMart][0]),3))
+            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]),3))
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd]
-            line=key[2]+" & "+" & ".join(tmp)+" \\\\ \n"
+            line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
+
         table_file.write("\\end{longtable}")
 
 
