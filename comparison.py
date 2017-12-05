@@ -39,12 +39,12 @@ for i in range(1,201):
     svm.query_to_fold_index[i]=1
 for i in range(1,6):
     svm.weights_index[i] = w
-mhs = [("regular/model_handler_asr_cmp.pickle", 'SVM', 'k')]
+# mhs = [("regular/model_handler_asr_cmp.pickle", 'SVM', 'k')]
 
-mh_svm = preprocess.load_model_handlers(mhs)
+# mh_svm = preprocess.load_model_handlers(mhs)
 # print(mh_svm[0][0].query_to_fold_index)
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
 cd = preprocess.extract_features_by_epoch("features_asr_modified")
 # analyze.compare_rankers(mh_svm,cd)
 # analyze.create_comparison_plots("results.pickle",svm)
-analyze.create_epsilon_for_Lambda_mart(cd)
+analyze.create_epsilon_for_Lambda_mart(cd,mh_svm)
