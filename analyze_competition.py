@@ -91,6 +91,7 @@ class analysis:
     def cosine_distance(self,x,y):
         return spatial.distance.cosine(x,y)
 
+
     def get_all_scores(self,svms,competition_data):
         scores = {}
         for svm in svms:
@@ -824,7 +825,7 @@ class analysis:
     def create_epsilon_for_Lambda_mart(self, competition_data,svm):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
-        tmp2= self.get_all_scores([(svm)],competition_data)[(svm)]
+        tmp2= self.get_all_scores(svm,competition_data)
 
         rankings = self.retrieve_ranking(scores)
         epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
@@ -832,7 +833,7 @@ class analysis:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
-            scores[key_svm] = tmp2
+            scores[key_svm] = tmp2[svm[0]]
             rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 2)
             rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 2)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
