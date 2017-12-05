@@ -586,6 +586,7 @@ class analysis:
             table_best.write(
                 names[svm[1].split("/")[0]] + " & Min Winner Change Ratio & " + model[0] + " & " + model[1] + " & " + str(round(min(cr[svm][0]),3)) + " \\\\ \n")
             # svm,model,v = sorted(nd,key=lambda x:x[2],reverse=True)[0]
+            # svm,model,v = sorted(nd,key=lambda x:x[2],reverse=True)[0]
             # table_best.write(names[svm[1].split("/")[0]] + " & Max NDCG@20 & "+ model[0] + " & " + model[1]+" & - \\\\ \n")
 
         table_file.write("\end{longtable}")
@@ -823,7 +824,7 @@ class analysis:
     def create_epsilon_for_Lambda_mart(self, competition_data,svm):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
-        tmp2= self.get_all_scores(svm,competition_data)
+        tmp2= self.get_all_scores([svm],competition_data)[svm]
 
         rankings = self.retrieve_ranking(scores)
         epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
