@@ -29,7 +29,7 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
             else:
                 if z_t_pos>0:
                     addition_pos[i] = (float(self.safe_ln(w_i)) / z_t_pos) + (float(r_t_pos)/ (z_t_pos ** 2))
-        return self.Gamma*addition_pos+self.Sigma*addition_neg
+        return self.Gamma*addition_pos-self.Sigma*addition_neg
 
 
     def safe_ln(self,x):
