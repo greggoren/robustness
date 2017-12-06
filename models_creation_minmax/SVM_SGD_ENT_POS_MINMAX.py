@@ -29,7 +29,7 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
             else:
                 if z_t_pos>0:
                     addition_pos[i] = (float(self.safe_ln(w_i)) / z_t_pos) + (float(r_t_pos)/ (z_t_pos ** 2))
-        return -self.Gamma*addition_pos-self.Sigma*addition_neg
+        return self.Gamma*addition_pos+self.Sigma*addition_neg
 
 
     def safe_ln(self,x):
@@ -59,15 +59,13 @@ class svm_sgd_entropy_pos_minmax(svm_s.svm_sgd):
                 error_rate = self.check_validation(validation, y, X)
                 print("error_rate is ", error_rate)
                 sys.stdout.flush()
-            lr = 1
-
+            lr = 1.0/(t+2)
             random_index = r.randint(0,number_of_examples-1)
             y_k = X[random_index]*y[random_index]
             if not self.check_prediction(y_k):
                 self.w = t*lr*self.w + lr*lambda_factor*y_k+self.entropy_part_for_sgd(number_of_features)*lr
             else:
                 self.w = t * lr * self.w + self.entropy_part_for_sgd(number_of_features)*lr
-
         print ("SGD ended")
 
 
