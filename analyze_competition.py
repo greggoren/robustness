@@ -446,9 +446,9 @@ class analysis:
             doc_pairs = list(itertools.combinations(current_ranking,2))
             for pair in doc_pairs:
                 doc_win,doc_lose=self.determine_order(pair,current_ranking)
-                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon)/100:
                     # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                        abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon)/100:
+
                     if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
                         print(abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
                     #     print('winner:',float(scores[svm][epoch][query][doc_win]))
@@ -456,7 +456,8 @@ class analysis:
                     condorcet_count[doc_lose]+=1
                 else:
                     if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
-                        print(abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
+                        print("score_change:",abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
+                        print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
 
