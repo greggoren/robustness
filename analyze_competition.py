@@ -459,7 +459,17 @@ class analysis:
                         print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
-
+        if model==3:
+            doc_win,doc_lose=current_ranking[0],current_ranking[1]
+            if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs(
+                    (scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) /
+                    scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
+                new_rank.append(doc_lose)
+                new_rank.append(doc_win)
+            else:
+                new_rank.append(doc_win)
+                new_rank.append(doc_lose)
+            new_rank.extend(current_ranking[2:])
         return new_rank
 
     def rerank_by_epsilon(self,svm,scores,epsilon,model):
@@ -842,8 +852,8 @@ class analysis:
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
+            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 3)
+            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 3)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
