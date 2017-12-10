@@ -835,7 +835,7 @@ class analysis:
 
         rankings = self.retrieve_ranking(scores)
         # epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
-        epsilons = [1 ,5, 10, 20, 30, 40, 50, 60, 70,80,90,100]
+        epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
