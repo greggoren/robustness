@@ -101,11 +101,11 @@ class analysis:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    fold = svm[0].query_to_fold_index[int(query)]
-                    weights_svm = svm[0].weights_index[fold]
+                    # fold = svm[0].query_to_fold_index[int(query)]
+                    # weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(weights_svm,features_vector.T )
+                        scores[svm][epoch][query][doc] = np.dot(svm[0].w,features_vector.T )
         return scores
 
     def get_competitors(self,scores_svm):
@@ -447,7 +447,8 @@ class analysis:
             for pair in doc_pairs:
                 doc_win,doc_lose=self.determine_order(pair,current_ranking)
                 if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                    # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                        float(scores[svm][epoch][query][doc_win])/scores[svm][epoch][query][doc_lose] - 1) < float(epsilon)/100:
                     condorcet_count[doc_lose]+=1
                 else:
                     condorcet_count[doc_win]+=1
@@ -543,11 +544,11 @@ class analysis:
             for svm in svms:
                 # sim = self.get_average_weights_similarity_from_baseline(baseline,svm[0],range(1,6))
                 model=svm[2].split("_")
-                gamma = model[0]
+                gamma = model[1]
                 if len(model)==1:
                     sigma = "-"
                 else:
-                    sigma = model[1]
+                    sigma = model[2]
 
                 kt_avg = float(sum(kendall[svm][0]))/len((kendall[svm][0]))
                 a_kt.append((svm,(gamma,sigma),kt_avg))
@@ -828,7 +829,8 @@ class analysis:
         tmp2= self.get_all_scores(svm,competition_data)
 
         rankings = self.retrieve_ranking(scores)
-        epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+        # epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+        epsilons = [1,5, 10, 20, 30, 40, 50, 60, 70]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
