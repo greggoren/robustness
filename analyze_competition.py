@@ -862,7 +862,7 @@ class analysis:
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
-
+            print(kendall[key_lambdaMart][0])
         table_file.write("\\end{longtable}")
 
 
