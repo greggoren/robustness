@@ -416,8 +416,9 @@ class analysis:
                     doc_lose = current_ranking[rank+1]
                     if doc_win in new_rank:
                         new_rank = new_rank[:-1]
-                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
+                # if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                #     scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
                     new_rank.append(doc_lose)
                     new_rank.append(doc_win)
                 else:
