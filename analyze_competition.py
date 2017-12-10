@@ -455,6 +455,8 @@ class analysis:
                     #     print('loser:',float(scores[svm][epoch][query][doc_lose]))
                     condorcet_count[doc_lose]+=1
                 else:
+                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
+                        print(abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
 
