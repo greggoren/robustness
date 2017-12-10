@@ -101,11 +101,11 @@ class analysis:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    # fold = svm[0].query_to_fold_index[int(query)]
-                    # weights_svm = svm[0].weights_index[fold]
+                    fold = svm[0].query_to_fold_index[int(query)]
+                    weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(svm[0].w,features_vector.T )
+                        scores[svm][epoch][query][doc] = np.dot(weights_svm,features_vector.T )
         return scores
 
     def get_competitors(self,scores_svm):
