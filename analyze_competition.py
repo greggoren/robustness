@@ -449,6 +449,9 @@ class analysis:
                 if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
                     # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
                         abs(float(scores[svm][epoch][query][doc_win])/scores[svm][epoch][query][doc_lose]) - 1) < float(epsilon)/100:
+                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
+                        print('winner:',float(scores[svm][epoch][query][doc_win]))
+                        print('loser:',float(scores[svm][epoch][query][doc_lose]))
                     condorcet_count[doc_lose]+=1
                 else:
                     condorcet_count[doc_win]+=1
