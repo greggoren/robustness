@@ -448,7 +448,7 @@ class analysis:
                 doc_win,doc_lose=self.determine_order(pair,current_ranking)
                 if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
                     # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                        float(scores[svm][epoch][query][doc_win])/scores[svm][epoch][query][doc_lose] - 1) < float(epsilon)/100:
+                        abs(float(scores[svm][epoch][query][doc_win])/scores[svm][epoch][query][doc_lose]) - 1) < float(epsilon)/100:
                     condorcet_count[doc_lose]+=1
                 else:
                     condorcet_count[doc_win]+=1
@@ -830,7 +830,7 @@ class analysis:
 
         rankings = self.retrieve_ranking(scores)
         # epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
-        epsilons = [1,5, 10, 20, 30, 40, 50, 60, 70]
+        epsilons = [1 ,5, 10, 20, 30, 40, 50, 60, 70]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
