@@ -458,16 +458,17 @@ class analysis:
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
         if model==3:
-            doc_win,doc_lose=current_ranking[0],current_ranking[1]
-            if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs(
-                    (scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) /
-                    scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
-                new_rank.append(doc_lose)
-                new_rank.append(doc_win)
+            last_winner = last_ranking[0]
+            current_winner = current_ranking[0]
+
+            if last_ranking.index(last_winner) < last_ranking.index(current_winner) and (abs(
+                    (scores[svm][epoch][query][current_winner] - scores[svm][epoch][query][last_winner]) /
+                    scores[svm][epoch][query][last_winner])) < float(epsilon) / 100:
+                new_rank.append(last_winner)
+                new_rank.append(current_winner)
+                new_rank.extend([c for c in current_ranking if c!=last_winner and c!=current_winner])
             else:
-                new_rank.append(doc_win)
-                new_rank.append(doc_lose)
-            new_rank.extend(current_ranking[2:])
+                new_rank=current_ranking
         return new_rank
 
     def rerank_by_epsilon(self,svm,scores,epsilon,model):
@@ -494,14 +495,10 @@ class analysis:
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
                 new_scores[epoch][query] = {x:(5-fixed.index(x)) for x in fixed}
-                if fixed[0] != retrieved_list_svm[0]:
-                    counter += 1
-                denominator += 1
-            changes.append(float(counter)/denominator)
+
 
         scores[svm] = new_scores
-        print("model:",svm)
-        print("avg pseudo winner change:",np.mean(changes))
+
         return rankings_svm[svm],scores
 
 
