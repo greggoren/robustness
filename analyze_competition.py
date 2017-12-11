@@ -1,19 +1,17 @@
-from copy import copy
-import svm_ent_models_handler
-import numpy as np
-import svm_models_handler
-import numpy as np
-from scipy.stats import kendalltau
-from scipy import spatial
 import itertools
-import subprocess
-import matplotlib.pyplot as plt
-import RBO as r
-import RBO_EXT as rob
-import pickle
 import math
 import os
-from sklearn.datasets import dump_svmlight_file
+import pickle
+import subprocess
+from copy import copy
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import spatial
+from scipy.stats import kendalltau
+
+import RBO as r
+
 
 def write_files(svms,kendall,cr,rbo_min):
     k = open("results/epsilon1_kt.txt",'a')
@@ -479,9 +477,12 @@ class analysis:
         competitors = self.get_competitors(scores[svm])
         rankings_svm[svm] = {}
         scores_svm = scores[svm]
+        changes=[]
         for epoch in scores_svm:
             rankings_svm[svm][epoch] = {}
             new_scores[epoch] = {}
+            counter=0
+            denominator=0
             for query in scores_svm[epoch]:
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
                                             reverse=True)
@@ -493,7 +494,14 @@ class analysis:
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
                 new_scores[epoch][query] = {x:(5-fixed.index(x)) for x in fixed}
+                if fixed[0] != retrieved_list_svm[0]:
+                    counter += 1
+                denominator += 1
+            changes.append(float(counter)/denominator)
+
         scores[svm] = new_scores
+        print("model:",svm)
+        print("avg pseudo winner change:",np.mean(changes))
         return rankings_svm[svm],scores
 
 
@@ -846,7 +854,7 @@ class analysis:
 
         rankings = self.retrieve_ranking(scores)
         # epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
-        epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100,120,130,140,200,300,1000,10000,100000]
+        epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
@@ -865,9 +873,9 @@ class analysis:
             kt_avg = str(round(np.mean(kendall[key_lambdaMart][0]),3))
             max_kt = str(round(max(kendall[key_lambdaMart][0]),3))
             avg_rbo = str(round(np.mean(rbo_min[key_lambdaMart][0]),3))
-            max_rbo =str(round(max(rbo_min[key_lambdaMart][0]),3))
+            max_rbo = str(round(max(rbo_min[key_lambdaMart][0]),3))
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
-            m_change =str(round(min(cr[key_lambdaMart][0]),3))
+            m_change = str(round(min(cr[key_lambdaMart][0]),3))
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]),3))
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
