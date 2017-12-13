@@ -353,11 +353,12 @@ class analysis:
         for svm in models:
             ndcg_by_epochs = []
             map_by_epochs = []
-            for i in range(1,9):
+            mrr_by_epochs = []
+            for i in range(1,5):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
-                score_file =  name+str(i)+".txt"
-                qrels = "rel/rel0"+str(i)+".txt"
+                score_file =  name+str(i)
+                qrels = "rel2/rel0"+str(i)
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
                 for line in run_command(command):
                     ndcg_score = line.split()[2].rstrip()
@@ -368,6 +369,12 @@ class analysis:
                     print(line)
                     map_score = line.split()[2].rstrip()
                     map_by_epochs.append(map_score)
+                    break
+                command2 = "./trec_eval -m recip_rank " + qrels + " " + score_file
+                for line in run_command(command2):
+                    print(line)
+                    mrr_score = line.split()[2].rstrip()
+                    mrr_by_epochs.append(mrr_score)
                     break
             metrics[svm] = (ndcg_by_epochs,map_by_epochs)
         return metrics
