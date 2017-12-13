@@ -41,16 +41,16 @@ preprocess = p.preprocess()
 analyze = a.analysis()
 svm = mh.models_handler([])
 model_file = open("svm_model",'rb')
-banned_queries=get_banned("banned")
+banned_queries=[]#get_banned("banned")
 w = pickle.load(model_file)#recover_model("model_light_svm")#pickle.load(model_file)
 print(w)
 for i in range(1,201):
-    svm.query_to_fold_index[str(i).zfill(3)+"_1"]=1
-    # svm.query_to_fold_index[str(i).zfill(3)]=1
+    # svm.query_to_fold_index[str(i).zfill(3)+"_1"]=1
+    svm.query_to_fold_index[str(i).zfill(3)]=1
 for i in range(1,6):
     svm.weights_index[i] = w
 
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
-cd = preprocess.extract_features_by_epoch("data/featuresASR_L")
+cd = preprocess.extract_features_by_epoch("features_asr_modified")
 
 analyze.create_epsilon_for_Lambda_mart(cd,mh_svm,banned_queries)
