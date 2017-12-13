@@ -347,7 +347,7 @@ class analysis:
                 f = open(name+str(epoch)+".txt",'w')
                 for query in scores[svm][epoch]:
                     for doc in scores[svm][epoch][query]:
-                        f.write(self.set_qid_for_trec(int(query))+" Q0 "+"ROUND-0"+str(epoch)+"-"+self.set_qid_for_trec(int(query))+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
+                        f.write(query+" Q0 "+"ROUND-0"+str(epoch)+"-"+query+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
                 f.close()
 
     def calculate_metrics(self,models):
