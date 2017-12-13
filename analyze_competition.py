@@ -865,8 +865,8 @@ class analysis:
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
+            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 2)
+            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 2)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
