@@ -6,6 +6,15 @@ import pickle
 
 import numpy as np
 # if __name__=="__main__":
+
+def get_banned(banned_file):
+    banned_queries={i:[] for i in [1,2,3,4]}
+    with open(banned_file) as banned:
+        for ban in banned:
+            splitted=ban.split()
+            banned_queries[int(splitted[0])].append(splitted[1])
+    return banned_queries
+
 def recover_model(model):
     indexes_covered = []
     weights =[]
@@ -32,19 +41,15 @@ preprocess = p.preprocess()
 analyze = a.analysis()
 svm = mh.models_handler([])
 model_file = open("svm_model",'rb')
-
+banned_queries=get_banned("banned")
 w = pickle.load(model_file)#recover_model("model_light_svm")#pickle.load(model_file)
 print(w)
 for i in range(1,201):
     svm.query_to_fold_index[i]=1
 for i in range(1,6):
     svm.weights_index[i] = w
-# mhs = [("regular/model_handler_asr_cmp.pickle", 'SVM', 'k')]
 
-# mh_svm = preprocess.load_model_handlers(mhs)
-# print(mh_svm[0][0].query_to_fold_index)
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
-cd = preprocess.extract_features_by_epoch("../featuresASR")
-# analyze.compare_rankers(mh_svm,cd)
-# analyze.create_comparison_plots("results.pickle",svm)
-analyze.create_epsilon_for_Lambda_mart(cd,mh_svm)
+cd = preprocess.extract_features_by_epoch("data/featuresASR")
+
+analyze.create_epsilon_for_Lambda_mart(cd,mh_svm,banned_queries)

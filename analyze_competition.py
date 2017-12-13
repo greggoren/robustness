@@ -154,7 +154,7 @@ class analysis:
             result[p] = r.rbo_dict({x:j for x,j in enumerate(list1)},{x:j for x,j in enumerate(list2)},p)["min"]
         return result
 
-    def calculate_average_kendall_tau(self, rankings,values):
+    def calculate_average_kendall_tau(self, rankings,values,banned_queries):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
@@ -180,6 +180,8 @@ class analysis:
                 sum_rbo_ps = {p:0 for p in values}
                 meta_rbo[svm]={p:[] for p in values}
                 for query in rankings_list_svm[epoch]:
+                    if query in banned_queries[epoch] or banned_queries[epoch-1]:
+                        continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
                         last_list_index_svm[query]=current_list_svm
@@ -376,7 +378,7 @@ class analysis:
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
-            metrics[svm] = (ndcg_by_epochs,map_by_epochs)
+            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
     def get_average_epsilon(self,scores,number_of_competitors):
@@ -847,17 +849,12 @@ class analysis:
                 index+=1
         return result
 
-    def get_results(self,scores):
-        rankings = self.retrieve_ranking(scores)
-        kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
 
-    def create_epsilon_for_Lambda_mart(self, competition_data,svm):
+    def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2= self.get_all_scores(svm,competition_data)
-
         rankings = self.retrieve_ranking(scores)
-        # epsilons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
         epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
@@ -866,7 +863,7 @@ class analysis:
             scores[key_svm] = tmp2[svm[0]]
             rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 3)
             rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 3)
-        kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [])
+        kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
