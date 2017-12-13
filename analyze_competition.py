@@ -190,7 +190,8 @@ class analysis:
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
                         if not query in banned_queries[epoch] or not query in banned_queries[epoch-1]:
                             change_rate_svm +=1
-                    n_q+=1
+                    if not query in banned_queries[epoch] or not query in banned_queries[epoch - 1]:
+                        n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig= r.rbo_dict({x:j for x,j in enumerate(original_list_index_svm[query])},{x:j for x,j in enumerate(current_list_svm)} , 0.95)["min"]
