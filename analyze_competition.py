@@ -358,6 +358,7 @@ class analysis:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
+            P=[]
             for i in range(1,9):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
@@ -382,7 +383,13 @@ class analysis:
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
-            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
+                command3 = "./trec_eval -m P.5 " + qrels + " " + score_file
+                for line in run_command(command3):
+                    print(line)
+                    P_score = line.split()[2].rstrip()
+                    P.append(P_score)
+                    break
+            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs,P)
         return metrics
 
     def get_average_epsilon(self,scores,number_of_competitors):
@@ -871,9 +878,9 @@ class analysis:
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
-        table_file.write("\\begin{longtable}{*{8}{c}}\n")
+        table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5\\\\\\\\ \n")
+            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR & P@5 \\\\\\\\ \n")
         for key_lambdaMart in kendall:
             kt_avg = str(round(np.mean(kendall[key_lambdaMart][0]),3))
             max_kt = str(round(max(kendall[key_lambdaMart][0]),3))
@@ -884,7 +891,8 @@ class analysis:
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] if metrics[key_lambdaMart][0].index(a) in [3,5,6,8]]),3))
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1] if metrics[key_lambdaMart][1].index(a) in [3,5,6,8]]),3))
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][2].index(a) in [3,5,6,8]]),3))
-            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
+            p=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][3].index(a) in [3,5,6,8]]),3))
+            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,p]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
