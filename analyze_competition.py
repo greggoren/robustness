@@ -94,7 +94,7 @@ class analysis:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,9)
+            epochs = range(1,5)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
