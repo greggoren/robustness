@@ -99,7 +99,7 @@ class analysis:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    fold = svm[0].query_to_fold_index[int(query)]
+                    fold = svm[0].query_to_fold_index[query]
                     weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
