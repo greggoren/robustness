@@ -891,7 +891,7 @@ class analysis:
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] if metrics[key_lambdaMart][0].index(a) in [3,5,6,8]]),3))
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1] if metrics[key_lambdaMart][1].index(a) in [3,5,6,8]]),3))
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][2].index(a) in [3,5,6,8]]),3))
-            p=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][3].index(a) in [3,5,6,8]]),3))
+            p=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][3] if metrics[key_lambdaMart][3].index(a) in [3,5,6,8]]),3))
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,p]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
