@@ -881,9 +881,9 @@ class analysis:
             max_rbo = str(round(max(rbo_min[key_lambdaMart][0]),3))
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
             m_change = str(round(min(cr[key_lambdaMart][0]),3))
-            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]),3))
-            map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
-            mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
+            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]][6:]),3))
+            map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]][6:]),3))
+            mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]][6:]),3))
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
