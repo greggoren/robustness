@@ -94,7 +94,7 @@ class analysis:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,5)
+            epochs = range(1,9)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
@@ -188,10 +188,10 @@ class analysis:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
-                            change_rate_svm +=1
-                    if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
-                        n_q+=1
+                        # if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
+                        change_rate_svm +=1
+                    # if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
+                    n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig= r.rbo_dict({x:j for x,j in enumerate(original_list_index_svm[query])},{x:j for x,j in enumerate(current_list_svm)} , 0.95)["min"]
@@ -349,7 +349,7 @@ class analysis:
                 f = open(name+str(epoch)+".txt",'w')
                 for query in scores[svm][epoch]:
                     for doc in scores[svm][epoch][query]:
-                        f.write(query+" Q0 "+"ROUND-0"+str(epoch)+"-"+query+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
+                        f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
                 f.close()
 
     def calculate_metrics(self,models):
@@ -358,12 +358,12 @@ class analysis:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1,5):
+            for i in range(1,9):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)+".txt"
-                qrels = "rel2/rel0"+str(i)
+                qrels = "rel/rel0"+str(i)
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
                 for line in run_command(command):
                     print(line)
@@ -887,7 +887,6 @@ class analysis:
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
-            print(kendall[key_lambdaMart][0])
         table_file.write("\\end{longtable}")
 
 
