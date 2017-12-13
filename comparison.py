@@ -8,7 +8,7 @@ import numpy as np
 # if __name__=="__main__":
 
 def get_banned(banned_file):
-    banned_queries={i:[] for i in [1,2,3,4]}
+    banned_queries={i:[] for i in [0,1,2,3,4]}
     with open(banned_file) as banned:
         for ban in banned:
             splitted=ban.split()
