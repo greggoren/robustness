@@ -188,9 +188,9 @@ class analysis:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        if  query not in banned_queries[epoch] or  query not in banned_queries[epoch-1]:
+                        if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
                             change_rate_svm +=1
-                    if not query in banned_queries[epoch] or not query in banned_queries[epoch - 1]:
+                    if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
                         n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
