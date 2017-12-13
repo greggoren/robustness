@@ -809,7 +809,7 @@ class analysis:
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/coodinate_ascent/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
-        model_path  = "/lv_local/home/sgregory/robustness/testmodel250_50"
+        model_path  = "/lv_local/home/sgregory/robustness/testmodel_250_50"
         #os.popen('/bin/bash touch '+score_file)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
         run_bash_command(command)
