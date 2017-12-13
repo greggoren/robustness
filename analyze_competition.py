@@ -180,8 +180,8 @@ class analysis:
                 sum_rbo_ps = {p:0 for p in values}
                 meta_rbo[svm]={p:[] for p in values}
                 for query in rankings_list_svm[epoch]:
-                    if query in banned_queries[epoch] or query in banned_queries[epoch-1]:
-                        continue
+                    # if query in banned_queries[epoch] or query in banned_queries[epoch-1]:
+                    #     continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
                         last_list_index_svm[query]=current_list_svm
