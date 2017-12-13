@@ -887,6 +887,7 @@ class analysis:
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
+            print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
 
 
