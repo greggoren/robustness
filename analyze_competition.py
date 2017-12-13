@@ -94,7 +94,7 @@ class analysis:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,9)
+            epochs = range(1,5)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
@@ -188,10 +188,10 @@ class analysis:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        # if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
-                        change_rate_svm +=1
-                    # if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
-                    n_q+=1
+                        if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
+                            change_rate_svm +=1
+                    if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
+                        n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig= r.rbo_dict({x:j for x,j in enumerate(original_list_index_svm[query])},{x:j for x,j in enumerate(current_list_svm)} , 0.95)["min"]
@@ -358,12 +358,12 @@ class analysis:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1,9):
+            for i in range(1,5):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)+".txt"
-                qrels = "rel/rel0"+str(i)
+                qrels = "rel2/rel0"+str(i)
                 command = "./trec_eval -m ndcg_cut.5 "+qrels+" "+score_file
                 for line in run_command(command):
                     print(line)
@@ -856,8 +856,8 @@ class analysis:
 
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
-        tmp = self.create_lambdaMart_scores(competition_data)
-        tmp2= self.get_all_scores(svm,competition_data)
+        tmp  = self.create_lambdaMart_scores(competition_data)
+        tmp2 = self.get_all_scores(svm,competition_data)
         rankings = self.retrieve_ranking(scores)
         epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         for epsilon in epsilons:
