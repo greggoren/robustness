@@ -882,7 +882,7 @@ class analysis:
         table_file.write(
             "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR & P@5 \\\\\\\\ \n")
         for key_lambdaMart in kendall:
-            if key_lambdaMart[1].__contains__("SVMRank"):
+            if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
             kt_avg = str(round(np.mean(kendall[key_lambdaMart][0]),3))
             max_kt = str(round(max(kendall[key_lambdaMart][0]),3))
