@@ -370,7 +370,7 @@ class analysis:
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
-                command1 = "./trec_eval -m map_at_5 " + qrels + " " + score_file
+                command1 = "./trec_eval -m map " + qrels + " " + score_file
                 for line in run_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
