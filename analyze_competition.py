@@ -376,7 +376,7 @@ class analysis:
                     else:
                         break
 
-                ndcg_by_epochs.append(np.median(tmp))
+                ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
 
                 command1 = "./trec_eval -q -m map " + qrels + " " + score_file
                 tmp=[]
@@ -389,7 +389,7 @@ class analysis:
                             tmp.append(map_score)
                     else:
                         break
-                map_by_epochs.append(np.median(tmp))
+                map_by_epochs.append(np.median([float(a) for a in tmp]))
                 tmp=[]
                 command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
@@ -401,7 +401,7 @@ class analysis:
                             tmp.append(mrr_score)
                     else:
                         break
-                mrr_by_epochs.append(np.median(tmp))
+                mrr_by_epochs.append(np.median([float(a) for a in tmp]))
 
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
