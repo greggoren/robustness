@@ -349,7 +349,7 @@ class analysis:
                 f = open(name+str(epoch)+".txt",'w')
                 for query in scores[svm][epoch]:
                     for doc in scores[svm][epoch][query]:
-                        f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(0) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
+                        f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(scores[svm][epoch][query][doc]-4) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
                 f.close()
 
     def calculate_metrics(self,models):
@@ -358,38 +358,32 @@ class analysis:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            P=[]
             for i in range(1,9):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)+".txt"
                 qrels = "rel/rel0"+str(i)
-                command = "./trec_eval -m ndcg_cut.3 "+qrels+" "+score_file
+                command = "./trec_eval1 -m ndcg_cut.3 "+qrels+" "+score_file
                 for line in run_command(command):
                     print(line)
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
-                command1 = "./trec_eval -m map.5 " + qrels + " " + score_file
+                command1 = "./trec_eval1 -m map.5 " + qrels + " " + score_file
                 for line in run_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
                     map_by_epochs.append(map_score)
                     break
-                command2 = "./trec_eval -m recip_rank " + qrels + " " + score_file
+                command2 = "./trec_eval1 -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
-                command3 = "./trec_eval -m P.5 " + qrels + " " + score_file
-                for line in run_command(command3):
-                    print(line)
-                    P_score = line.split()[2].rstrip()
-                    P.append(P_score)
-                    break
-            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs,P)
+
+            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
     def get_average_epsilon(self,scores,number_of_competitors):
@@ -890,15 +884,14 @@ class analysis:
             max_rbo = str(round(max(rbo_min[key_lambdaMart][0]),3))
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
             m_change = str(round(min(cr[key_lambdaMart][0]),3))
-            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] if metrics[key_lambdaMart][0].index(a) in [2,4,5,7]]),3))
+            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
             # nd=str(round(np.median([float(a) for a in metrics[key_lambdaMart][0] if metrics[key_lambdaMart][0].index(a) in [2,4,5,7]]),3))
             # map=str(round(np.median([float(a) for a in metrics[key_lambdaMart][1] if metrics[key_lambdaMart][1].index(a) in [2,4,5,7]]),3))
-            map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1] if metrics[key_lambdaMart][1].index(a) in [2,4,5,7]]),3))
-            mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][2].index(a) in [2,4,5,7]]),3))
+            map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
+            mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
             # mrr=str(round(np.median([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][2].index(a) in [2,4,5,7]]),3))
             # p=str(round(np.median([float(a) for a in metrics[key_lambdaMart][3] if metrics[key_lambdaMart][3].index(a) in [2,4,5,7]]),3))
-            p=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][3] if metrics[key_lambdaMart][3].index(a) in [2,4,5,7]]),3))
-            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,p]
+            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
