@@ -373,6 +373,8 @@ class analysis:
                         query =line.split()[1].rstrip()
                         if query!="all":
                             tmp.append(ndcg_score)
+                    else:
+                        break
 
                 ndcg_by_epochs.append(np.median(tmp))
 
@@ -385,6 +387,8 @@ class analysis:
                         query = line.split()[1].rstrip()
                         if query != "all":
                             tmp.append(map_score)
+                    else:
+                        break
                 map_by_epochs.append(np.median(tmp))
                 tmp=[]
                 command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
@@ -395,6 +399,8 @@ class analysis:
                         query = line.split()[1].rstrip()
                         if query != "all":
                             tmp.append(mrr_score)
+                    else:
+                        break
                 mrr_by_epochs.append(np.median(tmp))
 
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
