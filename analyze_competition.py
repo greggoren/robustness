@@ -368,10 +368,11 @@ class analysis:
                 tmp=[]
                 for line in run_command(command):
                     print(line)
-                    ndcg_score = line.split()[2].rstrip()
-                    query =line.split()[1].rstrip()
-                    if query!="all":
-                        tmp.append(ndcg_score)
+                    if len(line.split())>1:
+                        ndcg_score = line.split()[2].rstrip()
+                        query =line.split()[1].rstrip()
+                        if query!="all":
+                            tmp.append(ndcg_score)
 
                 ndcg_by_epochs.append(np.median(tmp))
 
@@ -379,19 +380,21 @@ class analysis:
                 tmp=[]
                 for line in run_command(command1):
                     print(line)
-                    map_score = line.split()[2].rstrip()
-                    query = line.split()[1].rstrip()
-                    if query != "all":
-                        tmp.append(map_score)
+                    if len(line.split()) > 1:
+                        map_score = line.split()[2].rstrip()
+                        query = line.split()[1].rstrip()
+                        if query != "all":
+                            tmp.append(map_score)
                 map_by_epochs.append(np.median(tmp))
                 tmp=[]
                 command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
-                    mrr_score = line.split()[2].rstrip()
-                    query = line.split()[1].rstrip()
-                    if query != "all":
-                        tmp.append(mrr_score)
+                    if len(line.split()) > 1:
+                        mrr_score = line.split()[2].rstrip()
+                        query = line.split()[1].rstrip()
+                        if query != "all":
+                            tmp.append(mrr_score)
                 mrr_by_epochs.append(np.median(tmp))
 
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
