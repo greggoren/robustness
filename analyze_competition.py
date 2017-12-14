@@ -894,7 +894,7 @@ class analysis:
         table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR & P@5 \\\\\\\\ \n")
+            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
