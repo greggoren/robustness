@@ -379,7 +379,7 @@ class analysis:
 
                 ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
 
-                command1 = "./trec_eval -q -m map " + qrels + " " + score_file
+                command1 = "./trec_eval -q -m map.3 " + qrels + " " + score_file
                 tmp=[]
                 for line in run_command(command1):
                     print(line)
@@ -392,7 +392,7 @@ class analysis:
                         break
                 map_by_epochs.append(np.median([float(a) for a in tmp]))
                 tmp=[]
-                command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
+                command2 = "./trec_eval -q -m recip_rank.3 " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
                     if len(line.split()) > 1:
@@ -504,7 +504,7 @@ class analysis:
                 new_rank.extend([c for c in current_ranking if c!=last_winner and c!=current_winner])
             else:
                 new_rank=current_ranking
-        return new_rank,condorcet_count
+        return new_rank
 
     def rerank_by_epsilon(self,svm,scores,epsilon,model):
         rankings_svm = {}
@@ -525,11 +525,11 @@ class analysis:
 
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
-                fixed,c = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
+                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
 
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
-                new_scores[epoch][query] = {x:c[x] for x in fixed}
+                new_scores[epoch][query] = {x:len(fixed)+1-fixed.index(x) for x in fixed}
 
 
         scores[svm] = new_scores
