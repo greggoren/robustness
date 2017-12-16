@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import spatial
 from scipy.stats import kendalltau
+from sqlalchemy.sql.functions import concat
 
 import RBO as r
 
@@ -490,7 +491,7 @@ class analysis:
                         print("score_change:",abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
                         print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
-            new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(last_ranking)-last_ranking.index(x)),reverse = True)
+            new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(current_ranking)-current_ranking.index(x)),reverse = True)
         if model==3:
             last_winner = last_ranking[0]
             current_winner = current_ranking[0]
@@ -503,7 +504,7 @@ class analysis:
                 new_rank.extend([c for c in current_ranking if c!=last_winner and c!=current_winner])
             else:
                 new_rank=current_ranking
-        return new_rank
+        return new_rank,condorcet_count
 
     def rerank_by_epsilon(self,svm,scores,epsilon,model):
         rankings_svm = {}
@@ -524,11 +525,11 @@ class analysis:
 
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
-                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
+                fixed,c = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
 
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
-                new_scores[epoch][query] = {x:(5-fixed.index(x)) for x in fixed}
+                new_scores[epoch][query] = {x:c[x] for x in fixed}
 
 
         scores[svm] = new_scores
