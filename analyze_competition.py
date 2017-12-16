@@ -379,7 +379,7 @@ class analysis:
 
                 ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
 
-                command1 = "./trec_eval -q -m map.3 " + qrels + " " + score_file
+                command1 = "./trec_eval -q -m map.2 " + qrels + " " + score_file
                 tmp=[]
                 for line in run_command(command1):
                     print(line)
@@ -392,7 +392,7 @@ class analysis:
                         break
                 map_by_epochs.append(np.median([float(a) for a in tmp]))
                 tmp=[]
-                command2 = "./trec_eval -q -m recip_rank.3 " + qrels + " " + score_file
+                command2 = "./trec_eval -q -m recip_rank.2 " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
                     if len(line.split()) > 1:
