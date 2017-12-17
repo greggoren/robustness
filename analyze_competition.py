@@ -449,9 +449,9 @@ class analysis:
                     doc_lose = current_ranking[rank+1]
                     if doc_win in new_rank:
                         new_rank = new_rank[:-1]
-                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
-                # if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                #     scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                # if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
                     new_rank.append(doc_lose)
                     new_rank.append(doc_win)
                 else:
@@ -529,7 +529,7 @@ class analysis:
 
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
-                new_scores[epoch][query] = {x:float(len(fixed)+1-fixed.index(x)) for x in fixed}
+                new_scores[epoch][query] = {x:float(len(fixed)-fixed.index(x)) for x in fixed}
 
 
         scores[svm] = new_scores
@@ -887,8 +887,8 @@ class analysis:
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 2)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 2)
+            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
+            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
