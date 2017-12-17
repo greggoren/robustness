@@ -506,35 +506,31 @@ class analysis:
                 new_rank=current_ranking
         return new_rank
 
-    def rerank_by_epsilon(self,svm,scores,epsilon,model):
+    def rerank_by_epsilon(self, svm, scores, epsilon, model):
         rankings_svm = {}
-        new_scores ={}
+        new_scores = {}
         last_rank = {}
         competitors = self.get_competitors(scores[svm])
         rankings_svm[svm] = {}
         scores_svm = scores[svm]
-        changes=[]
         for epoch in scores_svm:
             rankings_svm[svm][epoch] = {}
             new_scores[epoch] = {}
-            counter=0
-            denominator=0
             for query in scores_svm[epoch]:
-                retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
+                retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x], x),
                                             reverse=True)
 
-                if not last_rank.get(query,False):
+                if not last_rank.get(query, False):
                     last_rank[query] = retrieved_list_svm
-                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
+                fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query], model)
 
-                rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
+                rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query], fixed)
                 last_rank[query] = fixed
-                new_scores[epoch][query] = {x:float(len(fixed)-fixed.index(x)) for x in fixed}
-
+                new_scores[epoch][query] = {x: float(len(fixed) - fixed.index(x)) for x in fixed}
 
         scores[svm] = new_scores
 
-        return rankings_svm[svm],scores
+        return rankings_svm[svm], scores
 
 
 
