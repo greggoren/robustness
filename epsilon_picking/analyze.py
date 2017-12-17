@@ -109,6 +109,7 @@ class analyze:
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
+
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{7}{c}}\n")
         table_file.write(
@@ -367,9 +368,13 @@ class analyze:
                 for query in rankings[ranker][epoch]:
                     nq+=1
                     ranking_list =  rankings[ranker][epoch][query]
-                    for doc in ranking_list:
-                        if qrel[epoch][query][doc]!="0":
-                            mrr+=(1.0/(ranking_list.index(doc)+1))
+                    try:
+                        for doc in ranking_list:
+                            if qrel[epoch][query][doc]!="0":
+                                mrr+=(1.0/(ranking_list.index(doc)+1))
+                    except:
+                        print(qrel)
+                        print (epoch)
                 mrr_by_epochs.append(mrr/nq)
             mrr_for_ranker[ranker]=mrr_by_epochs
         return mrr_for_ranker
