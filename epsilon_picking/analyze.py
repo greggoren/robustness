@@ -124,7 +124,7 @@ class analyze:
             scores[key_svm] = tmp2[svm[0]]
             rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
             rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
-        kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [], banned_queries)
+        cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
