@@ -67,7 +67,7 @@ class analyze:
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)+".txt"
-                qrels = "../rel/rel0"+str(i)
+                qrels = "../rel2/rel0"+str(i)
                 command = "../trec_eval -q -m ndcg "+qrels+" "+score_file
                 tmp=[]
                 for line in run_command(command):
