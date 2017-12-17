@@ -1,6 +1,7 @@
 import itertools
 import subprocess
 import numpy as np
+from copy import deepcopy
 from scipy.stats import kendalltau
 import RBO as r
 
@@ -92,9 +93,10 @@ class analyze:
 
     def create_epsilon_for_Lambda_mart(self, competition_data, svm, banned_queries):
         scores = {}
+        ranked_docs={}
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm, competition_data)
-        rankings,ranked_docs = self.retrieve_ranking(scores)
+        rankings = self.retrieve_ranking(scores)
         # epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         epsilons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         for epsilon in epsilons:
@@ -102,8 +104,9 @@ class analyze:
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
+            rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
+            ranked_docs[key_lambdaMart]=ranked_lists
+            rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
         qrel_dict = self.retrive_qrel("../analysis_of_current_competition/qrel_asr")
         mrr_greg = self.mrr(qrel_dict,ranked_docs)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
@@ -181,23 +184,19 @@ class analyze:
 
     def retrieve_ranking(self,scores):
         rankings_svm = {}
-        ranked_docs={}
         optimized = False
         for svm in scores:
             if not optimized:
                 competitors = self.get_competitors(scores[svm])
                 optimized = True
             rankings_svm[svm]={}
-            ranked_docs[svm]={}
             scores_svm = scores[svm]
             for epoch in scores_svm:
                 rankings_svm[svm][epoch]={}
-                ranked_docs[svm][epoch]={}
                 for query in scores_svm[epoch]:
                     retrieved_list_svm = sorted(competitors[query],key=lambda x:(scores_svm[epoch][query][x],x),reverse=True)
-                    ranked_docs[svm][epoch][query]=retrieved_list_svm
                     rankings_svm[svm][epoch][query]= self.transition_to_rank_vector(competitors[query],retrieved_list_svm)
-        return rankings_svm,ranked_docs
+        return rankings_svm
 
     def transition_to_rank_vector(self,original_list,sorted_list):
         rank_vector = []
@@ -220,17 +219,21 @@ class analyze:
 
     def rerank_by_epsilon(self,svm,scores,epsilon,model):
         rankings_svm = {}
+        ranked_docs={}
         new_scores ={}
         last_rank = {}
         competitors = self.get_competitors(scores[svm])
         rankings_svm[svm] = {}
         scores_svm = scores[svm]
         for epoch in scores_svm:
+            ranked_docs[epoch]={}
             rankings_svm[svm][epoch] = {}
             new_scores[epoch] = {}
             for query in scores_svm[epoch]:
+
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
                                             reverse=True)
+                ranked_docs[epoch][query]=retrieved_list_svm
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
                 fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
@@ -241,7 +244,7 @@ class analyze:
                 else:
                     new_scores[epoch][query] = scores[svm][epoch][query]
         scores[svm] = new_scores
-        return rankings_svm[svm],scores
+        return rankings_svm[svm],scores,ranked_docs
 
     def determine_order(self,pair,current_ranking):
         if current_ranking.index(pair[0])<current_ranking.index(pair[1]):
