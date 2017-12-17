@@ -828,16 +828,16 @@ class analysis:
         score_file = "/lv_local/home/sgregory/robustness/coodinate_ascent/score"+str(epoch)
         features= "/lv_local/home/sgregory/robustness/"+features
         model_path  = "/lv_local/home/sgregory/robustness/testmodel_250_50"
-        #os.popen('/bin/bash touch '+score_file)
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
         run_bash_command(command)
         return score_file
 
     def create_lambdaMart_scores(self,competition_data):
         scores={e :{} for e in competition_data}
+        order = {_e: {} for _e in competition_data}
         for epoch in competition_data:
             scores[epoch]={q:{} for q in competition_data[epoch]}
-            order = {_e: {} for _e in competition_data}
+
             data_set = []
             queries=[]
             index = 0
@@ -889,7 +889,7 @@ class analysis:
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
-        table_file = open("out/table_value_epsilons_LmbdaMart.tex", 'w')
+        table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
             "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
