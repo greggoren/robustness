@@ -94,22 +94,22 @@ class analyze:
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm, competition_data)
         rankings = self.retrieve_ranking(scores)
-        epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
-        # epsilons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        # epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
+        epsilons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
+            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
+            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
-        table_file.write("\\begin{longtable}{*{13}{c}}\n")
+        table_file.write("\\begin{longtable}{*{7}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
+            "Ranker & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
         for key_lambdaMart in cr:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
@@ -125,7 +125,6 @@ class analyze:
         table_file.write("\\end{longtable}")
 
     def calculate_average_kendall_tau(self, rankings,values,banned_queries):
-        kendall = {}
         change_rate = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
@@ -224,7 +223,6 @@ class analyze:
             for query in scores_svm[epoch]:
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
                                             reverse=True)
-
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
                 fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
@@ -234,9 +232,7 @@ class analyze:
                     new_scores[epoch][query]={fixed[0]:scores[svm][epoch][query][fixed[0]],fixed[1]:scores[svm][epoch-1][query][fixed[1]]}
                 else:
                     new_scores[epoch][query] = scores[svm][epoch][query]
-
         scores[svm] = new_scores
-
         return rankings_svm[svm],scores
 
     def determine_order(self,pair,current_ranking):
@@ -247,6 +243,25 @@ class analyze:
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
+        if model==0:
+            for rank in range(len(current_ranking)):
+                if rank + 1 < len(current_ranking):
+                    if not new_rank:
+                        doc_win =current_ranking[rank]
+                    else:
+                        doc_win=new_rank[rank]
+
+                    doc_lose = current_ranking[rank+1]
+                    if doc_win in new_rank:
+                        new_rank = new_rank[:-1]
+                # if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
+                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
+                    new_rank.append(doc_lose)
+                    new_rank.append(doc_win)
+                else:
+                    new_rank.append(doc_win)
+                    new_rank.append(doc_lose)
         if model==1:
             condorcet_count = {doc: 0 for doc in current_ranking}
             doc_pairs = list(itertools.combinations(current_ranking,2))
@@ -254,14 +269,8 @@ class analyze:
                 doc_win,doc_lose=self.determine_order(pair,current_ranking)
                 if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon)/100:
                     # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-
-                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
-                        print(abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
                     condorcet_count[doc_lose]+=1
                 else:
-                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
-                        print("score_change:",abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
-                        print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(current_ranking)-current_ranking.index(x)),reverse = True)
         if model==2:
