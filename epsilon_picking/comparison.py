@@ -46,7 +46,7 @@ w = pickle.load(model_file)#recover_model("model_light_svm")#pickle.load(model_f
 print(w)
 for i in range(1,201):
     svm.query_to_fold_index[str(i).zfill(3)+"_1"]=1
-    svm.query_to_fold_index[str(i).zfill(3)+"_0"]=1
+    svm.query_to_fold_index[str(i).zfill(3)+"_2"]=1
     # svm.query_to_fold_index[str(i).zfill(3)]=1
 for i in range(1,6):
     svm.weights_index[i] = w
