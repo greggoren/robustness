@@ -38,7 +38,7 @@ def recover_model(model):
     return np.array(weights)
 
 preprocess = p.preprocess()
-analyze = a.analysis()
+analyze = a.analyze()
 svm = mh.models_handler([])
 model_file = open("svm_model",'rb')
 banned_queries=[]#get_banned("banned")
