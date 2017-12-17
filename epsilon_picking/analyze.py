@@ -379,7 +379,7 @@ class analyze:
                         for doc in ranking_list:
                             if qrel[epoch][query][doc]!="0":
                                 mrr+=(1.0/(ranking_list.index(doc)+1))
-                                break
+
                     except:
 
                         print(qrel.keys())
