@@ -53,13 +53,13 @@ class analyze:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1,9):
+            for i in range(1,5):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)+".txt"
-                qrels = "rel/rel0"+str(i)
-                command = "./trec_eval -q -m ndcg "+qrels+" "+score_file
+                qrels = "../rel/rel0"+str(i)
+                command = "../trec_eval -q -m ndcg "+qrels+" "+score_file
                 tmp=[]
                 for line in run_command(command):
                     print(line)
@@ -73,7 +73,7 @@ class analyze:
 
                 ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
 
-                command1 = "./trec_eval -q -m map " + qrels + " " + score_file
+                command1 = "../trec_eval -q -m map " + qrels + " " + score_file
                 tmp=[]
                 for line in run_command(command1):
                     print(line)
@@ -86,7 +86,7 @@ class analyze:
                         break
                 map_by_epochs.append(np.median([float(a) for a in tmp]))
                 tmp=[]
-                command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
+                command2 = "../trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
                     if len(line.split()) > 1:
@@ -211,7 +211,7 @@ class analyze:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,9)
+            epochs = range(1,5)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
