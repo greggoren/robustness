@@ -360,9 +360,9 @@ class analyze:
 
     def create_lambdaMart_scores(self,competition_data):
         scores={e :{} for e in competition_data}
+        order = {_e: {} for _e in competition_data}
         for epoch in competition_data:
             scores[epoch]={q:{} for q in competition_data[epoch]}
-            order = {_e: {} for _e in competition_data}
             data_set = []
             queries=[]
             index = 0
