@@ -94,7 +94,7 @@ class analyze:
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm, competition_data)
-        rankings = self.retrieve_ranking(scores)
+        rankings,ranked_docs = self.retrieve_ranking(scores)
         # epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         epsilons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         for epsilon in epsilons:
@@ -105,7 +105,7 @@ class analyze:
             rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
             rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
         qrel_dict = self.retrive_qrel("../analysis_of_current_competition/qrel_asr")
-        mrr_greg = self.mrr(qrel_dict,rankings)
+        mrr_greg = self.mrr(qrel_dict,ranked_docs)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
@@ -181,20 +181,23 @@ class analyze:
 
     def retrieve_ranking(self,scores):
         rankings_svm = {}
-
+        ranked_docs={}
         optimized = False
         for svm in scores:
             if not optimized:
                 competitors = self.get_competitors(scores[svm])
                 optimized = True
             rankings_svm[svm]={}
+            ranked_docs[svm]={}
             scores_svm = scores[svm]
             for epoch in scores_svm:
                 rankings_svm[svm][epoch]={}
+                ranked_docs[svm][epoch]={}
                 for query in scores_svm[epoch]:
                     retrieved_list_svm = sorted(competitors[query],key=lambda x:(scores_svm[epoch][query][x],x),reverse=True)
+                    ranked_docs[svm][epoch][query]=retrieved_list_svm
                     rankings_svm[svm][epoch][query]= self.transition_to_rank_vector(competitors[query],retrieved_list_svm)
-        return rankings_svm
+        return rankings_svm,ranked_docs
 
     def transition_to_rank_vector(self,original_list,sorted_list):
         rank_vector = []
