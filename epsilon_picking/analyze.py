@@ -68,6 +68,7 @@ class analyze:
 
                 score_file = name+str(i)+".txt"
                 qrels = "../rel2/rel0"+str(i)
+
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
                     print(line)
@@ -103,6 +104,8 @@ class analyze:
             scores[key_svm] = tmp2[svm[0]]
             rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
             rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
+        qrel_dict = self.retrive_qrel("../analysis_of_current_competition/qrel_asr")
+        mrr_greg = self.mrr(qrel_dict,rankings)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
@@ -118,7 +121,8 @@ class analyze:
             nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
             map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
             mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
-            tmp = [change, m_change, nd, map, mrr]
+            mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]), 3))
+            tmp = [change, m_change, nd, map, mrr,mrr_g]
             line = key_lambdaMart[2] + " & " + " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
@@ -334,3 +338,37 @@ class analyze:
             score_file=self.run_lambda_mart(features_file,epoch)
             scores=self.retrieve_scores(score_file,order,epoch,scores)
         return scores
+
+
+    def retrive_qrel(self,qrel_file):
+        qrel={}
+        with open(qrel_file) as qrels:
+            for q in qrels:
+                splited = q.split()
+                name = splited[2]
+                epoch = int(name.split("-")[1])
+                query = name.split("-")[2]
+                doc = name.split("-")[3]
+                rel = splited[3].rstrip()
+                if not qrel.get(epoch,False):
+                    qrel[epoch] = {}
+                if not qrel[epoch].get(query,False):
+                    qrel[epoch][query] = {}
+                qrel_file[epoch][query][doc]=rel
+
+    def mrr(self,qrel,rankings):
+        mrr_for_ranker = {}
+        for ranker in rankings:
+            mrr_by_epochs =[]
+            for epoch in rankings[ranker]:
+                mrr=0
+                nq=0
+                for query in rankings[ranker][epoch]:
+                    nq+=1
+                    ranking_list =  rankings[ranker][epoch][query]
+                    for doc in ranking_list:
+                        if qrel[epoch][query][doc]!="0":
+                            mrr+=(1.0/(ranking_list.index(doc)+1))
+                mrr_by_epochs.append(mrr/nq)
+            mrr_for_ranker[ranker]=mrr_by_epochs
+        return mrr_for_ranker
