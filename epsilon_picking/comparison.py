@@ -41,7 +41,7 @@ preprocess = p.preprocess()
 analyze = a.analyze()
 svm = mh.models_handler([])
 model_file = open("../svm_model",'rb')
-banned_queries=get_banned("banned")
+banned_queries=get_banned("../banned")
 w = pickle.load(model_file)#recover_model("model_light_svm")#pickle.load(model_file)
 print(w)
 for i in range(1,201):
