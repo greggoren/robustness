@@ -367,15 +367,18 @@ class analyze:
                 nq=0
                 for query in rankings[ranker][epoch]:
                     nq+=1
-                    ranking_list =  rankings[ranker][epoch][query]
+                    ranking_list = rankings[ranker][epoch][query]
                     try:
                         for doc in ranking_list:
                             if qrel[epoch][query][doc]!="0":
                                 mrr+=(1.0/(ranking_list.index(doc)+1))
                                 break
                     except:
-                        print(epoch)
+
                         print(qrel.keys())
+                        print(epoch)
+                        print (query)
+                        print(doc)
                 mrr_by_epochs.append(mrr/nq)
             mrr_for_ranker[ranker]=mrr_by_epochs
         return mrr_for_ranker
