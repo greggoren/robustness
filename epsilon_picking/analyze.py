@@ -354,7 +354,7 @@ class analyze:
                     qrel[epoch] = {}
                 if not qrel[epoch].get(query,False):
                     qrel[epoch][query] = {}
-                qrel_file[epoch][query][doc]=rel
+                qrel[epoch][query][doc]=rel
 
     def mrr(self,qrel,rankings):
         mrr_for_ranker = {}
