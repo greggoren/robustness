@@ -379,7 +379,7 @@ class analysis:
 
                 ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
 
-                command1 = "./trec_eval -q -map " + qrels + " " + score_file
+                command1 = "./trec_eval -q -m map " + qrels + " " + score_file
                 tmp=[]
                 for line in run_command(command1):
                     print(line)
