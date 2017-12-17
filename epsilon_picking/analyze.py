@@ -299,7 +299,7 @@ class analyze:
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
-        if model==2:
+        if model==1:
             condorcet_count = {doc: 0 for doc in current_ranking}
             doc_pairs = list(itertools.combinations(current_ranking,2))
             for pair in doc_pairs:
@@ -316,7 +316,7 @@ class analyze:
                         print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(current_ranking)-current_ranking.index(x)),reverse = True)
-        if model==3:
+        if model==2:
             last_winner = last_ranking[0]
             current_winner = current_ranking[0]
 
