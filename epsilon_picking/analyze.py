@@ -297,6 +297,12 @@ class analyze:
 
         return rankings_svm[svm],scores
 
+    def determine_order(self,pair,current_ranking):
+        if current_ranking.index(pair[0])<current_ranking.index(pair[1]):
+            return pair[0],pair[1]
+        else:
+            return pair[1],pair[0]
+
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
         if model==1:
