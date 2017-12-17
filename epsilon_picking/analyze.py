@@ -355,6 +355,7 @@ class analyze:
                 if not qrel[epoch].get(query,False):
                     qrel[epoch][query] = {}
                 qrel[epoch][query][doc]=rel
+        return qrel
 
     def mrr(self,qrel,rankings):
         mrr_for_ranker = {}
