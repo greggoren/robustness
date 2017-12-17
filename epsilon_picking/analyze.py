@@ -66,7 +66,7 @@ class analyze:
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
-                score_file = name+str(i)+".txt"
+                score_file = name+str(i)
                 qrels = "../rel/rel0"+str(i)
                 command = "../trec_eval -q -m ndcg "+qrels+" "+score_file
                 tmp=[]
@@ -131,7 +131,7 @@ class analyze:
         table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
             "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
-        for key_lambdaMart in kendall:
+        for key_lambdaMart in cr:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
             change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
