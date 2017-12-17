@@ -233,10 +233,11 @@ class analyze:
 
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
                                             reverse=True)
-                ranked_docs[epoch][query]=retrieved_list_svm
+
                 if not last_rank.get(query,False):
                     last_rank[query] = retrieved_list_svm
                 fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
+                ranked_docs[epoch][query] = fixed
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
                 last_rank[query] = fixed
                 if fixed[0] != retrieved_list_svm[0]:
