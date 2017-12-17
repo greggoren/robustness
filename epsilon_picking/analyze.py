@@ -320,3 +320,21 @@ class analyze:
             else:
                 new_rank=current_ranking
         return new_rank
+
+    def create_data_set_file(self,X,queries,feature_file_name):
+        with open(feature_file_name,'w') as feature_file:
+            for i,doc in enumerate(X):
+                features = " ".join([str(a+1)+":"+str(b) for a,b in enumerate(doc)])
+                line = "1 qid:"+queries[i]+" "+features+"\n"
+                feature_file.write(line)
+
+
+    def retrieve_scores(self,score_file,order,epoch,result):
+        with open(score_file,'r') as scores:
+            index = 0
+            for score in scores:
+                value = float(score.split()[2])
+                doc,query = tuple(order[epoch][index].split("@@@"))
+                result[epoch][query][doc]=value
+                index+=1
+        return result
