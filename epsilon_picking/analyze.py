@@ -134,16 +134,12 @@ class analyze:
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
-            kt_avg = str(round(np.mean(kendall[key_lambdaMart][0]), 3))
-            max_kt = str(round(max(kendall[key_lambdaMart][0]), 3))
-            avg_rbo = str(round(np.mean(rbo_min[key_lambdaMart][0]), 3))
-            max_rbo = str(round(max(rbo_min[key_lambdaMart][0]), 3))
             change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
             m_change = str(round(min(cr[key_lambdaMart][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
             map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
             mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
-            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, map, mrr]
+            tmp = [change, m_change, nd, map, mrr]
             line = key_lambdaMart[2] + " & " + " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
@@ -152,28 +148,18 @@ class analyze:
     def calculate_average_kendall_tau(self, rankings,values,banned_queries):
         kendall = {}
         change_rate = {}
-        rbo_min_models = {}
-        meta_rbo = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
-            kt_svm = []
-            kt_svm_orig = []
+
             last_list_index_svm={}
             original_list_index_svm = {}
             change_rate_svm_epochs =[]
-            rbo_min = []
-            rbo_min_orig = []
 
             for epoch in rankings_list_svm:
 
-                sum_svm = 0
-                sum_rbo_min = 0
-                sum_rbo_min_orig = 0
-                sum_svm_original = 0
+
                 n_q=0
                 change_rate_svm = 0
-                sum_rbo_ps = {p:0 for p in values}
-                meta_rbo[svm]={p:[] for p in values}
                 for query in rankings_list_svm[epoch]:
                     # if query in banned_queries[epoch] or query in banned_queries[epoch-1]:
                     #     continue
@@ -183,37 +169,18 @@ class analyze:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        # if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
-                        change_rate_svm +=1
-                    # if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
-                    n_q+=1
-                    kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
-                    kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
-                    rbo_orig= r.rbo_dict({x:j for x,j in enumerate(original_list_index_svm[query])},{x:j for x,j in enumerate(current_list_svm)} , 0.95)["min"]
-                    rbo = r.rbo_dict({x:j for x,j in enumerate(last_list_index_svm[query])},{x:j for x,j in enumerate(current_list_svm)},0.95)["min"]
-                    tmp = self.rbo_with_all_p(last_list_index_svm[query],current_list_svm,values)
-                    sum_rbo_ps={p:sum_rbo_ps[p]+tmp[p] for p in values}
-                    sum_rbo_min+=rbo
-                    sum_rbo_min_orig+=rbo_orig
-                    if not np.isnan(kt):
-                        sum_svm+=kt#*weights[epoch][query]
-                    if not np.isnan(kt_orig):
-                        sum_svm_original+=kt_orig
+                        if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
+                            change_rate_svm +=1
+                    if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
+                        n_q+=1
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q==0:
                     continue
                 change_rate_svm_epochs.append(float(change_rate_svm)/n_q)
-                for p in values:
-                    meta_rbo[svm][p].append(sum_rbo_ps[p]/n_q)
-                kt_svm.append(float(sum_svm)/n_q)
-                kt_svm_orig.append(float(sum_svm_original)/n_q)
-                rbo_min.append(float(sum_rbo_min)/n_q)
-                rbo_min_orig.append(float(sum_rbo_min_orig)/n_q)
-            kendall[svm]=(kt_svm,kt_svm_orig)
-            rbo_min_models[svm] = (rbo_min,rbo_min_orig)
+
             change_rate[svm]=(change_rate_svm_epochs,)
-        return kendall,change_rate,rbo_min_models,range(2,9),meta_rbo
+        return change_rate
 
 
     def get_all_scores(self,svms,competition_data):
