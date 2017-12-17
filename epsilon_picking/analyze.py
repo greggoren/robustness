@@ -11,6 +11,15 @@ def run_command(command):
                          )
     return iter(p.stdout.readline,'')
 
+def run_bash_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,shell=True)
+    out,err = p.communicate()
+    print(out)
+    return out
+    #return iter(p.stdout.readline,'')
+
 class analyze:
 
 
@@ -338,3 +347,33 @@ class analyze:
                 result[epoch][query][doc]=value
                 index+=1
         return result
+
+    def run_lambda_mart(self,features,epoch):
+        java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
+        jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
+        score_file = "/lv_local/home/sgregory/robustness/coodinate_ascent/score"+str(epoch)
+        features= "/lv_local/home/sgregory/robustness/"+features
+        model_path  = "/lv_local/home/sgregory/robustness/testmodel_250_50"
+        command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
+        run_bash_command(command)
+        return score_file
+
+    def create_lambdaMart_scores(self,competition_data):
+        scores={e :{} for e in competition_data}
+        for epoch in competition_data:
+            scores[epoch]={q:{} for q in competition_data[epoch]}
+            order = {_e: {} for _e in competition_data}
+            data_set = []
+            queries=[]
+            index = 0
+            for query in competition_data[epoch]:
+                for doc in competition_data[epoch][query]:
+                    data_set.append(competition_data[epoch][query][doc])
+                    queries.append(query)
+                    order[epoch][index]=doc+"@@@"+query
+                    index+=1
+            features_file = "features"+str(epoch)
+            self.create_data_set_file(data_set,queries,features_file)
+            score_file=self.run_lambda_mart(features_file,epoch)
+            scores=self.retrieve_scores(score_file,order,epoch,scores)
+        return scores
