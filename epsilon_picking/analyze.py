@@ -19,7 +19,6 @@ def run_bash_command(command):
     out,err = p.communicate()
     print(out)
     return out
-    #return iter(p.stdout.readline,'')
 
 class analyze:
 
@@ -107,7 +106,6 @@ class analyze:
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm, competition_data)
         rankings = self.retrieve_ranking(scores)
-        # epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         epsilons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
@@ -117,7 +115,7 @@ class analyze:
             rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
             ranked_docs[key_lambdaMart]=ranked_lists
             rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
-        qrel_dict = self.retrive_qrel("../analysis_of_current_competition/qrel_asr")
+        qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
         mrr_greg = self.mrr(qrel_dict,ranked_docs)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
