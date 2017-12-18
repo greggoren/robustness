@@ -364,7 +364,7 @@ class analysis:
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
-                score_file = name+str(i)+".txt"
+                score_file = name + str(i)
                 qrels = "rel/rel0"+str(i)
                 command = "./trec_eval -q -m ndcg "+qrels+" "+score_file
                 tmp=[]
