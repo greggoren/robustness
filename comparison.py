@@ -53,4 +53,4 @@ for i in range(1,6):
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
 cd = preprocess.extract_features_by_epoch("features_asr_modified")
 
-analyze.create_epsilon_for_Lambda_mart(cd,mh_svm,banned_queries)
+analyze.create_epsilon_for_Lambda_mart_projected(cd, mh_svm, banned_queries)

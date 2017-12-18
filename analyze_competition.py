@@ -181,17 +181,13 @@ class analysis:
                 sum_rbo_ps = {p:0 for p in values}
                 meta_rbo[svm]={p:[] for p in values}
                 for query in rankings_list_svm[epoch]:
-                    # if query in banned_queries[epoch] or query in banned_queries[epoch-1]:
-                    #     continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
                         last_list_index_svm[query]=current_list_svm
                         original_list_index_svm[query]=current_list_svm
                         continue
                     if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        # if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
                         change_rate_svm +=1
-                    # if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
                     n_q+=1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
@@ -220,6 +216,37 @@ class analysis:
             rbo_min_models[svm] = (rbo_min,rbo_min_orig)
             change_rate[svm]=(change_rate_svm_epochs,)
         return kendall,change_rate,rbo_min_models,range(2,9),meta_rbo
+
+    def calculate_average_change_rate(self, ranked_docs):
+        change_rate = {}
+        for svm in ranked_docs:
+            rankings_list_svm = ranked_docs[svm]
+            last_list_index_svm = {}
+            original_list_index_svm = {}
+            change_rate_svm_epochs = []
+
+            for epoch in rankings_list_svm:
+
+                n_q = 0
+                change_rate_svm = 0
+                for query in rankings_list_svm[epoch]:
+                    current_list_svm = rankings_list_svm[epoch][query]
+                    if not last_list_index_svm.get(query, False):
+                        last_list_index_svm[query] = current_list_svm
+                        original_list_index_svm[query] = current_list_svm
+                        continue
+                    if current_list_svm[0] != last_list_index_svm[query][0]:
+                        change_rate_svm += 1
+                    n_q += 1
+                    last_list_index_svm[query] = current_list_svm
+
+                if n_q == 0:
+                    continue
+                change_rate_svm_epochs.append(float(change_rate_svm) / n_q)
+            change_rate[svm] = (change_rate_svm_epochs,)
+        return change_rate
+
+
 
 
     def create_rbo_table(self,svms,kendall,meta_rbo,values,names,table_file):
@@ -417,6 +444,40 @@ class analysis:
         else:
             return pair[1],pair[0]
 
+    def fix_ranking_projected(self, svm, query, scores, epsilon, epoch, current_ranking, last_ranking, model):
+        new_rank = []
+        if epoch < 2:
+            return current_ranking
+        if model == 2:
+            condorcet_count = {doc: 0 for doc in current_ranking}
+            doc_pairs = list(itertools.combinations(current_ranking, 2))
+            for pair in doc_pairs:
+                doc_win, doc_lose = self.determine_order(pair, current_ranking)
+                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs(
+                            (scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) /
+                            scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
+                    condorcet_count[doc_lose] += 1
+                else:
+                    condorcet_count[doc_win] += 1
+            new_rank = sorted(current_ranking,
+                              key=lambda x: (condorcet_count[x], len(current_ranking) - current_ranking.index(x)),
+                              reverse=True)
+        if model == 3:
+            last_winner = last_ranking[0]
+            current_winner = current_ranking[0]
+
+            if last_ranking.index(last_winner) < last_ranking.index(current_winner) and (abs(
+                        (scores[svm][epoch][query][current_winner] - scores[svm][epoch][query][last_winner]) /
+                        scores[svm][epoch][query][last_winner])) < float(epsilon) / 100:
+                new_rank.append(last_winner)
+                new_rank.append(current_winner)
+                new_rank.extend([c for c in current_ranking if c != last_winner and c != current_winner])
+            else:
+                new_rank = current_ranking
+        return new_rank
+
+
+
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
         if epoch < 2:
@@ -482,6 +543,38 @@ class analysis:
             else:
                 new_rank=current_ranking
         return new_rank
+
+    def rerank_by_epsilon_projected(self, svm, scores, epsilon, model):
+        ranked_docs = {}
+        rankings_svm = {}
+        new_scores = {}
+        last_rank = {}
+        competitors = self.get_competitors(scores[svm])
+        rankings_svm[svm] = {}
+        scores_svm = scores[svm]
+        for epoch in scores_svm:
+            rankings_svm[svm][epoch] = {}
+            new_scores[epoch] = {}
+            ranked_docs[epoch] = {}
+            for query in scores_svm[epoch]:
+                retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x], x),
+                                            reverse=True)
+                if not last_rank.get(query, False):
+                    last_rank[query] = retrieved_list_svm[:2]
+
+                fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query],
+                                         model)
+                if fixed[0] != last_rank[query][0]:
+                    fixed = list(fixed[0], last_rank[query][0])
+                else:
+                    fixed = fixed[:2]
+                ranked_docs[epoch][query] = fixed
+                # rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query], fixed)
+                last_rank[query] = fixed
+                new_scores[epoch][query] = {x: float(len(fixed) - fixed.index(x)) for x in fixed}
+        scores[svm] = new_scores
+        return rankings_svm[svm], scores, ranked_docs
+
 
     def rerank_by_epsilon(self, svm, scores, epsilon, model):
         ranked_docs = {}
@@ -906,6 +999,40 @@ class analysis:
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
+
+    def create_epsilon_for_Lambda_mart_projected(self, competition_data, svm, banned_queries):
+        scores = {}
+        tmp = self.create_lambdaMart_scores(competition_data)
+        rankings = self.retrieve_ranking(scores)
+        ranks = {}
+        epsilons = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200]
+        # epsilons = [0, 1, 2, 3, 4, 5, 6, 7,8,9,10]
+        for epsilon in epsilons:
+            key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
+            scores[key_lambdaMart] = tmp
+            rankings[key_lambdaMart], scores, ranked = self.rerank_by_epsilon_projected(key_lambdaMart, scores, epsilon,
+                                                                                        2)
+            ranks[key_lambdaMart] = ranked
+        cr = self.calculate_average_change_rate(ranked)
+        self.extract_score(scores)
+        metrics = self.calculate_metrics(scores)
+        table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
+        table_file.write("\\begin{longtable}{*{6}{c}}\n")
+        table_file.write(
+            "Ranker & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
+        for key_lambdaMart in cr:
+            change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
+            m_change = str(round(min(cr[key_lambdaMart][0]), 3))
+            nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
+            map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
+            mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
+            tmp = [change, m_change, nd, map, mrr]
+            line = key_lambdaMart[2] + " & " + " & ".join(tmp) + " \\\\ \n"
+            table_file.write(line)
+            print(metrics[key_lambdaMart][2])
+        table_file.write("\\end{longtable}")
+
+
 
 
     def compare_rankers(self,svm,competition_data):
