@@ -1013,7 +1013,7 @@ class analysis:
             rankings[key_lambdaMart], scores, ranked = self.rerank_by_epsilon_projected(key_lambdaMart, scores, epsilon,
                                                                                         2)
             ranks[key_lambdaMart] = ranked
-        cr = self.calculate_average_change_rate(ranked)
+        cr = self.calculate_average_change_rate(ranks)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
