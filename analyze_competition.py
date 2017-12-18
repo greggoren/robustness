@@ -565,7 +565,7 @@ class analysis:
                 fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query],
                                          model)
                 if fixed[0] != last_rank[query][0]:
-                    projected_fixed = list(fixed[0], last_rank[query][0])
+                    projected_fixed = list((fixed[0], last_rank[query][0]))
                 else:
                     projected_fixed = fixed[:2]
                 ranked_docs[epoch][query] = projected_fixed
