@@ -517,7 +517,7 @@ class analysis:
         for epoch in scores_svm:
             rankings_svm[svm][epoch] = {}
             new_scores[epoch] = {}
-            ranked_docs[svm][epoch] = {}
+            ranked_docs[epoch] = {}
             for query in scores_svm[epoch]:
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x], x),
                                             reverse=True)
@@ -525,7 +525,7 @@ class analysis:
                 if not last_rank.get(query, False):
                     last_rank[query] = retrieved_list_svm
                 fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query], model)
-                ranked_docs[svm][epoch][query]=fixed
+                ranked_docs[epoch][query]=fixed
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query], fixed)
                 last_rank[query] = fixed
                 new_scores[epoch][query] = {x: float(len(fixed) - fixed.index(x)) for x in fixed}
