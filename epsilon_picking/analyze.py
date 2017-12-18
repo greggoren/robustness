@@ -48,10 +48,10 @@ class analyze:
     def order_trec_file(self,trec_file):
         final = trec_file.replace(".txt","")
         command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
-        for line in run_command(command):
+        for line in run_bash_command(command):
             print(line)
         command = "rm "+trec_file
-        for line in run_command(command):
+        for line in run_bash_command(command):
             print(line)
         return final
 
