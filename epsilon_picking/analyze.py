@@ -381,6 +381,8 @@ class analyze:
                 mrr=0
                 nq=0
                 for query in rankings[ranker][epoch]:
+                    if query.__contains__("_2"):
+                        continue
                     nq+=1
                     ranking_list = rankings[ranker][epoch][query]
                     try:
