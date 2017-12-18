@@ -507,6 +507,7 @@ class analysis:
         return new_rank
 
     def rerank_by_epsilon(self, svm, scores, epsilon, model):
+        ranked_docs = {}
         rankings_svm = {}
         new_scores = {}
         last_rank = {}
@@ -516,6 +517,7 @@ class analysis:
         for epoch in scores_svm:
             rankings_svm[svm][epoch] = {}
             new_scores[epoch] = {}
+            ranked_docs[svm][epoch] = {}
             for query in scores_svm[epoch]:
                 retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x], x),
                                             reverse=True)
@@ -523,14 +525,14 @@ class analysis:
                 if not last_rank.get(query, False):
                     last_rank[query] = retrieved_list_svm
                 fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query], model)
-
+                ranked_docs[svm][epoch][query]=fixed
                 rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query], fixed)
                 last_rank[query] = fixed
                 new_scores[epoch][query] = {x: float(len(fixed) - fixed.index(x)) for x in fixed}
 
         scores[svm] = new_scores
 
-        return rankings_svm[svm], scores
+        return rankings_svm[svm], scores,ranked_docs
 
 
 
@@ -886,18 +888,22 @@ class analysis:
         tmp  = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm,competition_data)
         rankings = self.retrieve_ranking(scores)
+        ranks={}
         # epsilons = [0, 10, 20, 30, 40, 50, 60, 70,80,90,100]
         epsilons = [0, 1, 2, 3, 4, 5, 6, 7,8,9,10]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
-            scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
-            rankings[key_svm], scores = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
+            # scores[key_svm] = tmp2[svm[0]]
+            rankings[key_lambdaMart], scores,ranked = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
+            # rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
+            ranks[key_lambdaMart]=ranked
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
+        qrels = self.retrive_qrel("rel/new_rel")
+        mrr_greg = self.mrr(qrels,ranks)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
@@ -912,13 +918,10 @@ class analysis:
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
             m_change = str(round(min(cr[key_lambdaMart][0]),3))
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
-            # nd=str(round(np.median([float(a) for a in metrics[key_lambdaMart][0] if metrics[key_lambdaMart][0].index(a) in [2,4,5,7]]),3))
-            # map=str(round(np.median([float(a) for a in metrics[key_lambdaMart][1] if metrics[key_lambdaMart][1].index(a) in [2,4,5,7]]),3))
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
-            # mrr=str(round(np.median([float(a) for a in metrics[key_lambdaMart][2] if metrics[key_lambdaMart][2].index(a) in [2,4,5,7]]),3))
-            # p=str(round(np.median([float(a) for a in metrics[key_lambdaMart][3] if metrics[key_lambdaMart][3].index(a) in [2,4,5,7]]),3))
-            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr]
+            mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]),3))
+            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,mrr_g]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
             print(metrics[key_lambdaMart][2])
@@ -1003,4 +1006,49 @@ class analysis:
         score_file = self.run_lambda_mart(clueweb_path,0)
         self.create_trec_eval_file(score_file,name_index)
 
+
+
+    def retrive_qrel(self,qrel_file):
+        qrel={}
+        with open(qrel_file) as qrels:
+            for q in qrels:
+                splited = q.split()
+                name = splited[2]
+                epoch = int(name.split("-")[1])
+                query = name.split("-")[2]
+                doc = name.split("-")[3]
+                rel = splited[3].rstrip()
+                if not qrel.get(epoch,False):
+                    qrel[epoch] = {}
+                if not qrel[epoch].get(query,False):
+                    qrel[epoch][query] = {}
+                qrel[epoch][query][doc]=rel
+        return qrel
+
+    def mrr(self,qrel,rankings):
+        mrr_for_ranker = {}
+        for ranker in rankings:
+            mrr_by_epochs =[]
+            for epoch in rankings[ranker]:
+                mrr=0
+                nq=0
+                for query in rankings[ranker][epoch]:
+                    if query.__contains__("_2"):
+                        continue
+                    nq+=1
+                    ranking_list = rankings[ranker][epoch][query]
+                    try:
+                        for doc in ranking_list:
+                            if qrel[epoch][query][doc]!="0":
+                                mrr+=(1.0/(ranking_list.index(doc)+1))
+                                break
+                    except:
+
+                        print(qrel.keys())
+                        print(epoch)
+                        print(query)
+                        print(doc)
+                mrr_by_epochs.append(mrr/nq)
+            mrr_for_ranker[ranker]=mrr_by_epochs
+        return mrr_for_ranker
 
