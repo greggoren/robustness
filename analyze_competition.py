@@ -367,44 +367,24 @@ class analysis:
                 score_file = name + str(i)
                 qrels = "rel/rel0"+str(i)
                 command = "./trec_eval -q -m ndcg "+qrels+" "+score_file
-                tmp=[]
                 for line in run_command(command):
                     print(line)
-                    if len(line.split())>1:
-                        ndcg_score = line.split()[2].rstrip()
-                        query =line.split()[1].rstrip()
-                        if query!="all":
-                            tmp.append(ndcg_score)
-                    else:
-                        break
-
-                ndcg_by_epochs.append(np.median([float(a) for a in tmp]))
+                    ndcg_score = line.split()[2].rstrip()
+                    ndcg_by_epochs.append(ndcg_score)
+                    break
 
                 command1 = "./trec_eval -q -m map " + qrels + " " + score_file
-                tmp=[]
                 for line in run_command(command1):
                     print(line)
-                    if len(line.split()) > 1:
-                        map_score = line.split()[2].rstrip()
-                        query = line.split()[1].rstrip()
-                        if query != "all":
-                            tmp.append(map_score)
-                    else:
-                        break
-                map_by_epochs.append(np.median([float(a) for a in tmp]))
-                tmp=[]
+                    map_score = line.split()[2].rstrip()
+                    map_by_epochs.append(map_score)
+                    break
                 command2 = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     print(line)
-                    if len(line.split()) > 1:
-                        mrr_score = line.split()[2].rstrip()
-                        query = line.split()[1].rstrip()
-                        if query != "all":
-                            tmp.append(mrr_score)
-                    else:
-                        break
-                mrr_by_epochs.append(np.median([float(a) for a in tmp]))
-
+                    mrr_score = line.split()[2].rstrip()
+                    mrr_by_epochs.append(mrr_score)
+                    break
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
