@@ -446,7 +446,7 @@ class analysis:
 
     def fix_ranking_projected(self, svm, query, scores, epsilon, epoch, current_ranking, last_ranking, model):
         new_rank = []
-        if epoch < 2:
+        if epoch < 1:
             return current_ranking
         if model == 2:
             condorcet_count = {doc: 0 for doc in current_ranking}
@@ -997,6 +997,9 @@ class analysis:
             tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,mrr_g]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
+            print(key_lambdaMart)
+            print(metrics[key_lambdaMart][1])
+            print(metrics[key_lambdaMart][0])
             print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
 
