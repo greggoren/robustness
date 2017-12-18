@@ -45,6 +45,15 @@ class analyze:
             scores=self.retrieve_scores(score_file,order,epoch,scores)
         return scores
 
+    def order_trec_file(self,trec_file):
+        final = trec_file.replace(".txt","")
+        command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
+        for line in self.run_command(command):
+            print(line)
+        command = "rm "+trec_file
+        for line in self.run_command(command):
+            print(line)
+        return final
 
     def extract_score(self, scores):
         for svm in scores:
@@ -56,6 +65,7 @@ class analyze:
                     for doc in scores[svm][epoch][query]:
                         f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(scores[svm][epoch][query][doc]) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
                 f.close()
+                self.order_trec_file(name+str(epoch)+".txt")
 
     def calculate_metrics(self,models):
         metrics = {}
@@ -67,7 +77,7 @@ class analyze:
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
-                score_file = name+str(i)+".txt"
+                score_file = name+str(i)
                 qrels = "../rel2/rel0"+str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
@@ -373,13 +383,12 @@ class analyze:
                 mrr=0
                 nq=0
                 for query in rankings[ranker][epoch]:
-                    # nq+=1
+                    nq+=1
                     ranking_list = rankings[ranker][epoch][query]
                     try:
                         for doc in ranking_list:
                             if qrel[epoch][query][doc]!="0":
                                 mrr+=(1.0/(ranking_list.index(doc)+1))
-                                nq += 1
                                 break
                     except:
 
