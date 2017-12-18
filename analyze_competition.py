@@ -352,6 +352,7 @@ class analysis:
                     for doc in scores[svm][epoch][query]:
                         f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(scores[svm][epoch][query][doc]) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
                 f.close()
+                self.order_trec_file(name+str(epoch)+".txt")
 
     def calculate_metrics(self,models):
         metrics = {}
@@ -482,14 +483,8 @@ class analysis:
                 doc_win,doc_lose=self.determine_order(pair,current_ranking)
                 if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon)/100:
                     # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-
-                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
-                        print(abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
                     condorcet_count[doc_lose]+=1
                 else:
-                    if (svm==("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")):
-                        print("score_change:",abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose]))
-                        print("epsilon:",float(epsilon)/100)
                     condorcet_count[doc_win]+=1
             new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(current_ranking)-current_ranking.index(x)),reverse = True)
         if model==3:
@@ -878,7 +873,10 @@ class analysis:
     def order_trec_file(self,trec_file):
         final = trec_file.replace(".txt","")
         command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
-        for line in self.run_command(command):
+        for line in run_bash_command(command):
+            print(line)
+        command = "rm " + trec_file
+        for line in run_bash_command(command):
             print(line)
         return final
 
