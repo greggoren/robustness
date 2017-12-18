@@ -872,6 +872,15 @@ class analysis:
         return result
 
 
+
+    def order_trec_file(self,trec_file):
+        final = trec_file.replace(".txt","")
+        command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
+        for line in self.run_command(command):
+            print(line)
+        return final
+
+
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
         tmp  = self.create_lambdaMart_scores(competition_data)
