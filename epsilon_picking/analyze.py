@@ -112,9 +112,9 @@ class analyze:
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
             scores[key_lambdaMart] = tmp
             scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 0)
+            rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
             ranked_docs[key_lambdaMart]=ranked_lists
-            rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 0)
+            rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
         qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
         mrr_greg = self.mrr(qrel_dict,ranked_docs)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
@@ -394,7 +394,7 @@ class analyze:
 
                         print(qrel.keys())
                         print(epoch)
-                        print (query)
+                        print(query)
                         print(doc)
                 mrr_by_epochs.append(mrr/nq)
             mrr_for_ranker[ranker]=mrr_by_epochs
