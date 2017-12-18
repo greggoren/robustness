@@ -565,13 +565,13 @@ class analysis:
                 fixed = self.fix_ranking(svm, query, scores, epsilon, epoch, retrieved_list_svm, last_rank[query],
                                          model)
                 if fixed[0] != last_rank[query][0]:
-                    fixed = list(fixed[0], last_rank[query][0])
+                    projected_fixed = list(fixed[0], last_rank[query][0])
                 else:
-                    fixed = fixed[:2]
-                ranked_docs[epoch][query] = fixed
-                # rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query], fixed)
+                    projected_fixed = fixed[:2]
+                ranked_docs[epoch][query] = projected_fixed
                 last_rank[query] = fixed
-                new_scores[epoch][query] = {x: float(len(fixed) - fixed.index(x)) for x in fixed}
+                new_scores[epoch][query] = {x: float(len(projected_fixed) - projected_fixed.index(x)) for x in
+                                            projected_fixed}
         scores[svm] = new_scores
         return rankings_svm[svm], scores, ranked_docs
 
