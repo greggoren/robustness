@@ -392,8 +392,8 @@ class analysis:
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name + str(i)
-                # qrels = "rel/rel0"+str(i)
-                qrels = name + str(i) + ".rel"
+                qrels = "rel/rel0" + str(i)
+                # qrels = name + str(i) + ".rel"
                 command = "./trec_eval -m ndcg_cut.2 " + qrels + " " + score_file
                 for line in run_command(command):
                     print(line)
