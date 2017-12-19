@@ -392,7 +392,8 @@ class analysis:
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name + str(i)
-                qrels = "rel/rel0"+str(i)
+                # qrels = "rel/rel0"+str(i)
+                qrels = name + str(i) + ".rel"
                 command = "./trec_eval -m ndcg_cut.2 " + qrels + " " + score_file
                 for line in run_command(command):
                     print(line)
@@ -1003,6 +1004,21 @@ class analysis:
             print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
 
+    def create_relevant_qrel_file(self, qrels, scores):
+        for ranker in scores:
+            for epoch in scores[ranker]:
+                part = ranker[1].split(".pickle")
+                name = part[0] + part[1].replace(".", "") + ranker[2]
+                f = open(name + str(epoch) + ".rel")
+                for query in scores[ranker][epoch]:
+                    for doc in scores[ranker][epoch][query]:
+                        line = " ".join([query, "0", "ROUND-" + str(epoch).zfill(2) + "-" + query + "-" + doc,
+                                         qrels[epoch][query][doc]])
+                        f.write(line + "\n")
+                f.close()
+
+
+
     def create_epsilon_for_Lambda_mart_projected(self, competition_data, svm, banned_queries):
         scores = {}
         tmp = self.create_lambdaMart_scores(competition_data)
@@ -1016,6 +1032,8 @@ class analysis:
             rankings[key_lambdaMart], scores, ranked = self.rerank_by_epsilon_projected(key_lambdaMart, scores, epsilon,
                                                                                         2)
             ranks[key_lambdaMart] = ranked
+        qrels = self.retrive_qrel("rel/new_rel")
+        self.create_relevant_qrel_file(qrels, scores)
         cr = self.calculate_average_change_rate(ranks)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
