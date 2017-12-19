@@ -979,9 +979,9 @@ class analysis:
         qrels = self.retrive_qrel("rel/new_rel")
         mrr_greg = self.mrr(qrels,ranks)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
-        table_file.write("\\begin{longtable}{*{13}{c}}\n")
+        table_file.write("\\begin{longtable}{*{16}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 &  ND SIG & MAP & MAP SIG & MRR & MRR SIG  \\\\\\\\ \n")
+            "Ranker & Epsilon & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 &  ND SIG & MAP & MAP SIG & MRR & MRR SIG  \\\\\\\\ \n")
         original_key = ("", "l.pickle1", "LambdaMart" + "_0", "b")
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
