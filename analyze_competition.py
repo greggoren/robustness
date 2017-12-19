@@ -1009,7 +1009,7 @@ class analysis:
             for epoch in scores[ranker]:
                 part = ranker[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "") + ranker[2]
-                f = open(name + str(epoch) + ".rel")
+                f = open(name + str(epoch) + ".rel", 'w')
                 for query in scores[ranker][epoch]:
                     for doc in scores[ranker][epoch][query]:
                         line = " ".join([query, "0", "ROUND-" + str(epoch).zfill(2) + "-" + query + "-" + doc,
