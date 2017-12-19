@@ -394,14 +394,14 @@ class analysis:
                 score_file = name + str(i)
                 qrels = "rel/rel0" + str(i)
                 # qrels = name + str(i) + ".rel"
-                command = "./trec_eval -m ndcg_cut.2 " + qrels + " " + score_file
+                command = "./trec_eval -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
                     print(line)
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
 
-                command1 = "./trec_eval -m map_cut.2 " + qrels + " " + score_file
+                command1 = "./trec_eval -m map " + qrels + " " + score_file
                 for line in run_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
@@ -481,8 +481,8 @@ class analysis:
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
-        # if epoch < 3:
-        #     return current_ranking
+        if epoch < 3:
+            return current_ranking
         if model==1:
             for rank in range(len(current_ranking)):
                 if rank + 1 < len(current_ranking):
