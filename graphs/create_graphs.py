@@ -36,6 +36,43 @@ def create_plot(features, data_epsilon, epsilons, feature_map, colors, file, not
     plt.savefig(file)
     plt.clf()
 
+
+def create_rel_plot(metric, data, epsilons, colors):
+    plt.figure(1)
+    plt.title(metric)
+    plt.xlabel("Iterations")
+
+    for epsilon in epsilons:
+        y = data[epsilon][metric]
+        plt.plot(range(1, 9), y, label=str(epsilon), color=colors[epsilon])
+    plt.legend(loc='best')
+    plt.savefig(metric)
+    plt.clf()
+
+
+relevant_epsilons = [0, 20, 40, 70, 100]
+colors = {0: "g", 20: "k", 40: "b", 70: "r", 100: "m", 200: "c"}
+
+
+def read_file(rel, epsilons):
+    data = {e: {"NDCG": [], "MAP": [], "MRR": []} for e in epsilons}
+    with open(rel) as relevance_file:
+        for row in relevance_file:
+            splitted = row.split(" & ")
+            epsilon = int(splitted[0].split("_")[1])
+            metric = splitted[1]
+            if metric == "ND":
+                metric = "NDCG"
+            data[epsilon][metric] = [float(a) for a in splitted[2:]]
+    return data
+
+
+
+
+
+
+
+
 def create_histogram(data_epsilon,title,feature,feature_map,epsilons):
     x_svm=[a+1 for a in epsilons]
     x_lambda_mart= [a-1 for a in epsilons]
@@ -52,7 +89,10 @@ def create_histogram(data_epsilon,title,feature,feature_map,epsilons):
     plt.clf()
 
 
-data_epsilon = retrieve_data("table_value_epsilons_LmbdaMart06.tex")
-create_plot(features, data_epsilon, epsilons, feature_map, colors, "epsilon06", not_to_plot)
+# data_epsilon = retrieve_data("table_value_epsilons_LmbdaMart06.tex")
+# create_plot(features, data_epsilon, epsilons, feature_map, colors, "epsilon06", not_to_plot)
 # for feature in features:
 #     create_histogram(data_epsilon,feature,feature,feature_map,epsilons)
+data = read_file("relevance_stats.tex", epsilons)
+for metric in ["NDCG", "MAP", "MRR"]:
+    create_rel_plot(metric, data, relevant_epsilons, colors)

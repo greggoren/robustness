@@ -425,7 +425,8 @@ class analysis:
                             ttest_eval[svm]["ndcg"][line.split()[1]] = []
                         ndcg_score = line.split()[2].rstrip()
                         ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
-
+                    else:
+                        break
                 command_t = "./trec_eval -q -m map " + qrels + " " + score_file
                 for line in run_command(command_t):
                     if len(line.split()) > 1:
@@ -435,6 +436,8 @@ class analysis:
                             ttest_eval[svm]["map"][line.split()[1]] = []
                         map_score = line.split()[2].rstrip()
                         ttest_eval[svm]["map"][line.split()[1]].append(float(map_score))
+                    else:
+                        break
 
                 command_t = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command_t):
@@ -445,6 +448,8 @@ class analysis:
                             ttest_eval[svm]["mrr"][line.split()[1]] = []
                         mrr_score = line.split()[2].rstrip()
                         ttest_eval[svm]["mrr"][line.split()[1]].append(float(mrr_score))
+                    else:
+                        break
 
 
 
