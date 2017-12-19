@@ -4,7 +4,7 @@ import os
 import pickle
 import subprocess
 from copy import copy
-
+from scipy.stats import ttest_rel
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import spatial
@@ -981,7 +981,8 @@ class analysis:
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{13}{c}}\n")
         table_file.write(
-            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
+            "Ranker & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 &  ND SIG & MAP & MAP SIG & MRR & MRR SIG  \\\\\\\\ \n")
+        original_key = ("", "l.pickle1", "LambdaMart" + "_0", "b")
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
@@ -992,9 +993,27 @@ class analysis:
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
             m_change = str(round(min(cr[key_lambdaMart][0]),3))
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
+            nd_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][0]],
+                               [float(a) for a in metrics[original_key][0]])
+            if nd_sig[1] <= 0.05:
+                nd_sig = "Yes"
+            else:
+                nd_sig = "No"
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
+            map_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][1]],
+                                [float(a) for a in metrics[original_key][1]])
+            if map_sig[1] <= 0.05:
+                map_sig = "Yes"
+            else:
+                map_sig = "No"
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
-            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, map, mrr]
+            mrr_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][2]],
+                                [float(a) for a in metrics[original_key][2]])
+            if mrr_sig[1] <= 0.05:
+                mrr_sig = "Yes"
+            else:
+                mrr_sig = "No"
+            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, nd_sig, map, map_sig, mrr, mrr_sig]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
             print(key_lambdaMart)
