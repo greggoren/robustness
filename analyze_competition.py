@@ -383,7 +383,9 @@ class analysis:
 
     def calculate_metrics(self,models):
         metrics = {}
+        ttest_eval = {}
         for svm in models:
+            ttest_eval[svm] = {"ndcg": {}, "map": {}, "mrr": {}}
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
@@ -413,8 +415,40 @@ class analysis:
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
+
+                command_t = "./trec_eval -q -m ndcg " + qrels + " " + score_file
+                for line in run_command(command_t):
+                    if line.split()[1] == "all":
+                        break
+                    if not ttest_eval[svm]["ndcg"].get(line.split()[1], False):
+                        ttest_eval[svm]["ndcg"][line.split()[1]] = []
+                    ndcg_score = line.split()[2].rstrip()
+                    ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
+
+                command_t = "./trec_eval -q -m map " + qrels + " " + score_file
+                for line in run_command(command_t):
+                    if line.split()[1] == "all":
+                        break
+                    if not ttest_eval[svm]["map"].get(line.split()[1], False):
+                        ttest_eval[svm]["map"][line.split()[1]] = []
+                    map_score = line.split()[2].rstrip()
+                    ttest_eval[svm]["map"][line.split()[1]].append(float(map_score))
+
+                command_t = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
+                for line in run_command(command_t):
+                    if line.split()[1] == "all":
+                        break
+                    if not ttest_eval[svm]["mrr"].get(line.split()[1], False):
+                        ttest_eval[svm]["mrr"][line.split()[1]] = []
+                    mrr_score = line.split()[2].rstrip()
+                    ttest_eval[svm]["mrr"][line.split()[1]].append(float(mrr_score))
+
+
+
+
+
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
-        return metrics
+        return metrics, ttest_eval
 
     def get_average_epsilon(self,scores,number_of_competitors):
         stat={}
@@ -956,7 +990,6 @@ class analysis:
             print(line)
         return final
 
-
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
         tmp  = self.create_lambdaMart_scores(competition_data)
@@ -975,7 +1008,7 @@ class analysis:
             ranks[key_lambdaMart]=ranked
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
-        metrics = self.calculate_metrics(scores)
+        metrics, t = self.calculate_metrics(scores)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{16}{c}}\n")
         table_file.write(
@@ -994,8 +1027,8 @@ class analysis:
             nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
             relvance_file.write(key_lambdaMart[2] + " & ND & " + " & ".join(
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][0]]]) + "\n")
-            nd_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][0]],
-                               [float(a) for a in metrics[original_key][0]])
+            nd_sig = ttest_rel([np.mean(t[key_lambdaMart]["ndcg"][q]) for q in t[key_lambdaMart]["ndcg"]],
+                               [np.mean(t[original_key]["ndcg"][q]) for q in t[original_key]["ndcg"]])
             if nd_sig[1] <= 0.1:
                 nd_sig = "Yes"
             else:
@@ -1003,15 +1036,16 @@ class analysis:
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
             relvance_file.write(key_lambdaMart[2] + " & MAP & " + " & ".join(
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][1]]]) + "\n")
-            map_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][1]],
-                                [float(a) for a in metrics[original_key][1]])
+
+            map_sig = ttest_rel([np.mean(t[key_lambdaMart]["map"][q]) for q in t[key_lambdaMart]["map"]],
+                                [np.mean(t[original_key]["map"][q]) for q in t[original_key]["map"]])
             if map_sig[1] <= 0.1:
                 map_sig = "Yes"
             else:
                 map_sig = "No"
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
-            mrr_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][2]],
-                                [float(a) for a in metrics[original_key][2]])
+            mrr_sig = ttest_rel([np.mean(t[key_lambdaMart]["mrr"][q]) for q in t[key_lambdaMart]["mrr"]],
+                                [np.mean(t[original_key]["mrr"][q]) for q in t[original_key]["mrr"]])
             relvance_file.write(key_lambdaMart[2] + " & MRR & " + " & ".join(
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][2]]]) + "\n")
             if mrr_sig[1] <= 0.1:
@@ -1023,6 +1057,7 @@ class analysis:
             table_file.write(line)
 
         table_file.write("\\end{longtable}")
+
         relvance_file.close()
 
     def create_relevant_qrel_file(self, qrels, scores):
