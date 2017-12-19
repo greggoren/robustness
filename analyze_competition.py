@@ -995,21 +995,21 @@ class analysis:
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
             nd_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][0]],
                                [float(a) for a in metrics[original_key][0]])
-            if nd_sig[1] <= 0.05:
+            if nd_sig[1] <= 0.1:
                 nd_sig = "Yes"
             else:
                 nd_sig = "No"
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
             map_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][1]],
                                 [float(a) for a in metrics[original_key][1]])
-            if map_sig[1] <= 0.05:
+            if map_sig[1] <= 0.1:
                 map_sig = "Yes"
             else:
                 map_sig = "No"
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
             mrr_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][2]],
                                 [float(a) for a in metrics[original_key][2]])
-            if mrr_sig[1] <= 0.05:
+            if mrr_sig[1] <= 0.1:
                 mrr_sig = "Yes"
             else:
                 mrr_sig = "No"
