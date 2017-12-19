@@ -1037,7 +1037,7 @@ class analysis:
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][0]]]) + "\n")
             nd_sig = ttest_rel([np.mean(t[key_lambdaMart]["ndcg"][q]) for q in t[key_lambdaMart]["ndcg"]],
                                [np.mean(t[original_key]["ndcg"][q]) for q in t[original_key]["ndcg"]])
-            if nd_sig[1] <= 0.1:
+            if nd_sig[1] <= 0.05:
                 nd_sig = "Yes"
             else:
                 nd_sig = "No"
@@ -1047,7 +1047,7 @@ class analysis:
 
             map_sig = ttest_rel([np.mean(t[key_lambdaMart]["map"][q]) for q in t[key_lambdaMart]["map"]],
                                 [np.mean(t[original_key]["map"][q]) for q in t[original_key]["map"]])
-            if map_sig[1] <= 0.1:
+            if map_sig[1] <= 0.05:
                 map_sig = "Yes"
             else:
                 map_sig = "No"
@@ -1056,7 +1056,7 @@ class analysis:
                                 [np.mean(t[original_key]["mrr"][q]) for q in t[original_key]["mrr"]])
             relvance_file.write(key_lambdaMart[2] + " & MRR & " + " & ".join(
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][2]]]) + "\n")
-            if mrr_sig[1] <= 0.1:
+            if mrr_sig[1] <= 0.05:
                 mrr_sig = "Yes"
             else:
                 mrr_sig = "No"
