@@ -1000,7 +1000,7 @@ class analysis:
 
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
-        pvalue = 0.05
+        pvalue = 0.1
         tmp  = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm,competition_data)
         rankings = self.retrieve_ranking(scores)
