@@ -976,13 +976,12 @@ class analysis:
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
-        qrels = self.retrive_qrel("rel/new_rel")
-        mrr_greg = self.mrr(qrels,ranks)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{16}{c}}\n")
         table_file.write(
             "Ranker & Epsilon & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 &  ND SIG & MAP & MAP SIG & MRR & MRR SIG  \\\\\\\\ \n")
         original_key = ("", "l.pickle1", "LambdaMart" + "_0", "b")
+        relvance_file = open("relevance_stats.tex", 'w')
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
@@ -992,7 +991,9 @@ class analysis:
             max_rbo = str(round(max(rbo_min[key_lambdaMart][0]),3))
             change = str(round(np.mean(cr[key_lambdaMart][0]),3))
             m_change = str(round(min(cr[key_lambdaMart][0]),3))
-            nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
+            nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
+            relvance_file.write(key_lambdaMart[2] + " & ND & " + " & ".join(
+                [str(b) for b in [float(a) for a in metrics[key_lambdaMart][0]]]) + "\n")
             nd_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][0]],
                                [float(a) for a in metrics[original_key][0]])
             if nd_sig[1] <= 0.1:
@@ -1000,6 +1001,8 @@ class analysis:
             else:
                 nd_sig = "No"
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
+            relvance_file.write(key_lambdaMart[2] + " & MAP & " + " & ".join(
+                [str(b) for b in [float(a) for a in metrics[key_lambdaMart][1]]]) + "\n")
             map_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][1]],
                                 [float(a) for a in metrics[original_key][1]])
             if map_sig[1] <= 0.1:
@@ -1009,6 +1012,8 @@ class analysis:
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
             mrr_sig = ttest_rel([float(a) for a in metrics[key_lambdaMart][2]],
                                 [float(a) for a in metrics[original_key][2]])
+            relvance_file.write(key_lambdaMart[2] + " & MRR & " + " & ".join(
+                [str(b) for b in [float(a) for a in metrics[key_lambdaMart][2]]]) + "\n")
             if mrr_sig[1] <= 0.1:
                 mrr_sig = "Yes"
             else:
@@ -1016,11 +1021,9 @@ class analysis:
             tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, nd_sig, map, map_sig, mrr, mrr_sig]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
-            print(key_lambdaMart)
-            print(metrics[key_lambdaMart][1])
-            print(metrics[key_lambdaMart][0])
-            print(metrics[key_lambdaMart][2])
+
         table_file.write("\\end{longtable}")
+        relvance_file.close()
 
     def create_relevant_qrel_file(self, qrels, scores):
         for ranker in scores:
@@ -1034,8 +1037,6 @@ class analysis:
                                          qrels[epoch][query][doc]])
                         f.write(line + "\n")
                 f.close()
-
-
 
     def create_epsilon_for_Lambda_mart_projected(self, competition_data, svm, banned_queries):
         scores = {}
@@ -1059,6 +1060,7 @@ class analysis:
         table_file.write("\\begin{longtable}{*{6}{c}}\n")
         table_file.write(
             "Ranker & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
+        relevance_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         for key_lambdaMart in cr:
             change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
             m_change = str(round(min(cr[key_lambdaMart][0]), 3))
