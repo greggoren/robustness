@@ -481,7 +481,7 @@ class analysis:
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
-        if epoch < 2:
+        if epoch < 5:
             return current_ranking
         if model==1:
             for rank in range(len(current_ranking)):
@@ -994,8 +994,7 @@ class analysis:
             nd=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0] ]),3))
             map=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]),3))
             mrr=str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]),3))
-            mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]),3))
-            tmp=[kt_avg,max_kt,avg_rbo,max_rbo,change,m_change,nd,map,mrr,mrr_g]
+            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, map, mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
             print(key_lambdaMart)
