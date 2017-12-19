@@ -418,30 +418,33 @@ class analysis:
 
                 command_t = "./trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command_t):
-                    if line.split()[1] == "all":
-                        break
-                    if not ttest_eval[svm]["ndcg"].get(line.split()[1], False):
-                        ttest_eval[svm]["ndcg"][line.split()[1]] = []
-                    ndcg_score = line.split()[2].rstrip()
-                    ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
+                    if len(line.split()) > 1:
+                        if line.split()[1] == "all":
+                            break
+                        if not ttest_eval[svm]["ndcg"].get(line.split()[1], False):
+                            ttest_eval[svm]["ndcg"][line.split()[1]] = []
+                        ndcg_score = line.split()[2].rstrip()
+                        ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
 
                 command_t = "./trec_eval -q -m map " + qrels + " " + score_file
                 for line in run_command(command_t):
-                    if line.split()[1] == "all":
-                        break
-                    if not ttest_eval[svm]["map"].get(line.split()[1], False):
-                        ttest_eval[svm]["map"][line.split()[1]] = []
-                    map_score = line.split()[2].rstrip()
-                    ttest_eval[svm]["map"][line.split()[1]].append(float(map_score))
+                    if len(line.split()) > 1:
+                        if line.split()[1] == "all":
+                            break
+                        if not ttest_eval[svm]["map"].get(line.split()[1], False):
+                            ttest_eval[svm]["map"][line.split()[1]] = []
+                        map_score = line.split()[2].rstrip()
+                        ttest_eval[svm]["map"][line.split()[1]].append(float(map_score))
 
                 command_t = "./trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command_t):
-                    if line.split()[1] == "all":
-                        break
-                    if not ttest_eval[svm]["mrr"].get(line.split()[1], False):
-                        ttest_eval[svm]["mrr"][line.split()[1]] = []
-                    mrr_score = line.split()[2].rstrip()
-                    ttest_eval[svm]["mrr"][line.split()[1]].append(float(mrr_score))
+                    if len(line.split()) > 1:
+                        if line.split()[1] == "all":
+                            break
+                        if not ttest_eval[svm]["mrr"].get(line.split()[1], False):
+                            ttest_eval[svm]["mrr"][line.split()[1]] = []
+                        mrr_score = line.split()[2].rstrip()
+                        ttest_eval[svm]["mrr"][line.split()[1]].append(float(mrr_score))
 
 
 
