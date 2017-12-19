@@ -481,8 +481,8 @@ class analysis:
 
     def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
         new_rank =[]
-        if epoch < 3:
-            return current_ranking
+        # if epoch < 3:
+        #     return current_ranking
         if model==1:
             for rank in range(len(current_ranking)):
                 if rank + 1 < len(current_ranking):
