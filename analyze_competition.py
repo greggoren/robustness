@@ -1093,7 +1093,7 @@ class analysis:
                     if np.mean(all_metrics_mrr) < np.mean(base_mrr):
                         worse_mrr += 1
             tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, nd_sig, map, map_sig, mrr, mrr_sig,
-                   str(worse_ndcg), str(worse_map), str(worse_mrr), str(better_ndcg), str(better_map), str(better_mrr)]
+                   str(worse_ndcg), str(better_ndcg), str(worse_map), str(better_map), str(worse_mrr), str(better_mrr)]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
 
