@@ -1000,6 +1000,7 @@ class analysis:
 
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
+        pvalue = 0.05
         tmp  = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm,competition_data)
         rankings = self.retrieve_ranking(scores)
@@ -1037,7 +1038,7 @@ class analysis:
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][0]]]) + "\n")
             nd_sig = ttest_rel([np.mean(t[key_lambdaMart]["ndcg"][q]) for q in t[key_lambdaMart]["ndcg"]],
                                [np.mean(t[original_key]["ndcg"][q]) for q in t[original_key]["ndcg"]])
-            if nd_sig[1] <= 0.05:
+            if nd_sig[1] <= pvalue:
                 nd_sig = "Yes"
             else:
                 nd_sig = "No"
@@ -1047,7 +1048,7 @@ class analysis:
 
             map_sig = ttest_rel([np.mean(t[key_lambdaMart]["map"][q]) for q in t[key_lambdaMart]["map"]],
                                 [np.mean(t[original_key]["map"][q]) for q in t[original_key]["map"]])
-            if map_sig[1] <= 0.05:
+            if map_sig[1] <= pvalue:
                 map_sig = "Yes"
             else:
                 map_sig = "No"
@@ -1056,11 +1057,43 @@ class analysis:
                                 [np.mean(t[original_key]["mrr"][q]) for q in t[original_key]["mrr"]])
             relvance_file.write(key_lambdaMart[2] + " & MRR & " + " & ".join(
                 [str(b) for b in [float(a) for a in metrics[key_lambdaMart][2]]]) + "\n")
-            if mrr_sig[1] <= 0.05:
+            if mrr_sig[1] <= pvalue:
                 mrr_sig = "Yes"
             else:
                 mrr_sig = "No"
-            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, nd_sig, map, map_sig, mrr, mrr_sig]
+
+            better_ndcg = 0
+            better_map = 0
+            better_mrr = 0
+            worse_ndcg = 0
+            worse_map = 0
+            worse_mrr = 0
+
+            for i in range(8):
+
+                all_metrics_ndcg = [t[key_lambdaMart]["ndcg"][q][i] for q in t[key_lambdaMart]["ndcg"]]
+                base_ndcg = [t[original_key]["ndcg"][q][i] for q in t[original_key]["ndcg"]]
+                if ttest_rel(all_metrics_ndcg, base_ndcg)[1] <= pvalue:
+                    if np.mean(all_metrics_ndcg) > np.mean(base_ndcg):
+                        better_ndcg += 1
+                    if np.mean(all_metrics_ndcg) < np.mean(base_ndcg):
+                        worse_ndcg += 1
+                all_metrics_map = [t[key_lambdaMart]["map"][q][i] for q in t[key_lambdaMart]["map"]]
+                base_map = [t[original_key]["map"][q][i] for q in t[original_key]["map"]]
+                if ttest_rel(all_metrics_map, base_map)[1] <= pvalue:
+                    if np.mean(all_metrics_map) > np.mean(base_map):
+                        better_map += 1
+                    if np.mean(all_metrics_map) < np.mean(base_map):
+                        worse_map += 1
+                all_metrics_mrr = [t[key_lambdaMart]["mrr"][q][i] for q in t[key_lambdaMart]["mrr"]]
+                base_mrr = [t[original_key]["mrr"][q][i] for q in t[original_key]["mrr"]]
+                if ttest_rel(all_metrics_mrr, base_mrr)[1] <= pvalue:
+                    if np.mean(all_metrics_mrr) > np.mean(base_mrr):
+                        better_mrr += 1
+                    if np.mean(all_metrics_mrr) < np.mean(base_mrr):
+                        worse_mrr += 1
+            tmp = [kt_avg, max_kt, avg_rbo, max_rbo, change, m_change, nd, nd_sig, map, map_sig, mrr, mrr_sig,
+                   worse_ndcg, worse_map, worse_mrr, better_ndcg, better_map, better_mrr]
             line=key_lambdaMart[2]+" & "+" & ".join(tmp)+" \\\\ \n"
             table_file.write(line)
 
