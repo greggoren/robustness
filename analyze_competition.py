@@ -503,8 +503,9 @@ class analysis:
                 else:
                     condorcet_count[doc_win] += 1
             new_rank = sorted(current_ranking,
-                              key=lambda x: (condorcet_count[x], len(current_ranking) - current_ranking.index(x)),
+                              key=lambda x: (condorcet_count[x]),
                               reverse=True)
+        # , len(current_ranking) - current_ranking.index(x)),
         if model == 3:
             last_winner = last_ranking[0]
             current_winner = current_ranking[0]
