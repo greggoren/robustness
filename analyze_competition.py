@@ -1012,7 +1012,7 @@ class analysis:
                         last[ranker][query] = ranks[ranker][epoch][query]
                         continue
                     current_ranking = ranks[ranker][epoch][query]
-                    overlap[ranker][query] += len(set(current_ranking[:2]).intersection(set(last[ranker][query][:2])))
+                    overlap[ranker][query] += len(set(current_ranking[:3]).intersection(set(last[ranker][query][:3])))
                     # last[ranker][query] = current_ranking
         return overlap
 
