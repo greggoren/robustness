@@ -998,8 +998,29 @@ class analysis:
             print(line)
         return final
 
+    def get_overlap_stats(self, ranks):
+        last = {}
+        overlap = {}
+        for ranker in ranks:
+            last[ranker] = {}
+            overlap[ranker] = {}
+            for epoch in ranks[ranker]:
+                for query in ranks[ranker][epoch]:
+                    if not overlap[ranker].get(query, False):
+                        overlap[ranker][query] = 0
+                    if not last[ranker].get(query, False):
+                        last[query] = ranks[ranker][epoch][query]
+                        continue
+                    current_ranking = ranks[ranker][epoch][query]
+                    overlap[ranker][query] += len(set(current_ranking[:3]).intersection(last[query][:3]))
+                    last[ranker][query] = current_ranking
+        return overlap
+
+
+
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
+        overlap = {}
         pvalue = 0.1
         tmp  = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm,competition_data)
@@ -1100,6 +1121,8 @@ class analysis:
         table_file.write("\\end{longtable}")
 
         relvance_file.close()
+        overlap = self.get_overlap_stats(ranks)
+        print(np.mean([float(overlap[original_key][q]) / 7 for q in overlap[original_key]]))
 
     def create_relevant_qrel_file(self, qrels, scores):
         for ranker in scores:
