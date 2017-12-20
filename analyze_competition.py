@@ -1009,7 +1009,7 @@ class analysis:
                     if not overlap[ranker].get(query, False):
                         overlap[ranker][query] = 0
                     if not last[ranker].get(query, False):
-                        last[query] = ranks[ranker][epoch][query]
+                        last[ranker][query] = ranks[ranker][epoch][query]
                         continue
                     current_ranking = ranks[ranker][epoch][query]
                     overlap[ranker][query] += len(set(current_ranking[:3]).intersection(set(last[ranker][query][:3])))
