@@ -93,6 +93,6 @@ def create_histogram(data_epsilon,title,feature,feature_map,epsilons):
 # create_plot(features, data_epsilon, epsilons, feature_map, colors, "epsilon06", not_to_plot)
 # for feature in features:
 #     create_histogram(data_epsilon,feature,feature,feature_map,epsilons)
-data = read_file("relevance_stats.tex", epsilons)
+data = read_file("relevance_stats1.tex", epsilons)
 for metric in ["NDCG", "MAP", "MRR"]:
     create_rel_plot(metric, data, relevant_epsilons, colors)
