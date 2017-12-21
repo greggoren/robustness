@@ -427,7 +427,7 @@ class analysis:
                         if not ttest_eval[svm]["ndcg"].get(line.split()[1], False):
                             ttest_eval[svm]["ndcg"][line.split()[1]] = []
                         ndcg_score = line.split()[2].rstrip()
-                        if str(line.split()[1]).__contains__("195"):
+                        if str(line.split()[1]).__contains__("182"):
                             debug[svm].append(ndcg_score)
                         ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
                     else:
