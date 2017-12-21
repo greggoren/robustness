@@ -384,8 +384,10 @@ class analysis:
     def calculate_metrics(self,models):
         metrics = {}
         ttest_eval = {}
+        debug = {}
         for svm in models:
             ttest_eval[svm] = {"ndcg": {}, "map": {}, "mrr": {}}
+            debug[svm] = []
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
@@ -421,9 +423,12 @@ class analysis:
                     if len(line.split()) > 1:
                         if line.split()[1] == "all":
                             break
+
                         if not ttest_eval[svm]["ndcg"].get(line.split()[1], False):
                             ttest_eval[svm]["ndcg"][line.split()[1]] = []
                         ndcg_score = line.split()[2].rstrip()
+                        if line.split()[1].__contains__("195"):
+                            debug[svm].append(ndcg_score)
                         ttest_eval[svm]["ndcg"][line.split()[1]].append(float(ndcg_score))
                     else:
                         break
@@ -456,7 +461,7 @@ class analysis:
 
 
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
-        return metrics, ttest_eval
+        return metrics, ttest_eval, debug
 
     def get_average_epsilon(self,scores,number_of_competitors):
         stat={}
@@ -1039,7 +1044,7 @@ class analysis:
             ranks[key_lambdaMart]=ranked
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
-        metrics, t = self.calculate_metrics(scores)
+        metrics, t, d = self.calculate_metrics(scores)
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{16}{c}}\n")
         table_file.write(
@@ -1124,8 +1129,8 @@ class analysis:
         relvance_file.close()
         overlap = self.get_overlap_stats(ranks)
         print(np.mean([float(overlap[original_key][q]) / 7 for q in overlap[original_key]]))
-        print(kendall[original_key][1])
-        print(kendall[("", "l.pickle1", "LambdaMart" + "_200", "b")][1])
+        print(d[original_key])
+        print(d[("", "l.pickle1", "LambdaMart" + "_200", "b")])
     def create_relevant_qrel_file(self, qrels, scores):
         for ranker in scores:
             for epoch in scores[ranker]:
