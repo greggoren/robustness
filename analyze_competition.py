@@ -1131,6 +1131,8 @@ class analysis:
         print(np.mean([float(overlap[original_key][q]) / 7 for q in overlap[original_key]]))
         print(d[original_key])
         print(d[("", "l.pickle1", "LambdaMart" + "_200", "b")])
+        print(ranks[original_key][4]["010"])
+        print(ranks[("", "l.pickle1", "LambdaMart" + "_200", "b")][4]["010"])
     def create_relevant_qrel_file(self, qrels, scores):
         for ranker in scores:
             for epoch in scores[ranker]:
