@@ -398,14 +398,14 @@ class analysis:
                 score_file = name + str(i)
                 qrels = "rel3/rel0" + str(i)
                 # qrels = name + str(i) + ".rel"
-                command = "./trec_eval -m ndcg_cut.1 " + qrels + " " + score_file
+                command = "./trec_eval -m ndcg_cut.2 " + qrels + " " + score_file
                 for line in run_command(command):
                     print(line)
                     ndcg_score = line.split()[2].rstrip()
                     ndcg_by_epochs.append(ndcg_score)
                     break
 
-                command1 = "./trec_eval -m map_cut.1 " + qrels + " " + score_file
+                command1 = "./trec_eval -m map_cut.2 " + qrels + " " + score_file
                 for line in run_command(command1):
                     print(line)
                     map_score = line.split()[2].rstrip()
