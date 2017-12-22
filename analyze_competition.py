@@ -396,7 +396,7 @@ class analysis:
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name + str(i)
-                qrels = "rel/rel0" + str(i)
+                qrels = "rel3/rel0" + str(i)
                 # qrels = name + str(i) + ".rel"
                 command = "./trec_eval -m ndcg_cut.1 " + qrels + " " + score_file
                 for line in run_command(command):
@@ -1050,7 +1050,7 @@ class analysis:
         table_file.write(
             "Ranker & Epsilon & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & Avg NDCG@5 &  ND SIG & MAP & MAP SIG & MRR & MRR SIG  \\\\\\\\ \n")
         original_key = ("", "l.pickle1", "LambdaMart" + "_0", "b")
-        relvance_file = open("relevance_stats.tex", 'w')
+        relvance_file = open("relevance_stats_full.tex", 'w')
         for key_lambdaMart in kendall:
             if key_lambdaMart[2].__contains__("SVMRank"):
                 continue
