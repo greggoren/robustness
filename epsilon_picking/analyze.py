@@ -115,11 +115,11 @@ class analyze:
             rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
             ranked_docs[key_lambdaMart]=ranked_lists
             rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
-        qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
-        mrr_greg = self.mrr(qrel_dict,ranked_docs)
+        # qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
+        # mrr_greg = self.mrr(qrel_dict,ranked_docs)
         cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
-        metrics = self.calculate_metrics(scores)
+        # metrics = self.calculate_metrics(scores)
 
         table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{7}{c}}\n")
@@ -130,14 +130,15 @@ class analyze:
                 continue
             change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
             m_change = str(round(min(cr[key_lambdaMart][0]), 3))
-            nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
-            map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
-            mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
-            mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]), 3))
-            tmp = [change, m_change, nd, map, mrr,mrr_g]
+            # nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
+            # map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
+            # mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
+            # mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]), 3))
+            # tmp = [change, m_change, nd, map, mrr,mrr_g]
+            tmp = [change, m_change]
             line = key_lambdaMart[2] + " & " + " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
-            print(metrics[key_lambdaMart][2])
+            # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
 
     def calculate_average_kendall_tau(self, rankings,values,banned_queries):
