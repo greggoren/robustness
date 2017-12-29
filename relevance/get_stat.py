@@ -25,3 +25,4 @@ for i in stat:
 for i in stat:
     print("iter", i)
     print(sum([1 for q in a[i] if a[i][q] == 1 or a[i][q] == 0]))
+

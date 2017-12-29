@@ -50,8 +50,6 @@ for i in range(1,201):
     # svm.query_to_fold_index[str(i).zfill(3)]=1
 for i in range(1,6):
     svm.weights_index[i] = w
-
 mh_svm=[(svm,"svm.pickle1","SVM",'k')]
 cd = preprocess.extract_features_by_epoch("../data/featuresASR_L")
-
 analyze.create_epsilon_for_Lambda_mart(cd,mh_svm,banned_queries)

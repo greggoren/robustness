@@ -1022,6 +1022,44 @@ class analysis:
                     # last[ranker][query] = current_ranking
         return overlap
 
+    def get_relevance(self, rel_file):
+        stat = {i: {} for i in range(9)}
+        with open(rel_file) as rel:
+            for line in rel:
+                splited = line.split()
+                query = splited[0]
+                iter = int(splited[2].split("-")[1])
+                if not stat[iter].get(query, False):
+                    stat[iter][query] = []
+                if int(splited[3]) > 0:
+                    stat[iter][query].append(1)
+                else:
+                    stat[iter][query].append(0)
+        return stat
+
+    def get_relevance_stats(self, rel_stat, ranked_lists):
+        first_two_relevant = {e: 0 for e in ranked_lists}
+        denom = {e: 0 for e in ranked_lists}
+        stat = {e: 0 for e in ranked_lists}
+        histogram_from_rel_to_not = {i: 0 for i in range(1, 6)}
+        histogram_from_not_to_rel = {i: 0 for i in range(1, 6)}
+        histogram_from_rel_to_rel = {i: 0 for i in range(1, 6)}
+        for epoch in ranked_lists:
+            for query in ranked_lists[epoch]:
+                ranks = ranked_lists[epoch][query]
+                first_two_relevant[epoch] += rel_stat[epoch][query][ranks[0]]
+                first_two_relevant[epoch] += rel_stat[epoch][query][ranks[1]]
+                denom[epoch] += 2
+        for epoch in first_two_relevant:
+            stat[epoch] = float(first_two_relevant[epoch]) / denom[epoch]
+
+        for epoch in ranked_lists:
+            for query in ranked_lists[epoch]:
+                ranked_list = ranked_lists[epoch][query]
+                for doc in ranked_list:
+                    ''  # ''if rel_stat[epoch][query][]
+
+
 
 
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
@@ -1032,7 +1070,7 @@ class analysis:
         tmp2 = self.get_all_scores(svm,competition_data)
         rankings = self.retrieve_ranking(scores)
         ranks={}
-        epsilons = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200]
+        # epsilons = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 150, 200]
         # epsilons = [0, 1, 2, 3, 4, 5, 6, 7,8,9,10]
         epsilons = [0, 80, 81, 82, 83, 85, 86, 87, 88, 89, 90]
         for epsilon in epsilons:
