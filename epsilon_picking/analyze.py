@@ -106,7 +106,7 @@ class analyze:
         tmp = self.create_lambdaMart_scores(competition_data)
         tmp2 = self.get_all_scores(svm, competition_data)
         rankings = self.retrieve_ranking(scores)
-        epsilons = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        epsilons = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
         for epsilon in epsilons:
             key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
             key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
