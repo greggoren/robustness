@@ -100,10 +100,9 @@ class analyze:
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
-    def create_table(self, competition_data, svm, banned_queries):
-        scores = self.get_all_scores(svm, competition_data)
+    def create_table(self, competition_data, svms, banned_queries):
+        scores = self.get_all_scores(svms, competition_data)
         rankings = self.retrieve_ranking(scores)
-        # qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, [], banned_queries)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
@@ -124,7 +123,7 @@ class analyze:
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             tmp = ["SVMRank", model, average_kt, min_kt, average_rbo, min_rbo, change, m_change, nd, map, mrr]
-            line = key[2] + " & " + " & ".join(tmp) + " \\\\ \n"
+            line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
         table_file.write("\\end{longtable}")
 

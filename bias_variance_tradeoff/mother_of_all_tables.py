@@ -48,19 +48,7 @@ def upload_models(models_dir):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    analyze = a.analysis()
-    meta_mhs = []
-    name_dict = {"pos_plus": "POS/NEG Max", "pos_plus_big": "POS/NEG Max", "pos_minus_big": "POS/NEG Min",
-                 'pos_minus': "POS/NEG Min", 'squared_minus_big': "Squared Min", 'squared_plus_big': "Squared Max",
-                 'squared_minus': "Squared Min", 'squared_plus': "Squared Max", "regular": "SVM",
-                 "L1": "L1 regularization", "doubly": "Doubly regularization", "minmax": "Min Max", "maxmin": "Max Min",
-                 "test": "L1"}
-    reverse = {name_dict[a]: a for a in name_dict}
-    dirs = ["test"]
-    for dir in dirs:
-        meta_mhs.append(create_mhs(dir))
-    meta_model_objects = []
-    for mhs in meta_mhs:
-        meta_model_objects.append(preprocess.load_model_handlers(mhs))
-    cd = preprocess.extract_features_by_epoch("features_asr_modified")
-    analyze.create_table(meta_model_objects, cd, name_dict)
+    analyze = a.analyze()
+    svms = upload_models("models_light")
+    competition_data = preprocess.extract_features_by_epoch("features_asr_modified")
+    analyze.create_table(competition_data, svms, [])
