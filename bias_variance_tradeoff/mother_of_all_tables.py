@@ -44,6 +44,7 @@ def upload_models(models_dir):
             model_file = root + "/" + file
             w = recover_model(model_file)
             model_handlers.append((model_file, w))
+    return model_handlers
 
 
 if __name__ == "__main__":
