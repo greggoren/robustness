@@ -87,9 +87,6 @@ class analyze:
         for key in change_rate:
             model = key.split("svm_model")[1]
             average_kt = str(round(np.mean(kendall[key][0]), 3))
-            print(key)
-            print(average_kt)
-            print(kendall[key][0])
             max_kt = str(round(max(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
             max_rbo = str(round(max(rbo_min_models[key][0]), 3))
@@ -138,6 +135,10 @@ class analyze:
                             5):
                         change_rate_svm += 1
                     n_q += 1
+                    print(epoch)
+                    print(svm)
+                    print(last_list_index_svm[query])
+                    print(current_list_svm)
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
