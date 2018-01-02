@@ -51,5 +51,5 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     svms = upload_models("models_light")
-    competition_data = preprocess.extract_features_by_epoch("features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     analyze.create_table(competition_data, svms, [])

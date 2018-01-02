@@ -19,29 +19,6 @@ def run_bash_command(command):
     return out
 
 class analyze:
-
-
-
-    def create_lambdaMart_scores(self,competition_data):
-        scores={e :{} for e in competition_data}
-        for epoch in competition_data:
-            scores[epoch]={q:{} for q in competition_data[epoch]}
-            order = {_e: {} for _e in competition_data}
-            data_set = []
-            queries=[]
-            index = 0
-            for query in competition_data[epoch]:
-                for doc in competition_data[epoch][query]:
-                    data_set.append(competition_data[epoch][query][doc])
-                    queries.append(query)
-                    order[epoch][index]=doc+"@@@"+query
-                    index+=1
-            features_file = "features"+str(epoch)
-            self.create_data_set_file(data_set,queries,features_file)
-            score_file=self.run_lambda_mart(features_file,epoch)
-            scores=self.retrieve_scores(score_file,order,epoch,scores)
-        return scores
-
     def order_trec_file(self,trec_file):
         final = trec_file.replace(".txt","")
         command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
@@ -229,8 +206,6 @@ class analyze:
         for query in scores_svm[1]:
             competitors[query] = scores_svm[1][query].keys()
         return competitors
-
-
 
 
 
