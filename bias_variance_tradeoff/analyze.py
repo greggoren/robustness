@@ -87,6 +87,8 @@ class analyze:
         for key in change_rate:
             model = key.split("svm_model")[1]
             average_kt = str(round(np.mean(kendall[key][0]), 3))
+            print(average_kt)
+            print(kendall[key][0])
             max_kt = str(round(max(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
             max_rbo = str(round(max(rbo_min_models[key][0]), 3))
