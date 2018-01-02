@@ -72,12 +72,12 @@ class analyze:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1,5):
+            for i in range(1, 9):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
                 score_file = name+str(i)
-                qrels = "../rel2/rel0"+str(i)
+                qrels = "../rel/rel0" + str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
@@ -103,7 +103,7 @@ class analyze:
     def create_table(self, competition_data, svms, banned_queries):
         scores = self.get_all_scores(svms, competition_data)
         rankings = self.retrieve_ranking(scores)
-        kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, [], banned_queries)
+        kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, [])
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
 
