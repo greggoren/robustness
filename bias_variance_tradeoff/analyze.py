@@ -146,7 +146,10 @@ class analyze:
                     sum_rbo_min += rbo
                     sum_rbo_min_orig += rbo_orig
                     if not np.isnan(kt):
+
                         sum_svm += kt
+                    else:
+                        print('here')
                     if not np.isnan(kt_orig):
                         sum_svm_original += kt_orig
                     last_list_index_svm[query] = current_list_svm

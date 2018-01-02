@@ -51,5 +51,9 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     svms = upload_models("models_light")
+    for svm in svms:
+        w = svms[svm]
+        if len(w) != 26:
+            print(w)
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     analyze.create_table(competition_data, svms, [])
