@@ -107,12 +107,12 @@ class analyze:
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
 
-        table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
+        table_file = open("table_value.tex", 'w')
         table_file.write("\\begin{longtable}{*{7}{c}}\n")
         table_file.write(
             "Ranker & C & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC \\\\\\\\ \n")
         for key in change_rate:
-            model = key[0].split("svm_model")[0]
+            model = key.split("svm_model")[0]
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             min_kt = str(round(min(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
@@ -192,6 +192,7 @@ class analyze:
     def get_all_scores(self,svms,competition_data):
         scores = {}
         for svm in svms:
+
             scores[svm] = {}
             epochs = list(competition_data.keys())
             for epoch in epochs:
@@ -200,7 +201,7 @@ class analyze:
                     scores[svm][epoch][query] = {}
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(svm[1], features_vector.T)
+                        scores[svm][epoch][query][doc] = np.dot(svms[svm], features_vector.T)
         return scores
 
 

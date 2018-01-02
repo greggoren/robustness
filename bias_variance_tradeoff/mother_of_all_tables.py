@@ -38,12 +38,12 @@ def recover_model(model):
 
 
 def upload_models(models_dir):
-    model_handlers = []
+    model_handlers = {}
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             model_file = root + "/" + file
             w = recover_model(model_file)
-            model_handlers.append(tuple((model_file, w)))
+            model_handlers[model_file] = w
     return model_handlers
 
 
