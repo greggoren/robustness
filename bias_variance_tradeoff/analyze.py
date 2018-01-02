@@ -135,10 +135,6 @@ class analyze:
                             5):
                         change_rate_svm += 1
                     n_q += 1
-                    print(epoch)
-                    print(svm)
-                    print(last_list_index_svm[query])
-                    print(current_list_svm)
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
@@ -172,6 +168,7 @@ class analyze:
 
             scores[svm] = {}
             epochs = list(competition_data.keys())
+            print(epochs)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
