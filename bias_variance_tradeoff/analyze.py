@@ -148,8 +148,6 @@ class analyze:
                     if not np.isnan(kt):
 
                         sum_svm += kt
-                    else:
-                        print('here')
                     if not np.isnan(kt_orig):
                         sum_svm_original += kt_orig
                     last_list_index_svm[query] = current_list_svm
@@ -202,8 +200,7 @@ class analyze:
         rank_vector = []
         for doc in original_list:
             try:
-                print(len(original_list))
-                rank_vector.append(len(original_list) - (sorted_list.index(doc)))
+                rank_vector.append(5 - (sorted_list.index(doc)))
             except:
                 print(original_list,sorted_list)
         return rank_vector
