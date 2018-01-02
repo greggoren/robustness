@@ -57,8 +57,7 @@ class analyze:
     def extract_score(self, scores):
         for svm in scores:
             for epoch in scores[svm]:
-                part = svm[1].split(".pickle")
-                name = part[0]+part[1].replace(".","")+svm[2]
+                name = "svm" + svm.split("svm_model")[1]
                 f = open(name+str(epoch)+".txt",'w')
                 for query in scores[svm][epoch]:
                     for doc in scores[svm][epoch][query]:
