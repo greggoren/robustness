@@ -72,8 +72,7 @@ class analyze:
             map_by_epochs = []
             mrr_by_epochs = []
             for i in range(1, 9):
-                part = svm[1].split(".pickle")
-                name = part[0] + part[1].replace(".", "")+svm[2]
+                name = "svm" + svm.split("svm_model")[1]
 
                 score_file = name+str(i)
                 qrels = "../rel/rel0" + str(i)
