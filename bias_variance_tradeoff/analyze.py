@@ -1,7 +1,5 @@
-import itertools
 import subprocess
 import numpy as np
-from copy import deepcopy
 from scipy.stats import kendalltau
 import RBO as r
 
