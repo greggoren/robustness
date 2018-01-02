@@ -110,7 +110,7 @@ class analyze:
         table_file.write(
             "Ranker & C & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC \\\\\\\\ \n")
         for key in change_rate:
-            model = key.split("svm_model")[0]
+            model = key.split("svm_model")[1]
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             min_kt = str(round(min(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
