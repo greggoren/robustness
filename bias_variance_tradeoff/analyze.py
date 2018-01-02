@@ -167,7 +167,7 @@ class analyze:
         for svm in svms:
 
             scores[svm] = {}
-            epochs = list(competition_data.keys())
+            epochs = sorted(list(competition_data.keys()))
             print(epochs)
             for epoch in epochs:
                 scores[svm][epoch] = {}
