@@ -18,7 +18,7 @@ def learn_svm(C, train_file):
         os.makedirs("./models_light/")
     model_file = "./models_light/svm_model" + str(C)
     learning_command = "./svm_rank_learn -c " + str(C) + " " + train_file + " " + model_file
-    for output_line in run_cohmmand(learning_command):
+    for output_line in run_command(learning_command):
         print(output_line)
     return model_file
 
