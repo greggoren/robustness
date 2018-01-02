@@ -202,6 +202,7 @@ class analyze:
         rank_vector = []
         for doc in original_list:
             try:
+                print(len(original_list))
                 rank_vector.append(len(original_list) - (sorted_list.index(doc)))
             except:
                 print(original_list,sorted_list)
