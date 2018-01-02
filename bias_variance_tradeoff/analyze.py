@@ -193,7 +193,7 @@ class analyze:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,5)
+            epochs = list(competition_data.keys())
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
