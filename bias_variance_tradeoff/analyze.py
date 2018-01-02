@@ -140,9 +140,9 @@ class analyze:
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
-                                          {x: j for x, j in enumerate(current_list_svm)}, 0.95)["min"]
+                                          {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
-                                     {x: j for x, j in enumerate(current_list_svm)}, 0.95)["min"]
+                                     {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
                     sum_rbo_min += rbo
                     sum_rbo_min_orig += rbo_orig
                     if not np.isnan(kt):
