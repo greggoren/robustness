@@ -167,8 +167,6 @@ class analyze:
                                           {x: j for x, j in enumerate(current_list_svm)}, 0.95)["min"]
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
                                      {x: j for x, j in enumerate(current_list_svm)}, 0.95)["min"]
-                    tmp = self.rbo_with_all_p(last_list_index_svm[query], current_list_svm, values)
-                    sum_rbo_ps = {p: sum_rbo_ps[p] + tmp[p] for p in values}
                     sum_rbo_min += rbo
                     sum_rbo_min_orig += rbo_orig
                     if not np.isnan(kt):
