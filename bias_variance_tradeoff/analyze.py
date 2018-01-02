@@ -102,8 +102,8 @@ class analyze:
         scores = self.get_all_scores(svms, competition_data)
         rankings = self.retrieve_ranking(scores)
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, [])
-        self.extract_score(scores)
-        metrics = self.calculate_metrics(scores)
+        # self.extract_score(scores)
+        # metrics = self.calculate_metrics(scores)
 
         table_file = open("table_value.tex", 'w')
         table_file.write("\\begin{longtable}{*{7}{c}}\n")
@@ -117,10 +117,10 @@ class analyze:
             max_rbo = str(round(max(rbo_min_models[key][0]), 3))
             change = str(round(np.mean(change_rate[key][0]), 3))
             m_change = str(round(min(change_rate[key][0]), 3))
-            nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
-            map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
-            mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
-            tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map, mrr]
+            # nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
+            # map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
+            # mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
+            tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change]  # , nd, map, mrr]
             line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
         table_file.write("\\end{longtable}")
@@ -148,7 +148,6 @@ class analyze:
                 sum_svm_original = 0
                 n_q=0
                 change_rate_svm = 0
-                sum_rbo_ps = {p: 0 for p in values}
                 meta_rbo[svm] = {p: [] for p in values}
                 for query in rankings_list_svm[epoch]:
                     current_list_svm = rankings_list_svm[epoch][query]

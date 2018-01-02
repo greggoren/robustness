@@ -42,3 +42,11 @@ if __name__ == "__main__":
     C_array = [float(i) for i in range(1, 10)]
     for C in C_array:
         model_file = learn_svm(C, train_file)
+
+    C_array = [float(i * 100) for i in range(1, 10)]
+    for C in C_array:
+        model_file = learn_svm(C, train_file)
+
+    C_array = [float(i * 1000) for i in range(1, 10)]
+    for C in C_array:
+        model_file = learn_svm(C, train_file)
