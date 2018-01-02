@@ -23,27 +23,6 @@ def learn_svm(C, train_file):
     return model_file
 
 
-def recover_model(model):
-    indexes_covered = []
-    weights = []
-    with open(model) as model_file:
-        for line in model_file:
-            if line.__contains__(":"):
-                wheights = line.split()
-                wheights_length = len(wheights)
-
-                for index in range(1, wheights_length - 1):
-
-                    feature_id = int(wheights[index].split(":")[0])
-                    if index < feature_id:
-                        for repair in range(index, feature_id):
-                            if repair in indexes_covered:
-                                continue
-                            weights.append(0)
-                            indexes_covered.append(repair)
-                    weights.append(float(wheights[index].split(":")[1]))
-                    indexes_covered.append(feature_id)
-    return np.array(weights)
 
 
 if __name__ == "__main__":
