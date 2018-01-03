@@ -1,4 +1,3 @@
-import params
 import numpy as np
 import itertools
 from sklearn.datasets import load_svmlight_file

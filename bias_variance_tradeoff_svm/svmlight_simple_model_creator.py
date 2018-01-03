@@ -1,4 +1,4 @@
-from bias_variance_tradeoff import params
+from bias_variance_tradeoff_svm import params
 import numpy as np
 import os
 import subprocess

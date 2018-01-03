@@ -1,5 +1,5 @@
 import os
-from bias_variance_tradeoff import analyze as a
+from bias_variance_tradeoff_svm import analyze as a
 import prep as p
 import numpy as np
 

@@ -1,10 +1,12 @@
-from epsilon_picking import analyze as a
-import prep as p
-import sys
-import svm_models_handler as mh
 import pickle
 
 import numpy as np
+
+import prep as p
+import svm_models_handler as mh
+from bias_variance_tradeoff_svm import analyze as a
+
+
 # if __name__=="__main__":
 
 def get_banned(banned_file):
@@ -14,6 +16,7 @@ def get_banned(banned_file):
             splitted=ban.split()
             banned_queries[int(splitted[0])].append(splitted[1])
     return banned_queries
+
 
 def recover_model(model):
     indexes_covered = []

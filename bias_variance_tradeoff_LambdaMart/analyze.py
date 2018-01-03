@@ -21,11 +21,8 @@ def run_bash_command(command):
     return out
 
 class analyze:
-
-
-
-    def create_lambdaMart_scores(self,competition_data):
-        scores={e :{} for e in competition_data}
+    def create_lambdaMart_scores(self, competition_data, models):
+        scores = {model: {epoch: {} for epoch in competition_data} for model in models}
         for epoch in competition_data:
             scores[epoch]={q:{} for q in competition_data[epoch]}
             order = {_e: {} for _e in competition_data}
@@ -40,8 +37,9 @@ class analyze:
                     index+=1
             features_file = "features"+str(epoch)
             self.create_data_set_file(data_set,queries,features_file)
-            score_file=self.run_lambda_mart(features_file,epoch)
-            scores=self.retrieve_scores(score_file,order,epoch,scores)
+            for model in models:
+                score_file = self.run_lambda_mart(features_file, epoch, model)
+                scores[model] = self.retrieve_scores(score_file, order, epoch, scores)
         return scores
 
     def order_trec_file(self,trec_file):
@@ -100,78 +98,102 @@ class analyze:
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
-    def create_epsilon_for_Lambda_mart(self, competition_data, svm, banned_queries):
-        scores = {}
-        ranked_docs={}
-        tmp = self.create_lambdaMart_scores(competition_data)
-        tmp2 = self.get_all_scores(svm, competition_data)
+    def create_table(self, competition_data, models, banned_queries):
+        scores = self.create_lambdaMart_scores(competition_data, models)
         rankings = self.retrieve_ranking(scores)
-        epsilons = [20,30,35,36,37,38,39,40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
-        for epsilon in epsilons:
-            key_lambdaMart = ("", "l.pickle1", "LambdaMart" + "_" + str(epsilon), "b")
-            key_svm = ("", "l.pickle1", "SVMRank" + "_" + str(epsilon), "b")
-            scores[key_lambdaMart] = tmp
-            scores[key_svm] = tmp2[svm[0]]
-            rankings[key_lambdaMart], scores,ranked_lists = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 1)
-            ranked_docs[key_lambdaMart]=ranked_lists
-            rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
-        # qrel_dict = self.retrive_qrel("../rel2/l_qrel_asr")
-        # mrr_greg = self.mrr(qrel_dict,ranked_docs)
-        cr = self.calculate_average_kendall_tau(rankings, [], banned_queries)
+        kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, banned_queries)
         self.extract_score(scores)
-        # metrics = self.calculate_metrics(scores)
-
-        table_file = open("table_value_epsilons_LmbdaMart.tex", 'w')
-        table_file.write("\\begin{longtable}{*{7}{c}}\n")
+        metrics = self.calculate_metrics(scores)
+        keys = list(change_rate.keys())
+        keys = sorted(keys, key=lambda x: (
+        float(x.split("model_")[0].split("_")[0]), float(x.split("model_")[0].split("_")[1])))  # TODO: fix split
+        table_file = open("table_value_LmbdaMart.tex", 'w')
+        table_file.write("\\begin{longtable}{*{12}{c}}\n")
         table_file.write(
-            "Ranker & WC & Min WC & Avg NDCG@5 & MAP & MRR  \\\\\\\\ \n")
-        for key_lambdaMart in cr:
-            if key_lambdaMart[2].__contains__("SVMRank"):
-                continue
-            change = str(round(np.mean(cr[key_lambdaMart][0]), 3))
-            m_change = str(round(min(cr[key_lambdaMart][0]), 3))
-            # nd = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][0]]), 3))
-            # map = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][1]]), 3))
-            # mrr = str(round(np.mean([float(a) for a in metrics[key_lambdaMart][2]]), 3))
-            # mrr_g=str(round(np.mean([float(a) for a in mrr_greg[key_lambdaMart]]), 3))
-            # tmp = [change, m_change, nd, map, mrr,mrr_g]
-            tmp = [change, m_change]
-            line = key_lambdaMart[2] + " & " + " & ".join(tmp) + " \\\\ \n"
+            "Ranker & Trees & Leaves & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & MAP & MRR  \\\\\\\\ \n")
+        kendall_for_pearson = []
+        rbo_for_pearson = []
+        wc_for_pearson = []
+        for key in keys:
+            trees, leaves = tuple(key.split("model_")[0].split("_"))
+            average_kt = str(round(np.mean(kendall[key][0]), 3))
+            kendall_for_pearson.append(float(average_kt))
+            max_kt = str(round(max(kendall[key][0]), 3))
+            average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
+            rbo_for_pearson.append(float(average_rbo))
+            max_rbo = str(round(max(rbo_min_models[key][0]), 3))
+            change = str(round(np.mean(change_rate[key][0]), 3))
+            wc_for_pearson.append(float(change))
+            m_change = str(round(min(change_rate[key][0]), 3))
+            nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
+            map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
+            mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
+            tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
+                   mrr]
+            line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
 
-    def calculate_average_kendall_tau(self, rankings,values,banned_queries):
+    def calculate_average_kendall_tau(self, rankings, values):
+        kendall = {}
         change_rate = {}
+        rbo_min_models = {}
+        meta_rbo = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
+            kt_svm = []
+            kt_svm_orig = []
             last_list_index_svm={}
             original_list_index_svm = {}
-            change_rate_svm_epochs =[]
+            change_rate_svm_epochs = []
+            rbo_min = []
+            rbo_min_orig = []
+
             for epoch in rankings_list_svm:
+
+                sum_svm = 0
+                sum_rbo_min = 0
+                sum_rbo_min_orig = 0
+                sum_svm_original = 0
                 n_q=0
                 change_rate_svm = 0
+                meta_rbo[svm] = {p: [] for p in values}
                 for query in rankings_list_svm[epoch]:
-                    # if query in banned_queries[epoch] or query in banned_queries[epoch-1]:
-                    #     continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
                         last_list_index_svm[query]=current_list_svm
                         original_list_index_svm[query]=current_list_svm
                         continue
-                    if current_list_svm.index(5)!=last_list_index_svm[query].index(5):
-                        if  query not in banned_queries[epoch] and query not in banned_queries[epoch-1]:
-                            change_rate_svm +=1
-                    if  query not in banned_queries[epoch] and query not in banned_queries[epoch - 1]:
-                        n_q+=1
+                    # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
+                    if current_list_svm.index(5) != last_list_index_svm[query].index(
+                            5):
+                        change_rate_svm += 1
+                    n_q += 1
+                    kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
+                    kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
+                    rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
+                                          {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
+                    rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
+                                     {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
+                    sum_rbo_min += rbo
+                    sum_rbo_min_orig += rbo_orig
+                    if not np.isnan(kt):
+                        sum_svm += kt
+                    if not np.isnan(kt_orig):
+                        sum_svm_original += kt_orig
                     last_list_index_svm[query] = current_list_svm
-
                 if n_q==0:
                     continue
-                change_rate_svm_epochs.append(float(change_rate_svm)/n_q)
-
+                change_rate_svm_epochs.append(float(change_rate_svm) / n_q)
+                kt_svm.append(float(sum_svm) / n_q)
+                kt_svm_orig.append(float(sum_svm_original) / n_q)
+                rbo_min.append(float(sum_rbo_min) / n_q)
+                rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
+            kendall[svm] = (kt_svm, kt_svm_orig)
+            rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm]=(change_rate_svm_epochs,)
-        return change_rate
+        return kendall, change_rate, rbo_min_models
 
 
     def get_all_scores(self,svms,competition_data):
@@ -326,12 +348,12 @@ class analyze:
                 index+=1
         return result
 
-    def run_lambda_mart(self,features,epoch):
+    def run_lambda_mart(self, features, epoch, model):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "score"+str(epoch)
         features= features
-        model_path  = "/lv_local/home/sgregory/robustness/testmodel_250_50"
+        model_path = model
         command = java_path+" -jar "+jar_path + " -load "+model_path+" -rank "+features+ " -score "+score_file
         run_bash_command(command)
         return score_file
