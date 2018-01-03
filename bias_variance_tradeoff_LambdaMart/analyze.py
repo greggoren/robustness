@@ -21,7 +21,8 @@ def run_bash_command(command):
 
 class analyze:
     def create_lambdaMart_scores(self, competition_data, models):
-        scores = {model: {epoch: {q for q in competition_data[epoch].keys()} for epoch in competition_data} for model in
+        scores = {model: {epoch: {q: {} for q in list(competition_data[epoch].keys())} for epoch in competition_data}
+                  for model in
                   models}
         print(scores)
         for epoch in competition_data:
