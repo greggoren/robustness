@@ -1,7 +1,6 @@
 import itertools
 import subprocess
 import numpy as np
-from copy import deepcopy
 from scipy.stats import kendalltau
 import RBO as r
 
@@ -21,10 +20,12 @@ def run_bash_command(command):
     return out
 
 class analyze:
+
     def create_lambdaMart_scores(self, competition_data, models):
-        scores = {model: {epoch: {} for epoch in competition_data} for model in models}
+        scores = {model: {epoch: {q for q in competition_data[epoch].keys()} for epoch in competition_data} for model in
+                  models}
         for epoch in competition_data:
-            scores[epoch]={q:{} for q in competition_data[epoch]}
+
             order = {_e: {} for _e in competition_data}
             data_set = []
             queries=[]
