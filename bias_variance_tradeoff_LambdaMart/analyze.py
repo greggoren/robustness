@@ -32,7 +32,7 @@ class analyze:
             for query in competition_data[epoch]:
                 for doc in competition_data[epoch][query]:
                     data_set.append(competition_data[epoch][query][doc])
-                    queries.append(query)
+                    queries.apfpend(query)
                     order[epoch][index]=doc+"@@@"+query
                     index+=1
             features_file = "features"+str(epoch)
@@ -345,6 +345,7 @@ class analyze:
             for score in scores:
                 value = float(score.split()[2])
                 doc,query = tuple(order[epoch][index].split("@@@"))
+                print(doc, query)
                 result[epoch][query][doc]=value
                 index+=1
         return result
