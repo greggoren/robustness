@@ -42,6 +42,7 @@ class analyze:
                 scores[model] = self.retrieve_scores(score_file, order, epoch, scores)
         return scores
 
+    # s
     def order_trec_file(self,trec_file):
         final = trec_file.replace(".txt","")
         command = "sort -k1,1 -k5nr -k2,1 "+trec_file+" > "+final
