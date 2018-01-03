@@ -1,4 +1,4 @@
-data_set_file = "data/featuresCB_asr"
+data_set_file = "../ClueWeb09Extra"
 number_of_folds = 5
 normalized = True
 number_of_competitors = 10
@@ -7,3 +7,4 @@ random_seed = 9001
 iter_factor = 1
 processes_number = 9
 model_handler_file = "model_handler_asr.pickle"
+qrels = "../qrels"
