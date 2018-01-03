@@ -39,7 +39,7 @@ class analyze:
             self.create_data_set_file(data_set,queries,features_file)
             for model in models:
                 score_file = self.run_lambda_mart(features_file, epoch, model)
-                scores[model] = self.retrieve_scores(score_file, order, epoch, scores)
+                scores[model] = self.retrieve_scores(score_file, order, epoch, scores[model])
         return scores
 
     # s
