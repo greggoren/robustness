@@ -23,6 +23,7 @@ class analyze:
     def create_lambdaMart_scores(self, competition_data, models):
         scores = {model: {epoch: {q for q in competition_data[epoch].keys()} for epoch in competition_data} for model in
                   models}
+        print(scores)
         for epoch in competition_data:
 
             order = {_e: {} for _e in competition_data}
@@ -345,7 +346,6 @@ class analyze:
             for score in scores:
                 value = float(score.split()[2])
                 doc,query = tuple(order[epoch][index].split("@@@"))
-                print(doc, query)
                 result[epoch][query][doc]=value
                 index+=1
         return result
