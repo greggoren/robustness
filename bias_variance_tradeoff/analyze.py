@@ -2,7 +2,7 @@ import subprocess
 import numpy as np
 from scipy.stats import kendalltau
 import RBO as r
-
+from scipy.stats import pearsonr
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -86,13 +86,21 @@ class analyze:
             "Ranker & C & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCD & MAP & MRR \\\\\\\\ \n")
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
+        kendall_for_pearson = []
+        rbo_for_pearson = []
+        wc_for_pearson = []
+        C_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
+            C_for_pearson.append(float(model))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
+            kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
+            rbo_for_pearson.append(float(average_rbo))
             max_rbo = str(round(max(rbo_min_models[key][0]), 3))
             change = str(round(np.mean(change_rate[key][0]), 3))
+            wc_for_pearson.append(float(change))
             m_change = str(round(min(change_rate[key][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
@@ -101,6 +109,9 @@ class analyze:
             line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
         table_file.write("\\end{longtable}")
+        print(pearsonr(C_for_pearson, kendall_for_pearson))
+        print(pearsonr(C_for_pearson, rbo_for_pearson))
+        print(pearsonr(C_for_pearson, wc_for_pearson))
 
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
