@@ -32,7 +32,7 @@ class analyze:
             for query in competition_data[epoch]:
                 for doc in competition_data[epoch][query]:
                     data_set.append(competition_data[epoch][query][doc])
-                    queries.apfpend(query)
+                    queries.append(query)
                     order[epoch][index]=doc+"@@@"+query
                     index+=1
             features_file = "features"+str(epoch)
