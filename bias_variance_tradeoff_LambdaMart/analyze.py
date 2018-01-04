@@ -71,16 +71,15 @@ class analyze:
 
     def calculate_metrics(self,models):
         metrics = {}
-        for svm in models:
+        for model in models:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
             for i in range(1, 9):
-                part = svm[1].split(".pickle")
-                name = part[0] + part[1].replace(".", "")+svm[2]
+                name = model.split("model_")[1]
 
-                score_file = name+str(i)
-                qrels = "../rel2/rel0"+str(i)
+                score_file = name + "_" + str(i)
+                qrels = "../rel/rel0" + str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
@@ -100,7 +99,7 @@ class analyze:
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
-            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
+            metrics[models] = (ndcg_by_epochs, map_by_epochs, mrr_by_epochs)
         return metrics
 
     def create_table(self, competition_data, models, banned_queries):
