@@ -56,14 +56,16 @@ class analyze:
         return final
 
     def extract_score(self, scores):
-        for svm in scores:
-            for epoch in scores[svm]:
-                part = svm[1].split(".pickle")
-                name = part[0]+part[1].replace(".","")+svm[2]
-                f = open(name+str(epoch)+".txt",'w')
-                for query in scores[svm][epoch]:
-                    for doc in scores[svm][epoch][query]:
-                        f.write(str(query).zfill(3)+" Q0 "+"ROUND-0"+str(epoch)+"-"+str(query).zfill(3)+"-"+doc+" "+str(scores[svm][epoch][query][doc]) +" "+ str(scores[svm][epoch][query][doc])+" seo\n")
+        for model in scores:
+            for epoch in scores[model]:
+                name = model.split("model_")[1]
+
+                f = open(name + "_" + str(epoch) + ".txt", 'w')
+                for query in scores[model][epoch]:
+                    for doc in scores[model][epoch][query]:
+                        f.write(str(query).zfill(3) + " Q0 " + "ROUND-0" + str(epoch) + "-" + str(query).zfill(
+                            3) + "-" + doc + " " + str(scores[model][epoch][query][doc]) + " " + str(
+                            scores[model][epoch][query][doc]) + " seo\n")
                 f.close()
                 self.order_trec_file(name+str(epoch)+".txt")
 
@@ -73,7 +75,7 @@ class analyze:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1,5):
+            for i in range(1, 9):
                 part = svm[1].split(".pickle")
                 name = part[0] + part[1].replace(".", "")+svm[2]
 
@@ -203,7 +205,7 @@ class analyze:
         scores = {}
         for svm in svms:
             scores[svm] = {}
-            epochs = range(1,5)
+            epochs = sorted(list(competition_data.keys()))
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
