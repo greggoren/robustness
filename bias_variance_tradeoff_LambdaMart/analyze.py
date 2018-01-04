@@ -61,14 +61,14 @@ class analyze:
             for epoch in scores[model]:
                 name = model.split("model_")[1]
 
-                f = open(name + "_" + str(epoch), 'w')
+                f = open(name + "_" + str(epoch) + ".txt", 'w')
                 for query in scores[model][epoch]:
                     for doc in scores[model][epoch][query]:
                         f.write(str(query).zfill(3) + " Q0 " + "ROUND-0" + str(epoch) + "-" + str(query).zfill(
                             3) + "-" + doc + " " + str(scores[model][epoch][query][doc]) + " " + str(
                             scores[model][epoch][query][doc]) + " seo\n")
                 f.close()
-                self.order_trec_file(name + "_" + str(epoch))
+                self.order_trec_file(name + "_" + str(epoch) + ".txt")
 
     def calculate_metrics(self,models):
         metrics = {}
