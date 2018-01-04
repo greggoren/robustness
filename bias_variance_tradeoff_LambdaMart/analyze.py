@@ -68,7 +68,7 @@ class analyze:
                             3) + "-" + doc + " " + str(scores[model][epoch][query][doc]) + " " + str(
                             scores[model][epoch][query][doc]) + " seo\n")
                 f.close()
-                self.order_trec_file(name+str(epoch)+".txt")
+                self.order_trec_file(name + "_" + str(epoch))
 
     def calculate_metrics(self,models):
         metrics = {}
