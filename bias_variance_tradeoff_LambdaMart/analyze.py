@@ -119,7 +119,7 @@ class analyze:
         rbo_for_pearson = []
         wc_for_pearson = []
         for key in keys:
-            trees, leaves = tuple(key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1])
+            trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
