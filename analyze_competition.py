@@ -1105,12 +1105,15 @@ class analysis:
                     else:
                         histogram_from_rel_to_rel[ranked_list.index(doc) + 1] = histogram_from_rel_to_rel.get(
                             ranked_list.index(doc) + 1, 0) + 1
-        create_bar_plot("Percentage of relevant documents top 2 rankings", "first_two", "Epochs", "%",
-                        first_two_relevant)
-        create_bar_plot("Relevant to non-relevant", "rel_not", "Rank", "#", histogram_from_rel_to_not)
-        create_bar_plot("Non-relevant to non-relevant", "not_not", "Rank", "#", histogram_from_not_to_not)
-        create_bar_plot("Relevant to relevant", "rel_rel", "Rank", "#", histogram_from_rel_to_rel)
-        create_bar_plot("Non-relevant to relevant", "not_rel", "Rank", "#", histogram_from_not_to_rel)
+        with open("results_relevance", 'wb') as rel:
+            pickle.dump((first_two_relevant, histogram_from_rel_to_not, histogram_from_not_to_rel,
+                         histogram_from_rel_to_rel, histogram_from_not_to_not), rel)
+        # create_bar_plot("Percentage of relevant documents top 2 rankings", "first_two", "Epochs", "%",
+        #                 first_two_relevant)
+        # create_bar_plot("Relevant to non-relevant", "rel_not", "Rank", "#", histogram_from_rel_to_not)
+        # create_bar_plot("Non-relevant to non-relevant", "not_not", "Rank", "#", histogram_from_not_to_not)
+        # create_bar_plot("Relevant to relevant", "rel_rel", "Rank", "#", histogram_from_rel_to_rel)
+        # create_bar_plot("Non-relevant to relevant", "not_rel", "Rank", "#", histogram_from_not_to_rel)
         print("Given change of relevance from relevant to irrelevant:")
         print("better ranking = ", float(better_relevant_to_irrelevant) / denominator_better_worse)
         print("worse ranking = ", float(worse_relevant_to_irrelevant) / denominator_better_worse)
