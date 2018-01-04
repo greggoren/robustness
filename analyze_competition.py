@@ -43,6 +43,17 @@ def create_plot(title,file_name,xlabel,ylabel,models,index,x_axis):
     plt.savefig(file_name)
     plt.clf()
 
+
+def create_bar_plot(title, file_name, xlabel, ylabel, stats):
+    fig = plt.figure()
+    fig.suptitle(title, fontsize=14, fontweight='bold')
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.bar(stats.keys(), stats.values(), 'b')
+    plt.savefig(file_name)
+    plt.clf()
+
 def create_single_plot(title,file_name,xlabel,ylabel,y,x):
     fig = plt.figure()
     fig.suptitle(title, fontsize=14, fontweight='bold')
@@ -116,7 +127,6 @@ class analysis:
 
     def retrieve_ranking(self,scores):
         rankings_svm = {}
-
         optimized = False
         for svm in scores:
             if not optimized:
@@ -1024,18 +1034,24 @@ class analysis:
 
     def get_relevance(self, rel_file):
         stat = {i: {} for i in range(9)}
+        rel_stat = {i: {} for i in range(9)}
         with open(rel_file) as rel:
             for line in rel:
                 splited = line.split()
                 query = splited[0]
                 iter = int(splited[2].split("-")[1])
+                doc = int(splited[2].split("-")[3])
+                rel = int(splited[3])
+                if not rel_stat[iter].get(query, False):
+                    rel_stat[iter][query] = {}
+                rel_stat[iter][query][doc] = rel
                 if not stat[iter].get(query, False):
                     stat[iter][query] = []
                 if int(splited[3]) > 0:
                     stat[iter][query].append(1)
                 else:
                     stat[iter][query].append(0)
-        return stat
+        return stat, rel_stat
 
     def get_relevance_stats(self, rel_stat, ranked_lists):
         first_two_relevant = {e: 0 for e in ranked_lists}
@@ -1044,23 +1060,61 @@ class analysis:
         histogram_from_rel_to_not = {i: 0 for i in range(1, 6)}
         histogram_from_not_to_rel = {i: 0 for i in range(1, 6)}
         histogram_from_rel_to_rel = {i: 0 for i in range(1, 6)}
+        histogram_from_not_to_not = {i: 0 for i in range(1, 6)}
+        better_relevant_to_irrelevant = 0
+        worse_relevant_to_irrelevant = 0
+        flips_relevant_to_irrelevant = 0
+        denominator_better_worse = 0
+        denominator_flips = 0
         for epoch in ranked_lists:
             for query in ranked_lists[epoch]:
                 ranks = ranked_lists[epoch][query]
                 first_two_relevant[epoch] += rel_stat[epoch][query][ranks[0]]
                 first_two_relevant[epoch] += rel_stat[epoch][query][ranks[1]]
+                if epoch != 1:
+                    former_ranks = ranked_lists[epoch - 1][query]
+                    if former_ranks[0] != ranks[0]:
+                        denominator_flips += 1
+                        if rel_stat[epoch][query][ranks[0]] == 0 and rel_stat[epoch - 1][query][ranks[0]] == 1:
+                            flips_relevant_to_irrelevant += 1
                 denom[epoch] += 2
         for epoch in first_two_relevant:
             stat[epoch] = float(first_two_relevant[epoch]) / denom[epoch]
 
         for epoch in ranked_lists:
+            if epoch == 1:
+                continue
             for query in ranked_lists[epoch]:
                 ranked_list = ranked_lists[epoch][query]
+                former_ranked_list = ranked_lists[epoch - 1][query]
                 for doc in ranked_list:
-                    ''  # ''if rel_stat[epoch][query][]
-
-
-
+                    if rel_stat[epoch][query][doc] == 0 and rel_stat[epoch - 1][query][doc] == 1:
+                        histogram_from_rel_to_not[ranked_list.index(doc) + 1] = histogram_from_rel_to_not.get(
+                            ranked_list.index(doc) + 1, 0) + 1
+                        denominator_better_worse += 1
+                        if ranked_list.index(doc) < former_ranked_list.index(doc):
+                            better_relevant_to_irrelevant += 1
+                        if ranked_list.index(doc) > former_ranked_list.index(doc):
+                            worse_relevant_to_irrelevant += 1
+                    elif rel_stat[epoch][query][doc] == 1 and rel_stat[epoch - 1][query][doc] == 0:
+                        histogram_from_not_to_rel[ranked_list.index(doc) + 1] = histogram_from_not_to_rel.get(
+                            ranked_list.index(doc) + 1, 0) + 1
+                    elif rel_stat[epoch][query][doc] == 0 and rel_stat[epoch - 1][query][doc] == 0:
+                        histogram_from_not_to_not[ranked_list.index(doc) + 1] = histogram_from_not_to_not.get(
+                            ranked_list.index(doc) + 1, 0) + 1
+                    else:
+                        histogram_from_rel_to_rel[ranked_list.index(doc) + 1] = histogram_from_rel_to_rel.get(
+                            ranked_list.index(doc) + 1, 0) + 1
+        create_bar_plot("Percentage of relevant documents top 2 rankings", "first_two", "Epochs", "%",
+                        first_two_relevant)
+        create_bar_plot("Relevant to non-relevant", "rel_not", "Rank", "#", histogram_from_rel_to_not)
+        create_bar_plot("Non-relevant to non-relevant", "not_not", "Rank", "#", histogram_from_not_to_not)
+        create_bar_plot("Relevant to relevant", "rel_rel", "Rank", "#", histogram_from_rel_to_rel)
+        create_bar_plot("Non-relevant to relevant", "not_rel", "Rank", "#", histogram_from_not_to_rel)
+        print("Given change of relevance from relevant to irrelevant:")
+        print("better ranking = ", float(better_relevant_to_irrelevant) / denominator_better_worse)
+        print("worse ranking = ", float(worse_relevant_to_irrelevant) / denominator_better_worse)
+        print("flip of to winner ranking = ", float(flips_relevant_to_irrelevant) / denominator_flips)
 
     def create_epsilon_for_Lambda_mart(self, competition_data,svm,banned_queries):
         scores = {}
@@ -1081,6 +1135,8 @@ class analysis:
             rankings[key_lambdaMart], scores,ranked = self.rerank_by_epsilon(key_lambdaMart, scores, epsilon, 2)
             # rankings[key_svm], scores,_ = self.rerank_by_epsilon(key_svm, scores, epsilon, 1)
             ranks[key_lambdaMart]=ranked
+        _, rel_stat = self.get_relevance("rel/new_rel")
+        self.get_relevance_stats(rel_stat, ranks[(("", "l.pickle1", "LambdaMart_0", "b"))])
         kendall, cr, rbo_min, x_axis, a = self.calculate_average_kendall_tau(rankings, [] , banned_queries)
         self.extract_score(scores)
         metrics, t, d = self.calculate_metrics(scores)
