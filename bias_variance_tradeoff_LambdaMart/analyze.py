@@ -110,7 +110,7 @@ class analyze:
         metrics = self.calculate_metrics(scores)
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: (
-        float(x.split("model_")[0].split("_")[0]), float(x.split("model_")[0].split("_")[1])))  # TODO: fix split
+            float(x.split("model_")[1].split("_")[0]), float(x.split("model_")[1].split("_")[1])))  # TODO: fix split
         table_file = open("table_value_LmbdaMart.tex", 'w')
         table_file.write("\\begin{longtable}{*{12}{c}}\n")
         table_file.write(
