@@ -3,6 +3,7 @@ import subprocess
 import numpy as np
 from scipy.stats import kendalltau
 import RBO as r
+from scipy.stats import pearsonr
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -115,11 +116,15 @@ class analyze:
         table_file.write("\\begin{longtable}{*{12}{c}}\n")
         table_file.write(
             "Ranker & Trees & Leaves & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & MAP & MRR  \\\\\\\\ \n")
+        trees_for_pearson = []
+        leaves_for_pearson = []
         kendall_for_pearson = []
         rbo_for_pearson = []
         wc_for_pearson = []
         for key in keys:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
+            trees_for_pearson.append(int(trees))
+            leaves_for_pearson.append(int(leaves))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
@@ -138,6 +143,9 @@ class analyze:
             table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
+        print(pearsonr(trees_for_pearson, kendall_for_pearson))
+        print(pearsonr(trees_for_pearson, rbo_for_pearson))
+        print(pearsonr(trees_for_pearson, wc_for_pearson))
 
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
