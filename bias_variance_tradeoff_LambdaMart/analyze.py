@@ -60,7 +60,7 @@ class analyze:
             for epoch in scores[model]:
                 name = model.split("model_")[1]
 
-                f = open(name + "_" + str(epoch) + ".txt", 'w')
+                f = open(name + "_" + str(epoch), 'w')
                 for query in scores[model][epoch]:
                     for doc in scores[model][epoch][query]:
                         f.write(str(query).zfill(3) + " Q0 " + "ROUND-0" + str(epoch) + "-" + str(query).zfill(
@@ -99,7 +99,7 @@ class analyze:
                     mrr_score = line.split()[2].rstrip()
                     mrr_by_epochs.append(mrr_score)
                     break
-            metrics[models] = (ndcg_by_epochs, map_by_epochs, mrr_by_epochs)
+            metrics[model] = (ndcg_by_epochs, map_by_epochs, mrr_by_epochs)
         return metrics
 
     def create_table(self, competition_data, models, banned_queries):
