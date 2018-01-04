@@ -143,9 +143,9 @@ class analyze:
             table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
-        print(pearsonr(trees_for_pearson, kendall_for_pearson))
-        print(pearsonr(trees_for_pearson, rbo_for_pearson))
-        print(pearsonr(trees_for_pearson, wc_for_pearson))
+        print(pearsonr(leaves_for_pearson, kendall_for_pearson))
+        print(pearsonr(leaves_for_pearson, rbo_for_pearson))
+        print(pearsonr(leaves_for_pearson, wc_for_pearson))
 
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
