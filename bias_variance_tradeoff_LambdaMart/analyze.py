@@ -80,7 +80,7 @@ class analyze:
                 name = model.split("model_")[1]
 
                 score_file = name + "_" + str(i)
-                qrels = "../rel/rel0" + str(i)
+                qrels = "../rel3/rel0" + str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
@@ -155,6 +155,7 @@ class analyze:
         print(pearsonr(trees_for_pearson, ndcg_for_pearson))
         print(pearsonr(trees_for_pearson, map_for_pearson))
         print(pearsonr(trees_for_pearson, mrr_for_pearson))
+
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
         change_rate = {}
