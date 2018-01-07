@@ -1106,7 +1106,7 @@ class analysis:
                         histogram_from_rel_to_rel[ranked_list.index(doc) + 1] = histogram_from_rel_to_rel.get(
                             ranked_list.index(doc) + 1, 0) + 1
         with open("results_relevance", 'wb') as rel:
-            pickle.dump((first_two_relevant, histogram_from_rel_to_not, histogram_from_not_to_rel,
+            pickle.dump((stat, histogram_from_rel_to_not, histogram_from_not_to_rel,
                          histogram_from_rel_to_rel, histogram_from_not_to_not), rel)
         # create_bar_plot("Percentage of relevant documents top 2 rankings", "first_two", "Epochs", "%",
         #                 first_two_relevant)
