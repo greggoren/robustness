@@ -1040,7 +1040,7 @@ class analysis:
                 splited = line.split()
                 query = splited[0]
                 iter = int(splited[2].split("-")[1])
-                doc = int(splited[2].split("-")[3])
+                doc = splited[2].split("-")[3]
                 rel = int(splited[3])
                 if not rel_stat[iter].get(query, False):
                     rel_stat[iter][query] = {}
