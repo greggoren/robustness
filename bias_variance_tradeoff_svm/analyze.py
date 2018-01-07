@@ -90,6 +90,9 @@ class analyze:
         rbo_for_pearson = []
         wc_for_pearson = []
         C_for_pearson = []
+        ndcg_for_pearson = []
+        map_for_pearson = []
+        mrr_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
             C_for_pearson.append(float(model))
@@ -103,8 +106,11 @@ class analyze:
             wc_for_pearson.append(float(change))
             m_change = str(round(min(change_rate[key][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
+            ndcg_for_pearson.append(nd)
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
+            map_for_pearson.append(map)
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
+            mrr_for_pearson.append(mrr)
             tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map, mrr]
             line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
@@ -112,6 +118,9 @@ class analyze:
         print(pearsonr(C_for_pearson, kendall_for_pearson))
         print(pearsonr(C_for_pearson, rbo_for_pearson))
         print(pearsonr(C_for_pearson, wc_for_pearson))
+        print(pearsonr(C_for_pearson, ndcg_for_pearson))
+        print(pearsonr(C_for_pearson, map_for_pearson))
+        print(pearsonr(C_for_pearson, mrr_for_pearson))
 
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
