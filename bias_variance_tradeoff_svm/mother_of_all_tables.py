@@ -55,5 +55,5 @@ if __name__ == "__main__":
         w = svms[svm]
         if len(w) != 26:
             print(w)
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_S")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR")
     analyze.create_table(competition_data, svms, [])
