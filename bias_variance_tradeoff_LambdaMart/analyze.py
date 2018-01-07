@@ -121,6 +121,9 @@ class analyze:
         kendall_for_pearson = []
         rbo_for_pearson = []
         wc_for_pearson = []
+        ndcg_for_pearson = []
+        map_for_pearson = []
+        mrr_for_pearson = []
         for key in keys:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             trees_for_pearson.append(int(trees))
@@ -135,8 +138,11 @@ class analyze:
             wc_for_pearson.append(float(change))
             m_change = str(round(min(change_rate[key][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
+            ndcg_for_pearson.append(float(nd))
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
+            map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
+            mrr_for_pearson.append(float(mrr))
             tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
                    mrr]
             line = " & ".join(tmp) + " \\\\ \n"
@@ -146,7 +152,9 @@ class analyze:
         print(pearsonr(leaves_for_pearson, kendall_for_pearson))
         print(pearsonr(leaves_for_pearson, rbo_for_pearson))
         print(pearsonr(leaves_for_pearson, wc_for_pearson))
-
+        print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
+        print(pearsonr(leaves_for_pearson, map_for_pearson))
+        print(pearsonr(leaves_for_pearson, mrr_for_pearson))
     def calculate_average_kendall_tau(self, rankings, values):
         kendall = {}
         change_rate = {}
