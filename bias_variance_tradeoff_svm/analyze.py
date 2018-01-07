@@ -106,11 +106,11 @@ class analyze:
             wc_for_pearson.append(float(change))
             m_change = str(round(min(change_rate[key][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
-            ndcg_for_pearson.append(nd)
+            ndcg_for_pearson.append(float(nd))
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
-            map_for_pearson.append(map)
+            map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
-            mrr_for_pearson.append(mrr)
+            mrr_for_pearson.append(float(mrr))
             tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map, mrr]
             line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
