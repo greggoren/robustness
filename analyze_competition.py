@@ -1057,10 +1057,10 @@ class analysis:
         first_two_relevant = {e: 0 for e in ranked_lists}
         denom = {e: 0 for e in ranked_lists}
         stat = {e: 0 for e in ranked_lists}
-        histogram_from_rel_to_not = {i: 0 for i in range(1, 6)}
-        histogram_from_not_to_rel = {i: 0 for i in range(1, 6)}
-        histogram_from_rel_to_rel = {i: 0 for i in range(1, 6)}
-        histogram_from_not_to_not = {i: 0 for i in range(1, 6)}
+        histogram_from_rel_to_not = {e: {i: 0 for i in range(1, 6)} for e in range(2, 9)}
+        histogram_from_not_to_rel = {e: {i: 0 for i in range(1, 6)} for e in range(2, 9)}
+        histogram_from_rel_to_rel = {e: {i: 0 for i in range(1, 6)} for e in range(2, 9)}
+        histogram_from_not_to_not = {e: {i: 0 for i in range(1, 6)} for e in range(2, 9)}
         better_relevant_to_irrelevant = 0
         worse_relevant_to_irrelevant = 0
         flips_relevant_to_irrelevant = 0
@@ -1089,7 +1089,8 @@ class analysis:
                 former_ranked_list = ranked_lists[epoch - 1][query]
                 for doc in ranked_list:
                     if rel_stat[epoch][query][doc] == 0 and rel_stat[epoch - 1][query][doc] == 1:
-                        histogram_from_rel_to_not[ranked_list.index(doc) + 1] = histogram_from_rel_to_not.get(
+                        histogram_from_rel_to_not[epoch][ranked_list.index(doc) + 1] = histogram_from_rel_to_not[
+                                                                                           epoch].get(
                             ranked_list.index(doc) + 1, 0) + 1
                         denominator_better_worse += 1
                         if ranked_list.index(doc) < former_ranked_list.index(doc):
@@ -1097,13 +1098,16 @@ class analysis:
                         if ranked_list.index(doc) > former_ranked_list.index(doc):
                             worse_relevant_to_irrelevant += 1
                     elif rel_stat[epoch][query][doc] == 1 and rel_stat[epoch - 1][query][doc] == 0:
-                        histogram_from_not_to_rel[ranked_list.index(doc) + 1] = histogram_from_not_to_rel.get(
+                        histogram_from_not_to_rel[epoch][ranked_list.index(doc) + 1] = histogram_from_not_to_rel[
+                                                                                           epoch].get(
                             ranked_list.index(doc) + 1, 0) + 1
                     elif rel_stat[epoch][query][doc] == 0 and rel_stat[epoch - 1][query][doc] == 0:
-                        histogram_from_not_to_not[ranked_list.index(doc) + 1] = histogram_from_not_to_not.get(
+                        histogram_from_not_to_not[epoch][ranked_list.index(doc) + 1] = histogram_from_not_to_not[
+                                                                                           epoch].get(
                             ranked_list.index(doc) + 1, 0) + 1
                     else:
-                        histogram_from_rel_to_rel[ranked_list.index(doc) + 1] = histogram_from_rel_to_rel.get(
+                        histogram_from_rel_to_rel[epoch][ranked_list.index(doc) + 1] = histogram_from_rel_to_rel[
+                                                                                           epoch].get(
                             ranked_list.index(doc) + 1, 0) + 1
         with open("results_relevance", 'wb') as rel:
             pickle.dump((stat, histogram_from_rel_to_not, histogram_from_not_to_rel,
