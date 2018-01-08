@@ -105,7 +105,7 @@ class analyze:
 
     def create_table(self, competition_data, models, banned_queries):
         scores = self.create_lambdaMart_scores(competition_data, models)
-        rankings = self.retrieve_ranking(scores)
+        rankings, ranks = self.retrieve_ranking(scores)
         weights = self.create_change_percentage(competition_data)
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, banned_queries, weights,
                                                                                   ranks)
@@ -298,87 +298,6 @@ class analyze:
 
 
 
-    def rerank_by_epsilon(self,svm,scores,epsilon,model):
-        rankings_svm = {}
-        ranked_docs={}
-        new_scores ={}
-        last_rank = {}
-        competitors = self.get_competitors(scores[svm])
-        rankings_svm[svm] = {}
-        scores_svm = scores[svm]
-        for epoch in scores_svm:
-            ranked_docs[epoch]={}
-            rankings_svm[svm][epoch] = {}
-            new_scores[epoch] = {}
-            for query in scores_svm[epoch]:
-
-                retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x],x),
-                                            reverse=True)
-
-                if not last_rank.get(query,False):
-                    last_rank[query] = retrieved_list_svm
-                fixed = self.fix_ranking(svm,query,scores,epsilon,epoch,retrieved_list_svm,last_rank[query],model)
-                ranked_docs[epoch][query] = fixed
-                rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],fixed)
-                last_rank[query] = fixed
-                if fixed[0] != retrieved_list_svm[0]:
-                    new_scores[epoch][query]={fixed[0]:scores[svm][epoch][query][fixed[0]],fixed[1]:scores[svm][epoch-1][query][fixed[1]]}
-                else:
-                    new_scores[epoch][query] = scores[svm][epoch][query]
-        scores[svm] = new_scores
-        return rankings_svm[svm],scores,ranked_docs
-
-    def determine_order(self,pair,current_ranking):
-        if current_ranking.index(pair[0])<current_ranking.index(pair[1]):
-            return pair[0],pair[1]
-        else:
-            return pair[1],pair[0]
-
-    def fix_ranking(self,svm,query,scores,epsilon,epoch,current_ranking,last_ranking,model):
-        new_rank =[]
-        if model==0:
-            for rank in range(len(current_ranking)):
-                if rank + 1 < len(current_ranking):
-                    if not new_rank:
-                        doc_win =current_ranking[rank]
-                    else:
-                        doc_win=new_rank[rank]
-
-                    doc_lose = current_ranking[rank+1]
-                    if doc_win in new_rank:
-                        new_rank = new_rank[:-1]
-                # if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon) / 100:
-                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (
-                    scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                    new_rank.append(doc_lose)
-                    new_rank.append(doc_win)
-                else:
-                    new_rank.append(doc_win)
-                    new_rank.append(doc_lose)
-        if model==1:
-            condorcet_count = {doc: 0 for doc in current_ranking}
-            doc_pairs = list(itertools.combinations(current_ranking,2))
-            for pair in doc_pairs:
-                doc_win,doc_lose=self.determine_order(pair,current_ranking)
-                if last_ranking.index(doc_lose) < last_ranking.index(doc_win) and (abs((scores[svm][epoch][query][doc_win]-scores[svm][epoch][query][doc_lose])/scores[svm][epoch][query][doc_lose])) < float(epsilon)/100:
-                    # scores[svm][epoch][query][doc_win] - scores[svm][epoch][query][doc_lose]) < epsilon:
-                    condorcet_count[doc_lose]+=1
-                else:
-                    condorcet_count[doc_win]+=1
-            new_rank = sorted(current_ranking,key=lambda x:(condorcet_count[x],len(current_ranking)-current_ranking.index(x)),reverse = True)
-        if model==2:
-            last_winner = last_ranking[0]
-            current_winner = current_ranking[0]
-
-            if last_ranking.index(last_winner) < last_ranking.index(current_winner) and (abs(
-                    (scores[svm][epoch][query][current_winner] - scores[svm][epoch][query][last_winner]) /
-                    scores[svm][epoch][query][last_winner])) < float(epsilon) / 100:
-                new_rank.append(last_winner)
-                new_rank.append(current_winner)
-                new_rank.extend([c for c in current_ranking if c!=last_winner and c!=current_winner])
-            else:
-                new_rank=current_ranking
-        return new_rank
 
     def create_data_set_file(self,X,queries,feature_file_name):
         with open(feature_file_name,'w') as feature_file:
