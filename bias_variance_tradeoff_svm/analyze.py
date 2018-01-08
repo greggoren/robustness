@@ -176,7 +176,7 @@ class analyze:
                     #         5):
                     if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                         change_rate_svm += (
-                        float(1) / max([weights[epoch][query][doc] for doc in ranks[svm][epoch][query]]))
+                            float(1) / np.mean([weights[epoch][query][doc] for doc in ranks[svm][epoch][query]]))
                         # change_rate_svm += (float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                         #                                     weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
                         # change_rate_svm += 1
