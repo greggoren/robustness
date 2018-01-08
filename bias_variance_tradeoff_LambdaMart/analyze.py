@@ -104,9 +104,9 @@ class analyze:
         return metrics
 
     def create_table(self, competition_data, models, banned_queries):
+        weights = self.create_change_percentage(competition_data)
         scores = self.create_lambdaMart_scores(competition_data, models)
         rankings, ranks = self.retrieve_ranking(scores)
-        weights = self.create_change_percentage(competition_data)
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, banned_queries, weights,
                                                                                   ranks)
         self.extract_score(scores)
@@ -212,9 +212,9 @@ class analyze:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
-                    if current_list_svm.index(5) != last_list_index_svm[query].index(
-                            5):
-                        change_rate_svm += float(1) / weights[epoch][query][ranks[svm][epoch][query][0]]
+                    if current_list_svm.index(5) != last_list_index_svm[query].index(5):
+                        change_rate_svm += (float(1) / weights[epoch][query][ranks[svm][epoch][query][0]])
+
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
@@ -231,6 +231,7 @@ class analyze:
                     last_list_index_svm[query] = current_list_svm
                 if n_q==0:
                     continue
+                print(change_rate_svm)
                 change_rate_svm_epochs.append(float(change_rate_svm) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
