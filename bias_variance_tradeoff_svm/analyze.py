@@ -73,10 +73,29 @@ class analyze:
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
+    def create_change_percentage(self, cd):
+        change = {}
+        for epoch in cd:
+            if epoch == 1:
+                continue
+            change[epoch] = {}
+            for query in cd[epoch]:
+                change[epoch][query] = {}
+                for doc in cd[epoch][query]:
+                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+
+        return change
+
+
+
     def create_table(self, competition_data, svms, banned_queries):
+
+        weights = self.create_change_percentage(competition_data)
         scores = self.get_all_scores(svms, competition_data)
-        rankings = self.retrieve_ranking(scores)
-        kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, [])
+        rankings, ranks = self.retrieve_ranking(scores)
+
+        kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, weights, ranks)
         self.extract_score(scores)
         metrics = self.calculate_metrics(scores)
 
@@ -123,7 +142,7 @@ class analyze:
         print(pearsonr(C_for_pearson, map_for_pearson))
         print(pearsonr(C_for_pearson, mrr_for_pearson))
 
-    def calculate_average_kendall_tau(self, rankings, values):
+    def calculate_average_kendall_tau(self, rankings, weights, ranks):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
@@ -146,7 +165,6 @@ class analyze:
                 sum_svm_original = 0
                 n_q=0
                 change_rate_svm = 0
-                meta_rbo[svm] = {p: [] for p in values}
                 for query in rankings_list_svm[epoch]:
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
@@ -156,7 +174,9 @@ class analyze:
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
                     if current_list_svm.index(5) != last_list_index_svm[query].index(
                             5):
-                        change_rate_svm += 1
+                        change_rate_svm += (float(1) / ((weights[epoch][query][ranks[svm][epoch][query][0]] +
+                                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]]) / 2))
+                        # change_rate_svm += 1
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
@@ -201,22 +221,27 @@ class analyze:
                         scores[svm][epoch][query][doc] = np.dot(svms[svm], features_vector.T)
         return scores
 
-
-    def retrieve_ranking(self,scores):
+    def retrieve_ranking(self, scores):
         rankings_svm = {}
         optimized = False
+        ranks = {}
         for svm in scores:
+            ranks[svm] = {}
             if not optimized:
                 competitors = self.get_competitors(scores[svm])
                 optimized = True
-            rankings_svm[svm]={}
+            rankings_svm[svm] = {}
             scores_svm = scores[svm]
             for epoch in scores_svm:
-                rankings_svm[svm][epoch]={}
+                rankings_svm[svm][epoch] = {}
+                ranks[svm][epoch] = {}
                 for query in scores_svm[epoch]:
-                    retrieved_list_svm = sorted(competitors[query],key=lambda x:(scores_svm[epoch][query][x],x),reverse=True)
-                    rankings_svm[svm][epoch][query]= self.transition_to_rank_vector(competitors[query],retrieved_list_svm)
-        return rankings_svm
+                    retrieved_list_svm = sorted(competitors[query], key=lambda x: (scores_svm[epoch][query][x], x),
+                                                reverse=True)
+                    rankings_svm[svm][epoch][query] = self.transition_to_rank_vector(competitors[query],
+                                                                                     retrieved_list_svm)
+                    ranks[svm][epoch][query] = retrieved_list_svm
+        return rankings_svm, ranks
 
     def transition_to_rank_vector(self,original_list,sorted_list):
         rank_vector = []
