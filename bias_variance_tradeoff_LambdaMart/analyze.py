@@ -179,8 +179,8 @@ class analyze:
             change_rate_svm_epochs = []
             rbo_min = []
             rbo_min_orig = []
-
-            for epoch in rankings_list_svm:
+            epochs = sorted(list(rankings_list_svm.keys()))
+            for epoch in epochs:
 
                 sum_svm = 0
                 sum_rbo_min = 0
