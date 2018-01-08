@@ -118,8 +118,8 @@ class analyze:
             "Ranker & Trees & Leaves & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCG & MAP & MRR  \\\\\\\\ \n")
         trees_for_pearson = []
         leaves_for_pearson = []
-        # kendall_for_pearson = []
-        # rbo_for_pearson = []
+        kendall_for_pearson = []
+        rbo_for_pearson = []
         wc_for_pearson = []
         ndcg_for_pearson = []
         map_for_pearson = []
@@ -128,12 +128,12 @@ class analyze:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             trees_for_pearson.append(int(trees))
             leaves_for_pearson.append(int(leaves))
-            # average_kt = str(round(np.mean(kendall[key][0]), 3))
-            # kendall_for_pearson.append(float(average_kt))
-            # max_kt = str(round(max(kendall[key][0]), 3))
-            # average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
-            # rbo_for_pearson.append(float(average_rbo))
-            # max_rbo = str(round(max(rbo_min_models[key][0]), 3))
+            average_kt = str(round(np.mean(kendall[key][0]), 3))
+            kendall_for_pearson.append(float(average_kt))
+            max_kt = str(round(max(kendall[key][0]), 3))
+            average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
+            rbo_for_pearson.append(float(average_rbo))
+            max_rbo = str(round(max(rbo_min_models[key][0]), 3))
             change = str(round(np.mean(change_rate[key][0]), 3))
             wc_for_pearson.append(float(change))
             m_change = str(round(min(change_rate[key][0]), 3))
@@ -143,22 +143,23 @@ class analyze:
             map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
-            # tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,mrr]
-            tmp = ["LambdaMart", trees, leaves, change, m_change, nd, map, mrr]
+            tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
+                   mrr]
+            # tmp = ["LambdaMart", trees, leaves, change, m_change, nd, map, mrr]
             line = " & ".join(tmp) + " \\\\ \n"
             table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
         print("leaves")
-        # print(pearsonr(leaves_for_pearson, kendall_for_pearson))
-        # print(pearsonr(leaves_for_pearson, rbo_for_pearson))
+        print(pearsonr(leaves_for_pearson, kendall_for_pearson))
+        print(pearsonr(leaves_for_pearson, rbo_for_pearson))
         print(pearsonr(leaves_for_pearson, wc_for_pearson))
         print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
         print(pearsonr(leaves_for_pearson, map_for_pearson))
         print(pearsonr(leaves_for_pearson, mrr_for_pearson))
         print("trees")
-        # print(pearsonr(trees_for_pearson, kendall_for_pearson))
-        # print(pearsonr(trees_for_pearson, rbo_for_pearson))
+        print(pearsonr(trees_for_pearson, kendall_for_pearson))
+        print(pearsonr(trees_for_pearson, rbo_for_pearson))
         print(pearsonr(trees_for_pearson, wc_for_pearson))
         print(pearsonr(trees_for_pearson, ndcg_for_pearson))
         print(pearsonr(trees_for_pearson, map_for_pearson))
