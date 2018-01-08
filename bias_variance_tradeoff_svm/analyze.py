@@ -174,8 +174,8 @@ class analyze:
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
                     if current_list_svm.index(5) != last_list_index_svm[query].index(
                             5):
-                        change_rate_svm += (float(1) / ((weights[epoch][query][ranks[svm][epoch][query][0]] +
-                                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]]) / 2))
+                        change_rate_svm += (float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
+                                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
                         # change_rate_svm += 1
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
