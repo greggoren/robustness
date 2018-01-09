@@ -4,6 +4,7 @@ import numpy as np
 from scipy.stats import kendalltau
 import RBO as r
 from scipy.stats import pearsonr
+from scipy.stats import spearmanr
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -165,11 +166,11 @@ class analyze:
         print(pearsonr(leaves_for_pearson, rbo_for_pearson))
         # print(pearsonr(leaves_for_pearson, wc_for_pearson))
         print("max")
-        print(pearsonr(leaves_for_pearson, wc_max_for_pearson))
+        print(spearmanr(leaves_for_pearson, wc_max_for_pearson))
         print("weighted")
-        print(pearsonr(leaves_for_pearson, wc_weighted_for_pearson))
+        print(spearmanr(leaves_for_pearson, wc_weighted_for_pearson))
         print("mean")
-        print(pearsonr(leaves_for_pearson, wc_mean_for_pearson))
+        print(spearmanr(leaves_for_pearson, wc_mean_for_pearson))
         print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
         print(pearsonr(leaves_for_pearson, map_for_pearson))
         print(pearsonr(leaves_for_pearson, mrr_for_pearson))
@@ -177,11 +178,11 @@ class analyze:
         print(pearsonr(trees_for_pearson, kendall_for_pearson))
         print(pearsonr(trees_for_pearson, rbo_for_pearson))
         print("max")
-        print(pearsonr(trees_for_pearson, wc_max_for_pearson))
+        print(spearmanr(trees_for_pearson, wc_max_for_pearson))
         print("weighted")
-        print(pearsonr(trees_for_pearson, wc_weighted_for_pearson))
+        print(spearmanr(trees_for_pearson, wc_weighted_for_pearson))
         print("mean")
-        print(pearsonr(trees_for_pearson, wc_mean_for_pearson))
+        print(spearmanr(trees_for_pearson, wc_mean_for_pearson))
         print(pearsonr(trees_for_pearson, ndcg_for_pearson))
         print(pearsonr(trees_for_pearson, map_for_pearson))
         print(pearsonr(trees_for_pearson, mrr_for_pearson))
