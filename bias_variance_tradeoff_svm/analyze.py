@@ -174,7 +174,7 @@ class analyze:
             original_list_index_svm = {}
             change_rate_svm_epochs_max = []
             change_rate_svm_epochs_mean = []
-            change_rate_svm_epochs_geo_mean = []
+            # change_rate_svm_epochs_geo_mean = []
             change_rate_svm_epochs_weighted = []
             rbo_min = []
             rbo_min_orig = []
@@ -187,7 +187,7 @@ class analyze:
                 sum_svm_original = 0
                 n_q=0
                 change_rate_svm_mean = 0
-                change_rate_svm_geo_mean = 0
+                # change_rate_svm_geo_mean = 0
                 change_rate_svm_max = 0
                 change_rate_svm_weighted = 0
                 for query in rankings_list_svm[epoch]:
@@ -203,9 +203,9 @@ class analyze:
                         change_rate_svm_max += (
                             float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm_geo_mean += (float(1) / math.sqrt(
-                            weights[epoch][query][ranks[svm][epoch][query][0]] * weights[epoch][query][
-                                ranks[svm][epoch - 1][query][0]]))
+                        # change_rate_svm_geo_mean += (float(1) / math.sqrt(
+                        #     weights[epoch][query][ranks[svm][epoch][query][0]] * weights[epoch][query][
+                        #         ranks[svm][epoch - 1][query][0]]))
                         change_rate_svm_mean += (
                             float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
@@ -234,7 +234,7 @@ class analyze:
                     continue
                 change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
                 change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
-                change_rate_svm_epochs_geo_mean.append(float(change_rate_svm_geo_mean) / n_q)
+                # change_rate_svm_epochs_geo_mean.append(float(change_rate_svm_geo_mean) / n_q)
                 change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
@@ -243,7 +243,7 @@ class analyze:
             kendall[svm] = (kt_svm, kt_svm_orig)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
-            change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean, change_rate_svm_geo_mean)
+                change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean)
         return kendall, change_rate, rbo_min_models
 
 
