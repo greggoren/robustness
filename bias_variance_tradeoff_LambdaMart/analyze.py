@@ -153,11 +153,11 @@ class analyze:
             map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
-            tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
-                   mrr]
+            # tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
+            #        mrr]
             # tmp = ["LambdaMart", trees, leaves, change, m_change, nd, map, mrr]
-            line = " & ".join(tmp) + " \\\\ \n"
-            table_file.write(line)
+            # line = " & ".join(tmp) + " \\\\ \n"
+            # table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
         print("leaves")
