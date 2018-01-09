@@ -220,16 +220,18 @@ class analyze:
                         change_rate_svm_max += (
                             float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm += 1
+                        change_rate_svm += (float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]]))
                         # change_rate_svm_geo_mean += (float(1) / math.sqrt(
                         #     weights[epoch][query][ranks[svm][epoch][query][0]] * weights[epoch][query][
                         #         ranks[svm][epoch - 1][query][0]]))
-                        change_rate_svm_mean += (
+                        # change_rate_svm_mean += (
                             float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
                         change_rate_svm_weighted += (
                             float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
+                        # change_rate_svm_weighted += (
+
                         # change_rate_svm += (float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                         #                                     weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
                         # change_rate_svm += 1
