@@ -37,7 +37,7 @@ def create_plot(features, data_epsilon, epsilons, feature_map, colors, file, not
     plt.clf()
 
 
-def create_rel_plot(metric, data, epsilons, colors):
+def create_rel_plot(metric, data, epsilons, colors, name):
     plt.figure(1)
     plt.title(metric)
     plt.xlabel("Iterations")
@@ -46,12 +46,12 @@ def create_rel_plot(metric, data, epsilons, colors):
         y = data[epsilon][metric]
         plt.plot(range(1, 9), y, label=str(epsilon), color=colors[epsilon])
     plt.legend(loc='best')
-    plt.savefig(metric)
+    plt.savefig(metric + name[0] + "@" + name[1])
     plt.clf()
 
 
-relevant_epsilons = [0, 20, 40, 70, 100]
-colors = {0: "g", 20: "k", 40: "b", 70: "r", 100: "m", 200: "c"}
+relevant_epsilons = [0, 20, 40, 50, 100]
+colors = {0: "g", 20: "k", 40: "b", 70: "r", 100: "m", 50: "c"}
 
 
 def read_file(rel, epsilons):
@@ -93,6 +93,10 @@ def create_histogram(data_epsilon,title,feature,feature_map,epsilons):
 # create_plot(features, data_epsilon, epsilons, feature_map, colors, "epsilon06", not_to_plot)
 # for feature in features:
 #     create_histogram(data_epsilon,feature,feature,feature_map,epsilons)
-data = read_file("relevance_stats_4.tex", epsilons)
-for metric in ["NDCG", "MAP", "MRR"]:
-    create_rel_plot(metric, data, relevant_epsilons, colors)
+agreement = [4, 5]
+level = [1, 2, 3]
+for a in agreement:
+    for l in level:
+        data = read_file("relevance_stats_full" + str(a) + "_" + str(l) + ".tex", epsilons)
+        for metric in ["NDCG", "MAP", "MRR"]:
+            create_rel_plot(metric, data, relevant_epsilons, colors, [str(a), str(l)])

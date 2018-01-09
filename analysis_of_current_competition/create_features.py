@@ -13,6 +13,6 @@ def append_features(epochs):
     features.close()
 
 
-epochs=[1,2,3,4]
+epochs = [1, 2, 3, 4, 5]
 
 append_features(epochs)

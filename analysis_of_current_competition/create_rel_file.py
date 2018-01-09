@@ -12,6 +12,8 @@ def retrieve_all_data(folders):
                 if row['username']!='nimo':
                     key = row['orig__id']
                     epoch = int(folder.split("epoch")[1])
+                    if epoch == 4:
+                        print("")
                     if row['this_document_is'].lower()=='relevant':
                         stat[epoch][key]=stat[epoch].get(key,0)+1
                     else:
@@ -40,11 +42,11 @@ def write_relevance_file(stat,mapping):
     for doc in docs:
         for e in epochs:
             if stat[e].get(doc,False):
-
                 last_rel[doc] = stat[e][doc]
             doc_name = "ROUND-"+str(e).zfill(2)+"-"+mapping[doc]+"-"+doc
-            if last_rel[doc]==5:
-                line = mapping[doc]+" 0 "+doc_name+" "+str(1)+"\n"
+            if last_rel[doc] >= 3:
+                line = mapping[doc] + " 0 " + doc_name + " " + str(last_rel[doc] - 2) + "\n"
+                # line = mapping[doc]+" 0 "+doc_name+" "+str(1)+"\n"
             else:
                 line = mapping[doc]+" 0 "+doc_name+" "+str(0)+"\n"
             file.write(line)
@@ -62,7 +64,10 @@ def new_rel(rel):
             f.write(line)
     f.close()
 
-folders = ["C:\\study\\thesis - new\\coampetition\\epoch1","C:\\study\\thesis - new\\competition\\epoch2","C:\\study\\thesis - new\\competition\\epoch3","C:\\study\\thesis - new\\competition\\epoch4"]
+
+folders = ["C:\\study\\thesis - new\\competition\\epoch1", "C:\\study\\thesis - new\\competition\\epoch2",
+           "C:\\study\\thesis - new\\competition\\epoch3", "C:\\study\\thesis - new\\competition\\epoch4",
+           "C:\\study\\thesis - new\\competition\\epoch5"]
 mapping_file = "C:\\study\\thesis - new\\competition\\mapping"
 
 
