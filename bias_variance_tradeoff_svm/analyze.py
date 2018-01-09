@@ -120,7 +120,7 @@ class analyze:
         mrr_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
-            C_for_pearson.append(float(model))
+            C_for_pearson.append(math.log(float(model)))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
@@ -174,7 +174,6 @@ class analyze:
             original_list_index_svm = {}
             change_rate_svm_epochs_max = []
             change_rate_svm_epochs_mean = []
-            # change_rate_svm_epochs_geo_mean = []
             change_rate_svm_epochs_weighted = []
             rbo_min = []
             rbo_min_orig = []
