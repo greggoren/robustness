@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import kendalltau
 import math
 from statsmodels.genmod.families.links import sqrt
-
+from sklearn.metrics.pairwise import cosine_similarity
 import RBO as r
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
@@ -86,10 +86,11 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    change[epoch][query][doc] = np.linalg.norm(
-                        cd[epoch][query][doc] - cd[epoch - 1][query][doc], ord=1) / np.linalg.norm(
-                        cd[epoch - 1][query][doc], ord=1)
-
+                    # change[epoch][query][doc] = np.linalg.norm(
+                    #     cd[epoch][query][doc] - cd[epoch - 1][query][doc], ord=1) / np.linalg.norm(
+                    #     cd[epoch - 1][query][doc], ord=1)
+                    change[epoch][query][doc] = float(1) / cosine_similarity(cd[epoch - 1][query][doc],
+                                                                             cd[epoch][query][doc])
                     # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
                     #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
 
