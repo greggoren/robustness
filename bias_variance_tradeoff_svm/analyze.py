@@ -120,7 +120,7 @@ class analyze:
         mrr_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
-            C_for_pearson.append(math.log(float(model)))
+            C_for_pearson.append(math.exp(float(model)))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
