@@ -6,6 +6,7 @@ from statsmodels.genmod.families.links import sqrt
 
 import RBO as r
 from scipy.stats import pearsonr
+from scipy.stats import spearmanr
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -120,7 +121,7 @@ class analyze:
         mrr_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
-            C_for_pearson.append(math.exp(float(model)))
+            C_for_pearson.append(float(model))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
             max_kt = str(round(max(kendall[key][0]), 3))
@@ -150,13 +151,14 @@ class analyze:
         print(pearsonr(C_for_pearson, kendall_for_pearson))
         print(pearsonr(C_for_pearson, rbo_for_pearson))
         print("max")
-        print(pearsonr(C_for_pearson, wc_max_for_pearson))
+        # print(pearsonr(C_for_pearson, wc_max_for_pearson))
+        print(spearmanr(C_for_pearson, wc_max_for_pearson))
         # print("geo")
         # print(pearsonr(C_for_pearson, wc_geo_mean_for_pearson))
         print("weighted")
-        print(pearsonr(C_for_pearson, wc_weighted_for_pearson))
+        print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
         print("mean")
-        print(pearsonr(C_for_pearson, wc_mean_for_pearson))
+        print(spearmanr(C_for_pearson, wc_mean_for_pearson))
         print(pearsonr(C_for_pearson, ndcg_for_pearson))
         print(pearsonr(C_for_pearson, map_for_pearson))
         print(pearsonr(C_for_pearson, mrr_for_pearson))
