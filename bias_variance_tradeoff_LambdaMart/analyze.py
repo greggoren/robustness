@@ -198,7 +198,6 @@ class analyze:
                 for doc in cd[epoch][query]:
                     change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
                         cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
-
         return change
 
     def calculate_average_kendall_tau(self, rankings, values, weights, ranks):
