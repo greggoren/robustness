@@ -1,6 +1,7 @@
 import subprocess
 import numpy as np
 from scipy.stats import kendalltau
+import math
 from statsmodels.genmod.families.links import sqrt
 
 import RBO as r
@@ -202,9 +203,9 @@ class analyze:
                         change_rate_svm_max += (
                             float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm_geo_mean += (
-                            float(1) / sqrt(weights[epoch][query][ranks[svm][epoch][query][0]] *
-                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]]))
+                        change_rate_svm_geo_mean += (float(1) / math.sqrt(
+                            weights[epoch][query][ranks[svm][epoch][query][0]] * weights[epoch][query][
+                                ranks[svm][epoch - 1][query][0]]))
                         change_rate_svm_mean += (
                             float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
