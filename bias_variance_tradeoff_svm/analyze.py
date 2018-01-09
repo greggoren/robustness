@@ -44,6 +44,16 @@ class analyze:
                 f.close()
                 self.order_trec_file(name+str(epoch)+".txt")
 
+    def cosine_similarity(self, v1, v2):
+        sumxx, sumxy, sumyy = 0, 0, 0
+        for i in range(len(v1)):
+            x = v1[i];
+            y = v2[i]
+            sumxx += x * x
+            sumyy += y * y
+            sumxy += x * y
+        return sumxy / math.sqrt(sumxx * sumyy)
+
     def calculate_metrics(self,models):
         metrics = {}
         for svm in models:
@@ -89,8 +99,8 @@ class analyze:
                     # change[epoch][query][doc] = np.linalg.norm(
                     #     cd[epoch][query][doc] - cd[epoch - 1][query][doc], ord=1) / np.linalg.norm(
                     #     cd[epoch - 1][query][doc], ord=1)
-                    change[epoch][query][doc] = float(1) / cosine_similarity(cd[epoch - 1][query][doc],
-                                                                             cd[epoch][query][doc])
+                    change[epoch][query][doc] = float(1) / self.cosine_similarity(cd[epoch - 1][query][doc],
+                                                                                  cd[epoch][query][doc])
                     # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
                     #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
 
