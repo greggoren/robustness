@@ -86,10 +86,10 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    change[epoch][query][doc] = np.linalg.norm(cd[epoch][query][doc] - cd[epoch - 1][query][doc])
+                    # change[epoch][query][doc] = np.linalg.norm(cd[epoch][query][doc] - cd[epoch - 1][query][doc])
 
-                    # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                    #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
 
         return change
 
@@ -153,14 +153,14 @@ class analyze:
         print(pearsonr(C_for_pearson, kendall_for_pearson))
         print(pearsonr(C_for_pearson, rbo_for_pearson))
         print("max")
-        # print(pearsonr(C_for_pearson, wc_max_for_pearson))
-        print(spearmanr(C_for_pearson, wc_max_for_pearson))
+        print(pearsonr(C_for_pearson, wc_max_for_pearson))
+        # print(spearmanr(C_for_pearson, wc_max_for_pearson))
         print("reg")
-        print(spearmanr(C_for_pearson, wc_pearson))
+        print(pearsonr(C_for_pearson, wc_pearson))
         print("weighted")
-        print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
+        print(pearsonr(C_for_pearson, wc_weighted_for_pearson))
         print("mean")
-        print(spearmanr(C_for_pearson, wc_mean_for_pearson))
+        print(pearsonr(C_for_pearson, wc_mean_for_pearson))
         print(pearsonr(C_for_pearson, ndcg_for_pearson))
         print(pearsonr(C_for_pearson, map_for_pearson))
         print(pearsonr(C_for_pearson, mrr_for_pearson))
