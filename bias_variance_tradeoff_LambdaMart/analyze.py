@@ -5,7 +5,7 @@ from scipy.stats import kendalltau
 import RBO as r
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
-
+from kendall_tau import weighted_kendall_tau
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -129,6 +129,8 @@ class analyze:
         ndcg_for_pearson = []
         map_for_pearson = []
         mrr_for_pearson = []
+        kendall_max_for_pearson = []
+        kendall_mean_for_pearson = []
         for key in keys:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             trees_for_pearson.append(int(trees))
@@ -154,6 +156,10 @@ class analyze:
             map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
+            max_w_kt = np.mean(kendall[key][2])
+            kendall_max_for_pearson.append(max_w_kt)
+            mean_w_kt = np.mean(kendall[key][3])
+            kendall_mean_for_pearson.append(mean_w_kt)
             # tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
             #        mrr]
             # tmp = ["LambdaMart", trees, leaves, change, m_change, nd, map, mrr]
@@ -161,31 +167,45 @@ class analyze:
             # table_file.write(line)
             # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
+        # print("leaves")
+        # print(pearsonr(leaves_for_pearson, kendall_for_pearson))
+        # print(pearsonr(leaves_for_pearson, rbo_for_pearson))
+        # # print(pearsonr(leaves_for_pearson, wc_for_pearson))
+        # print("max")
+        # print(spearmanr(leaves_for_pearson, wc_max_for_pearson))
+        # print("weighted")
+        # print(spearmanr(leaves_for_pearson, wc_weighted_for_pearson))
+        # print("mean")
+        # print(spearmanr(leaves_for_pearson, wc_mean_for_pearson))
+        # print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
+        # print(pearsonr(leaves_for_pearson, map_for_pearson))
+        # print(pearsonr(leaves_for_pearson, mrr_for_pearson))
+        # print("trees")
+        # print(pearsonr(trees_for_pearson, kendall_for_pearson))
+        # print(pearsonr(trees_for_pearson, rbo_for_pearson))
+        # print("max")
+        # print(spearmanr(trees_for_pearson, wc_max_for_pearson))
+        # print("weighted")
+        # print(spearmanr(trees_for_pearson, wc_weighted_for_pearson))
+        # print("mean")
+        # print(spearmanr(trees_for_pearson, wc_mean_for_pearson))
+        # print(pearsonr(trees_for_pearson, ndcg_for_pearson))
+        # print(pearsonr(trees_for_pearson, map_for_pearson))
+        # print(pearsonr(trees_for_pearson, mrr_for_pearson))
         print("leaves")
-        print(pearsonr(leaves_for_pearson, kendall_for_pearson))
-        print(pearsonr(leaves_for_pearson, rbo_for_pearson))
-        # print(pearsonr(leaves_for_pearson, wc_for_pearson))
         print("max")
-        print(spearmanr(leaves_for_pearson, wc_max_for_pearson))
-        print("weighted")
-        print(spearmanr(leaves_for_pearson, wc_weighted_for_pearson))
+        print("pearson", pearsonr(leaves_for_pearson, kendall_max_for_pearson))
+        print("spearman", spearmanr(leaves_for_pearson, kendall_max_for_pearson))
         print("mean")
-        print(spearmanr(leaves_for_pearson, wc_mean_for_pearson))
-        print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
-        print(pearsonr(leaves_for_pearson, map_for_pearson))
-        print(pearsonr(leaves_for_pearson, mrr_for_pearson))
+        print("pearson", pearsonr(leaves_for_pearson, kendall_mean_for_pearson))
+        print("spearman", spearmanr(leaves_for_pearson, kendall_mean_for_pearson))
         print("trees")
-        print(pearsonr(trees_for_pearson, kendall_for_pearson))
-        print(pearsonr(trees_for_pearson, rbo_for_pearson))
         print("max")
-        print(spearmanr(trees_for_pearson, wc_max_for_pearson))
-        print("weighted")
-        print(spearmanr(trees_for_pearson, wc_weighted_for_pearson))
+        print("pearson", pearsonr(trees_for_pearson, kendall_max_for_pearson))
+        print("spearman", spearmanr(trees_for_pearson, kendall_max_for_pearson))
         print("mean")
-        print(spearmanr(trees_for_pearson, wc_mean_for_pearson))
-        print(pearsonr(trees_for_pearson, ndcg_for_pearson))
-        print(pearsonr(trees_for_pearson, map_for_pearson))
-        print(pearsonr(trees_for_pearson, mrr_for_pearson))
+        print("pearson", pearsonr(trees_for_pearson, kendall_mean_for_pearson))
+        print("spearman", spearmanr(trees_for_pearson, kendall_mean_for_pearson))
 
     def create_change_percentage(self, cd):
         change = {}
@@ -216,6 +236,8 @@ class analyze:
             change_rate_svm_epochs_weighted = []
             rbo_min = []
             rbo_min_orig = []
+            max_w_kt_svm = []
+            mean_w_kt_svm = []
             epochs = sorted(list(rankings_list_svm.keys()))
             for epoch in epochs:
 
@@ -223,6 +245,8 @@ class analyze:
                 sum_rbo_min = 0
                 sum_rbo_min_orig = 0
                 sum_svm_original = 0
+                sum_max_w_kt = 0
+                sum_mean_w_kt = 0
                 n_q=0
                 change_rate_svm_mean = 0
                 # change_rate_svm_geo_mean = 0
@@ -246,6 +270,10 @@ class analyze:
                         change_rate_svm_weighted += (
                             float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
+                    sum_max_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
+                                                         weights[epoch][query], "max")
+                    sum_mean_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
+                                                          weights[epoch][query], "mean")
 
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
@@ -263,6 +291,8 @@ class analyze:
                     last_list_index_svm[query] = current_list_svm
                 if n_q==0:
                     continue
+                max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
+                mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
                 change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
                 change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
                 change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
@@ -270,7 +300,7 @@ class analyze:
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
                 rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
-            kendall[svm] = (kt_svm, kt_svm_orig)
+            kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean,)
         return kendall, change_rate, rbo_min_models
