@@ -146,7 +146,7 @@ class analyze:
             wc_max_for_pearson.append(change_max)
             change_mean = round(np.mean(change_rate[key][2]), 3)
 
-            change = str(round(np.mean(change_rate[key][3]), 3))
+            change = round(np.mean(change_rate[key][3]), 3)
             wc_geo_mean_for_pearson.append(change)
             wc_mean_for_pearson.append(change_mean)
             change_weighted = round(np.mean(change_rate[key][1]), 3)
