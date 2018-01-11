@@ -1,6 +1,7 @@
 import subprocess
 import numpy as np
 from scipy.stats import kendalltau
+from kendall_tau import weighted_kendall_tau
 import math
 from statsmodels.genmod.families.links import sqrt
 from sklearn.metrics.pairwise import cosine_similarity
@@ -125,6 +126,8 @@ class analyze:
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
         kendall_for_pearson = []
+        kendall_max_for_pearson = []
+        kendall_mean_for_pearson = []
         rbo_for_pearson = []
         wc_max_for_pearson = []
         wc_mean_for_pearson = []
@@ -158,25 +161,35 @@ class analyze:
             map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
+            max_w_kt = np.mean(kendall[key][2])
+            kendall_max_for_pearson.append(max_w_kt)
+            mean_w_kt = np.mean(kendall[key][3])
+            kendall_mean_for_pearson.append(mean_w_kt)
             # tmp = ["SVMRank", model, change, m_change, nd, map, mrr]
             # tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map, mrr]
             # line = " & ".join(tmp) + " \\\\ \n"
             # table_file.write(line)
         table_file.write("\\end{longtable}")
-        print(pearsonr(C_for_pearson, kendall_for_pearson))
-        print(pearsonr(C_for_pearson, rbo_for_pearson))
-        print("max")
-        print(spearmanr(C_for_pearson, wc_max_for_pearson))
+        # print(pearsonr(C_for_pearson, kendall_for_pearson))
+        # print(pearsonr(C_for_pearson, rbo_for_pearson))
+        # print("max")
         # print(spearmanr(C_for_pearson, wc_max_for_pearson))
-        print("reg")
-        print(spearmanr(C_for_pearson, wc_pearson))
-        print("weighted")
-        print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
+        # # print(spearmanr(C_for_pearson, wc_max_for_pearson))
+        # print("reg")
+        # print(spearmanr(C_for_pearson, wc_pearson))
+        # print("weighted")
+        # print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
+        # print("mean")
+        # print(spearmanr(C_for_pearson, wc_mean_for_pearson))
+        # print(pearsonr(C_for_pearson, ndcg_for_pearson))
+        # print(pearsonr(C_for_pearson, map_for_pearson))
+        # print(pearsonr(C_for_pearson, mrr_for_pearson))
+        print("max")
+        print("pearson", pearsonr(C_for_pearson, kendall_max_for_pearson))
+        print("spearman", spearmanr(C_for_pearson, kendall_max_for_pearson))
         print("mean")
-        print(spearmanr(C_for_pearson, wc_mean_for_pearson))
-        print(pearsonr(C_for_pearson, ndcg_for_pearson))
-        print(pearsonr(C_for_pearson, map_for_pearson))
-        print(pearsonr(C_for_pearson, mrr_for_pearson))
+        print("pearson", pearsonr(C_for_pearson, kendall_mean_for_pearson))
+        print("spearman", spearmanr(C_for_pearson, kendall_mean_for_pearson))
 
     def calculate_average_kendall_tau(self, rankings, weights, ranks):
         kendall = {}
@@ -186,6 +199,8 @@ class analyze:
         for svm in rankings:
             rankings_list_svm = rankings[svm]
             kt_svm = []
+            max_w_kt_svm = []
+            mean_w_kt_svm = []
             kt_svm_orig = []
             last_list_index_svm={}
             original_list_index_svm = {}
@@ -207,6 +222,8 @@ class analyze:
                 change_rate_svm = 0
                 change_rate_svm_max = 0
                 change_rate_svm_weighted = 0
+                sum_mean_w_kt = 0
+                sum_max_w_kt = 0
                 for query in rankings_list_svm[epoch]:
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
@@ -237,6 +254,10 @@ class analyze:
                         # change_rate_svm += 1
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
+                    sum_max_w_kt += weighted_kendall_tau(original_list_index_svm[query], current_list_svm,
+                                                         weights[epoch][query], "max")
+                    sum_mean_w_kt += weighted_kendall_tau(original_list_index_svm[query], current_list_svm,
+                                                          weights[epoch][query], "mean")
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
                                           {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
@@ -257,10 +278,12 @@ class analyze:
                 change_rate_svm_epochs.append(float(change_rate_svm) / n_q)
                 change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
+                max_w_kt_svm.append(float(max_w_kt_svm) / n_q)
+                mean_w_kt_svm.append(float(mean_w_kt_svm) / n_q)
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
                 rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
-            kendall[svm] = (kt_svm, kt_svm_orig)
+            kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
                 change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean,
