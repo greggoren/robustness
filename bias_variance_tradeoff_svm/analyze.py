@@ -254,7 +254,7 @@ class analyze:
                         # change_rate_svm += 1
                     n_q += 1
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
-                    sum_max_w_kt += weighted_kendall_tau(ranks[epoch - 1][query], ranks[epoch][query],
+                    sum_max_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
                                                          weights[epoch][query], "max")
                     sum_mean_w_kt += weighted_kendall_tau(original_list_index_svm[query], current_list_svm,
                                                           weights[epoch][query], "mean")
