@@ -100,10 +100,10 @@ class analyze:
                     # change[epoch][query][doc] = np.linalg.norm(
                     #     cd[epoch][query][doc] - cd[epoch - 1][query][doc], ord=1) / np.linalg.norm(
                     #     cd[epoch - 1][query][doc], ord=1)
-                    change[epoch][query][doc] = float(1) / self.cosine_similarity(cd[epoch - 1][query][doc],
-                                                                                  cd[epoch][query][doc])
-                    # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                    #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    # change[epoch][query][doc] = float(1) / self.cosine_similarity(cd[epoch - 1][query][doc],
+                    #                                                               cd[epoch][query][doc])
+                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
 
         return change
 
