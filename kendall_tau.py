@@ -38,8 +38,8 @@ def weighted_kendall_tau(ranked1, ranked2, weights, metric):
         winner1, loser1 = determine_order(pair, ranked1)
         winner2, loser2 = determine_order(pair, ranked2)
         if winner1 != winner2:
-            discordant += float(1) / metric_enforcer(metric, weights[loser1], weights[winner1])
+            discordant += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
         else:
-            concordant += float(1) / metric_enforcer(metric, weights[loser1], weights[winner1])
-        denominator += float(1) / metric_enforcer(metric, weights[loser1], weights[winner1])
+            concordant += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
+        denominator += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
     return float(concordant - discordant) / denominator
