@@ -256,7 +256,7 @@ class analyze:
                     kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     sum_max_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
                                                          weights[epoch][query], "max")
-                    sum_mean_w_kt += weighted_kendall_tau(original_list_index_svm[query], current_list_svm,
+                    sum_mean_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
                                                           weights[epoch][query], "mean")
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
