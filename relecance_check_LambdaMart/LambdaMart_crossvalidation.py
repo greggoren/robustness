@@ -29,7 +29,8 @@ if __name__ == "__main__":
         model_handler.set_queries_to_folds(queries, test, fold_number)
         train_file = preprocess.create_train_file(X[train], y[train], queries[train])
         test_file = preprocess.create_train_file_cv(X[test], y[test], queries[test], fold_number, True)
-        trec = model_handler.fit_model_on_train_set_and_run(train_file, test_file, test, queries, evaluator)
+        trec = model_handler.fit_model_on_train_set_and_run(train_file, test_file, test, queries, evaluator,
+                                                            fold_number)
         fold_number += 1
     final = evaluator.order_trec_file(trec)
     evaluator.run_trec_eval_on_test_correlation(final, trees, leaves)
