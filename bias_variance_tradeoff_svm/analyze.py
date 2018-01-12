@@ -1,5 +1,6 @@
 import subprocess
 import numpy as np
+import pickle
 from scipy.stats import kendalltau
 from kendall_tau import weighted_kendall_tau
 import math
@@ -170,27 +171,29 @@ class analyze:
             # line = " & ".join(tmp) + " \\\\ \n"
             # table_file.write(line)
         table_file.write("\\end{longtable}")
-        print(pearsonr(C_for_pearson, kendall_for_pearson))
-        print(pearsonr(C_for_pearson, rbo_for_pearson))
-        print("max")
-        print(spearmanr(C_for_pearson, wc_max_for_pearson))
-        # print(spearmanr(C_for_pearson, wc_max_for_pearson))
-        print("winner")
-        print("spearman", spearmanr(C_for_pearson, wc_pearson))
-        print("pearson", pearsonr(C_for_pearson, wc_pearson))
-        print("weighted")
-        print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
-        print("mean")
-        print(spearmanr(C_for_pearson, wc_mean_for_pearson))
-        print(pearsonr(C_for_pearson, ndcg_for_pearson))
-        print(pearsonr(C_for_pearson, map_for_pearson))
-        print(pearsonr(C_for_pearson, mrr_for_pearson))
+        # print(pearsonr(C_for_pearson, kendall_for_pearson))
+        # print(pearsonr(C_for_pearson, rbo_for_pearson))
         # print("max")
-        # print("pearson", pearsonr(C_for_pearson, kendall_max_for_pearson))
-        # print("spearman", spearmanr(C_for_pearson, kendall_max_for_pearson))
+        # print(spearmanr(C_for_pearson, wc_max_for_pearson))
+        # # print(spearmanr(C_for_pearson, wc_max_for_pearson))
+        # print("winner")
+        # print("spearman", spearmanr(C_for_pearson, wc_pearson))
+        # print("pearson", pearsonr(C_for_pearson, wc_pearson))
+        # print("weighted")
+        # print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
         # print("mean")
-        # print("pearson", pearsonr(C_for_pearson, kendall_mean_for_pearson))
-        # print("spearman", spearmanr(C_for_pearson, kendall_mean_for_pearson))
+        # print(spearmanr(C_for_pearson, wc_mean_for_pearson))
+        # print(pearsonr(C_for_pearson, ndcg_for_pearson))
+        # print(pearsonr(C_for_pearson, map_for_pearson))
+        # print(pearsonr(C_for_pearson, mrr_for_pearson))
+        # print("max")
+        print("pearson", pearsonr(C_for_pearson, kendall_max_for_pearson))
+        print("spearman", spearmanr(C_for_pearson, kendall_max_for_pearson))
+        print("mean")
+        print("pearson", pearsonr(C_for_pearson, kendall_mean_for_pearson))
+        print("spearman", spearmanr(C_for_pearson, kendall_mean_for_pearson))
+        with open("mean_max_c_w_kt", 'wb') as p1:
+            pickle.dump((C_for_pearson, kendall_mean_for_pearson, kendall_max_for_pearson), p1)
 
     def calculate_average_kendall_tau(self, rankings, weights, ranks):
         kendall = {}
