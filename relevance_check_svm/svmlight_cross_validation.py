@@ -79,7 +79,6 @@ if __name__ == "__main__":
     C_array.extend([float(i + 1) for i in range(10)])
     C_array.extend([float(i + 1) * 10 for i in range(10)])
     C_array.extend([float(i + 1) * 100 for i in range(10)])
-    C_array.extend([float(i + 1) * 1000 for i in range(10)])
     trecs = []
     for train, test in folds:
         train_file = "features" + str(fold_number)
