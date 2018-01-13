@@ -33,7 +33,10 @@ def learn_svm(C, train_file, fold):
 def run_svm(C, model_file, test_file, fold):
     score_path = "scores/" + str(fold)
     if not os.path.exists(score_path):
-        os.makedirs(score_path)
+        try:
+            os.makedirs(score_path)
+        except:
+            print("collition")
     rank_command = "./svm_rank_classify " + test_file + " " + model_file + " " + score_path + "/" + str(C)
     for output_line in run_command(rank_command):
         print(output_line)
