@@ -61,10 +61,12 @@ class model_handler_LambdaMart():
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "/lv_local/home/sgregory/robustness/scores/" + str(fold) + "/score" + "_" + str(fold) + "_" + str(
             trees) + "_" + str(leaves)
-        if not os.path.exists("/lv_local/home/sgregory/robustness/scores/" + str(fold) + "/"):
-            os.makedirs("/lv_local/home/sgregory/robustness/scores/" + str(fold) + "/")
-        features = "/lv_local/home/sgregory/robustness/" + test_file
-        model_path = "/lv_local/home/sgregory/robustness/models/" + str(fold) + "/model_" + str(trees) + "_" + str(
+        if not os.path.exists("/lv_local/home/sgregory/robustness/relecance_check_LambdaMart/scores/" + str(
+                fold) + "/"):
+            os.makedirs("/lv_local/home/sgregory/robustness/relecance_check_LambdaMart/scores/" + str(fold) + "/")
+        features = test_file
+        model_path = "/lv_local/home/sgregory/robustness/relecance_check_LambdaMart/models/" + str(
+            fold) + "/model_" + str(trees) + "_" + str(
             leaves)
         self.run_bash_command('touch ' + score_file)
         command = java_path + " -jar " + jar_path + " -load " + model_path + " -rank " + features + " -score " + score_file
