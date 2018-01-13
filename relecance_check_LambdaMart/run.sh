@@ -1,0 +1,9 @@
+nohup python LambdaMart_crossvalidation.py 3 5 > 3_5.log &
+nohup python LambdaMart_crossvalidation.py 4 5 > 4_5.log &
+nohup python LambdaMart_crossvalidation.py 5 5 > 5_5.log &
+nohup python LambdaMart_crossvalidation.py 6 5 > 6_5.log &
+nohup python LambdaMart_crossvalidation.py 7 5 > 7_5.log &
+nohup python LambdaMart_crossvalidation.py 8 5 > 8_5.log &
+nohup python LambdaMart_crossvalidation.py 9 5 > 9_5.log &
+nohup python LambdaMart_crossvalidation.py 10 5 > 10_5.log &
+nohup python LambdaMart_crossvalidation.py 11 5 > 11_5.log &
