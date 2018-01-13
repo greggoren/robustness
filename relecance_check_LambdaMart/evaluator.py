@@ -97,7 +97,7 @@ class eval:
                 print(metric, output_line)
                 score = output_line.split()[-1].rstrip()
                 score_data.append((metric, str(score)))
-        summary_file = open("relevance_for_correlation_LambdaMart", 'a')
+        summary_file = open("trees_relevance_for_correlation_LambdaMart", 'a')
         summary_file.write("MODEL\tMETRIC\tSCORE\n")
         for score_record in score_data:
             next_line = str(trees) + "_" + str(leaves) + "\t" + score_record[0] + "\t" + score_record[1] + "\n"
