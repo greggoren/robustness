@@ -1,0 +1,13 @@
+qrels = "qrels"
+validation_folder = "/lv_local/home/sgregory/robustness/validation/"
+score_file = "/lv_local/home/sgregory/robustness/trec_file_asr.txt"
+recovery = False
+data_set_file = "data/featuresCB_asr"
+number_of_folds = 5
+normalized = False
+number_of_competitors = 10
+summary_file = "svm_asr.txt"
+random_seed = 9001
+iter_factor = 1
+processes_number = 9
+model_handler_file = "model_handler_asr.pickle"
