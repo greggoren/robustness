@@ -73,13 +73,13 @@ if __name__ == "__main__":
     folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
     fold_number = 1
 
-    C_array = [float(i) / 1000 for i in range(10)]
-    C_array.extend([float(i) / 100 for i in range(10)])
-    C_array.extend([float(i) / 10 for i in range(10)])
-    C_array.extend([float(i) for i in range(10)])
-    C_array.extend([float(i) * 10 for i in range(10)])
-    C_array.extend([float(i) * 100 for i in range(10)])
-    C_array.extend([float(i) * 1000 for i in range(10)])
+    C_array = [float(i + 1) / 1000 for i in range(10)]
+    C_array.extend([float(i + 1) / 100 for i in range(10)])
+    C_array.extend([float(i + 1) / 10 for i in range(10)])
+    C_array.extend([float(i + 1) for i in range(10)])
+    C_array.extend([float(i + 1) * 10 for i in range(10)])
+    C_array.extend([float(i + 1) * 100 for i in range(10)])
+    C_array.extend([float(i + 1) * 1000 for i in range(10)])
     trecs = []
     for train, test in folds:
         train_file = "features" + str(fold_number)
