@@ -1,9 +1,6 @@
-nohup python LambdaMart_crossvalidation.py 2000 5 > 20_5.log &
-nohup python LambdaMart_crossvalidation.py 2500 5 > 30_5.log &
-nohup python LambdaMart_crossvalidation.py 3000 5 > 40_5.log &
-nohup python LambdaMart_crossvalidation.py 3500 5 > 50_5.log &
-nohup python LambdaMart_crossvalidation.py 4000 5 > 60_5.log &
-nohup python LambdaMart_crossvalidation.py 4500 5 > 70_5.log &
-nohup python LambdaMart_crossvalidation.py 5000 5 > 80_5.log &
-nohup python LambdaMart_crossvalidation.py 5500 5 > 90_5.log &
-nohup python LambdaMart_crossvalidation.py 6000 5 > 100_5.log &
+nohup python LambdaMart_crossvalidation.py 6500 5 > 20_5.log &
+nohup python LambdaMart_crossvalidation.py 7000 5 > 30_5.log &
+nohup python LambdaMart_crossvalidation.py 7500 5 > 40_5.log &
+nohup python LambdaMart_crossvalidation.py 8000 5 > 50_5.log &
+nohup python LambdaMart_crossvalidation.py 8500 5 > 60_5.log &
+nohup python LambdaMart_crossvalidation.py 9000 5 > 70_5.log &
