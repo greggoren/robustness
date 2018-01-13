@@ -17,7 +17,12 @@ def run_command(command):
 
 def learn_svm(C, train_file, fold):
     if not os.path.exists("models/" + str(fold)):
-        os.makedirs("models/" + str(fold))
+        try:
+            os.makedirs("models/" + str(fold))
+        except:
+            print("weird behaviour")
+            print(C, train_file, fold)
+
     learning_command = "./svm_rank_learn -c " + str(C) + " " + train_file + " " + "models/" + str(
         fold) + "/svm_model" + str(C) + ".txt"
     for output_line in run_command(learning_command):
@@ -71,20 +76,20 @@ def f(train_file, test_file, fold_number, C):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
-    number_of_queries = len(set(queries))
-    evaluator = e.eval()
-    evaluator.create_index_to_doc_name_dict()
-    evaluator.remove_score_file_from_last_run()
-    folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
-    fold_number = 2
-
     C_array = [float(i + 1) / 1000 for i in range(10)]
     C_array.extend([float(i + 1) / 100 for i in range(10)])
     C_array.extend([float(i + 1) / 10 for i in range(10)])
     C_array.extend([float(i + 1) for i in range(10)])
     C_array.extend([float(i + 1) * 10 for i in range(10)])
     C_array.extend([float(i + 1) * 100 for i in range(10)])
+    X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
+    number_of_queries = len(set(queries))
+    evaluator = e.eval()
+    evaluator.create_index_to_doc_name_dict()
+    evaluator.remove_score_file_from_last_run()
+    folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
+    fold_number = 1
+
     trecs = []
     for train, test in folds:
         train_file = "features" + str(fold_number)
