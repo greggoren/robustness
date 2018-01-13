@@ -4,7 +4,8 @@ from relevance_check_svm import params
 import numpy as np
 import os
 import subprocess
-
+from multiprocessing import Pool
+from functools import partial
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -63,6 +64,11 @@ def recover_model(model):
     return np.array(weights)
 
 
+def f(train_file, test_file, fold_number, C):
+    model_file = learn_svm(C, train_file, fold_number)
+    score_file = run_svm(C, model_file, test_file, fold_number)
+    return score_file
+
 if __name__ == "__main__":
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
@@ -71,7 +77,7 @@ if __name__ == "__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     folds = preprocess.create_folds(X, y, queries, params.number_of_folds)
-    fold_number = 1
+    fold_number = 2
 
     C_array = [float(i + 1) / 1000 for i in range(10)]
     C_array.extend([float(i + 1) / 100 for i in range(10)])
@@ -83,11 +89,14 @@ if __name__ == "__main__":
     for train, test in folds:
         train_file = "features" + str(fold_number)
         test_file = "features_test" + str(fold_number)
-        for C in C_array:
-            model_file = learn_svm(C, train_file, fold_number)
-            score_file = run_svm(C, model_file, test_file, fold_number)
+        p = Pool(10)
+        scores = p.map(partial(f, train_file, test_file, fold_number), C_array)
+        # model_file = learn_svm(C, train_file, fold_number)
+        # score_file = run_svm(C, model_file, test_file, fold_number)
+        for score_file in scores:
             results = retrieve_scores(test, score_file)
-            trec = evaluator.create_trec_eval_file(test, queries, results, str(C))
+            C = score_file.split("/")[2]
+            trec = evaluator.create_trec_eval_file(test, queries, results, C)
             trecs.append(trec)
         fold_number += 1
     for trec in set(trecs):
