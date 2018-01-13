@@ -28,8 +28,8 @@ if __name__ == "__main__":
     for train, test in folds:
         model_handler.set_queries_to_folds(queries, test, fold_number)
         train_file = preprocess.create_train_file(X[train], y[train], queries[train], str(trees) + "_" + str(leaves))
-        test_file = preprocess.create_train_file_cv(X[test], y[test], queries[test], fold_number,
-                                                    str(trees) + "_" + str(leaves), True)
+        test_file = preprocess.create_train_file(X[test], y[test], queries[test], fold_number,
+                                                 str(trees) + "_" + str(leaves), True)
         trec = model_handler.fit_model_on_train_set_and_run(train_file, test_file, test, queries, evaluator,
                                                             fold_number)
         fold_number += 1
