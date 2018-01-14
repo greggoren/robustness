@@ -169,7 +169,7 @@ class analyze:
             query_correlation_spearman["trees"]["kendall_mean"][query] = spearmanr(trees_for_pearson[query],
                                                                                    kendall_for_pearson["mean"][query])
             query_correlation_spearman["trees"]["wc_reg"][query] = spearmanr(trees_for_pearson[query],
-                                                                             wc_for_pearson[query])
+                                                                             wc_for_pearson["reg"][query])
             query_correlation_spearman["trees"]["wc_winner"][query] = spearmanr(trees_for_pearson[query],
                                                                                 wc_for_pearson[query])
             query_correlation_spearman["trees"]["rbo"][query] = spearmanr(trees_for_pearson[query],
