@@ -340,6 +340,7 @@ class analyze:
                 rbo_min_models[query][model] = np.mean(rbo_min_models[query][model])
                 change_rate[query][model]["reg"] = np.mean(change_rate[query][model]["reg"])
                 change_rate[query][model]["winner"] = np.mean(change_rate[query][model]["winner"])
+        print(change_rate)
         return kendall, change_rate, rbo_min_models
 
     def get_all_scores(self, svms, competition_data):
