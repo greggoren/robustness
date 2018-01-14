@@ -370,9 +370,11 @@ class analyze:
                         change_rate[query][model]["reg"].append(0)
                         change_rate[query][model]["winner"].append(0)
                     kt = kendalltau(current_list_svm, last_list_index_lm[query])[0]
-                    kt_max = weighted_kendall_tau(ranks[model][epoch][query], ranks[model][epoch - 1][query], weights,
+                    kt_max = weighted_kendall_tau(ranks[model][epoch][query], ranks[model][epoch - 1][query],
+                                                  weights[epoch][query],
                                                   "max")
-                    kt_mean = weighted_kendall_tau(ranks[model][epoch][query], ranks[model][epoch - 1][query], weights,
+                    kt_mean = weighted_kendall_tau(ranks[model][epoch][query], ranks[model][epoch - 1][query],
+                                                   weights[epoch][query],
                                                    "mean")
                     if not np.isnan(kt):
                         kendall["reg"][query][model].append(kt)
