@@ -251,7 +251,7 @@ class analyze:
                      query_correlation_spearman["trees"]["wc_reg"]]))
         final_correlation_spearman["trees"]["wc_winner"] = (
             np.mean(
-                [query_correlation_spearman["trees"]["wc_winenr"][q][0] for q in
+                [query_correlation_spearman["trees"]["wc_winner"][q][0] for q in
                  query_correlation_spearman["trees"]["wc_winner"]]),
             np.mean([query_correlation_spearman["trees"]["wc_winner"][q][1] for q in
                      query_correlation_spearman["trees"]["wc_winner"]]))
