@@ -147,12 +147,6 @@ class analyze:
                 wc_for_pearson["winner"][query].append(change_rate[query][model]["winner"])
                 rbo_for_pearson[query].append(rbo_min_models[query][model])
 
-            print(kendall_for_pearson)
-            print(wc_for_pearson)
-            print(rbo_for_pearson)
-            print(C_for_pearson)
-
-
             query_correlation_pearson["C"]["kendall_reg"][query] = pearsonr(C_for_pearson[query],
                                                                             kendall_for_pearson["reg"][query])
             query_correlation_pearson["C"]["kendall_max"][query] = pearsonr(C_for_pearson[query],
