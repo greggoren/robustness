@@ -324,6 +324,8 @@ class analyze:
                                                    "mean")
                     if not np.isnan(kt):
                         kendall["reg"][query][model].append(kt)
+                    else:
+                        print("query", query)
                     kendall["max"][query][model].append(kt_max)
                     kendall["mean"][query][model].append(kt_mean)
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_lm[query])},
