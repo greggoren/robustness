@@ -162,16 +162,24 @@ class analyze:
                                                                               wc_for_pearson["winner"][query])
             query_correlation_pearson["trees"]["rbo"][query] = pearsonr(trees_for_pearson[query],
                                                                         rbo_for_pearson[query])
-            query_correlation_spearman["trees"]["kendall"][query] = spearmanr(trees_for_pearson[query],
-                                                                     kendall_for_pearson[query])
+            query_correlation_spearman["trees"]["kendall_reg"][query] = spearmanr(trees_for_pearson[query],
+                                                                                  kendall_for_pearson["reg"][query])
+            query_correlation_spearman["trees"]["kendall_max"][query] = spearmanr(trees_for_pearson[query],
+                                                                                  kendall_for_pearson["max"][query])
+            query_correlation_spearman["trees"]["kendall_mean"][query] = spearmanr(trees_for_pearson[query],
+                                                                                   kendall_for_pearson["mean"][query])
             query_correlation_spearman["trees"]["wc_reg"][query] = spearmanr(trees_for_pearson[query],
                                                                              wc_for_pearson[query])
             query_correlation_spearman["trees"]["wc_winner"][query] = spearmanr(trees_for_pearson[query],
                                                                                 wc_for_pearson[query])
             query_correlation_spearman["trees"]["rbo"][query] = spearmanr(trees_for_pearson[query],
                                                                           rbo_for_pearson[query])
-            query_correlation_pearson["leaves"]["kendall"][query] = pearsonr(leaves_for_pearson[query],
-                                                                             kendall_for_pearson[query])
+            query_correlation_pearson["leaves"]["kendall_reg"][query] = pearsonr(leaves_for_pearson[query],
+                                                                                 kendall_for_pearson["reg"][query])
+            query_correlation_pearson["leaves"]["kendall_max"][query] = pearsonr(leaves_for_pearson[query],
+                                                                                 kendall_for_pearson["max"][query])
+            query_correlation_pearson["leaves"]["kendall_mean"][query] = pearsonr(leaves_for_pearson[query],
+                                                                                  kendall_for_pearson["mean"][query])
             query_correlation_pearson["leaves"]["wc_reg"][query] = pearsonr(leaves_for_pearson[query],
                                                                             wc_for_pearson["reg"][query])
             query_correlation_pearson["leaves"]["wc_winner"][query] = pearsonr(leaves_for_pearson[query],
