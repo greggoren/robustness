@@ -292,6 +292,8 @@ class analyze:
             epochs = sorted(list(rankings_list_lm.keys()))
             for epoch in epochs:
                 for query in rankings_list_lm[epoch]:
+                    if query == "182":
+                        continue
                     if not kendall["reg"].get(query, False):
                         kendall["reg"][query] = {}
                         kendall["max"][query] = {}
