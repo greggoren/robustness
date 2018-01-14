@@ -122,10 +122,10 @@ class analyze:
         # metrics = self.calculate_metrics(scores)
         rbo_for_pearson = {}
         wc_for_pearson = {}
-        final_correlation_spearman = {}
-        final_correlation_pearson = {}
-        query_correlation_pearson = {i: {} for i in ["kendall", "wc", "rbo"]}
-        query_correlation_spearman = {i: {} for i in ["kendall", "wc", "rbo"]}
+        final_correlation_spearman = {j: {} for j in ["trees", "leaves"]}
+        final_correlation_pearson = {j: {} for j in ["trees", "leaves"]}
+        query_correlation_pearson = {j: {i: {} for i in ["kendall", "wc", "rbo"]} for j in ["trees", "leaves"]}
+        query_correlation_spearman = {j: {i: {} for i in ["kendall", "wc", "rbo"]} for j in ["trees", "leaves"]}
         for query in kendall:
             kendall_for_pearson[query] = []
             trees_for_pearson[query] = []
@@ -140,40 +140,44 @@ class analyze:
                 wc_for_pearson[query].append(change_rate[query][model])
                 rbo_for_pearson[query].append(rbo_min_models[query][model])
 
-            query_correlation_pearson["kendall"][query] = pearsonr(trees_for_pearson[query], kendall_for_pearson[query])
-            query_correlation_pearson["wc"][query] = pearsonr(trees_for_pearson[query], wc_for_pearson[query])
-            query_correlation_pearson["rbo"][query] = pearsonr(trees_for_pearson[query], rbo_for_pearson[query])
-            query_correlation_spearman["kendall"][query] = spearmanr(trees_for_pearson[query],
+            query_correlation_pearson["trees"]["kendall"][query] = pearsonr(trees_for_pearson[query],
+                                                                            kendall_for_pearson[query])
+            query_correlation_pearson["trees"]["wc"][query] = pearsonr(trees_for_pearson[query], wc_for_pearson[query])
+            query_correlation_pearson["trees"]["rbo"][query] = pearsonr(trees_for_pearson[query],
+                                                                        rbo_for_pearson[query])
+            query_correlation_spearman["trees"]["kendall"][query] = spearmanr(trees_for_pearson[query],
                                                                      kendall_for_pearson[query])
-            query_correlation_spearman["wc"][query] = spearmanr(trees_for_pearson[query], wc_for_pearson[query])
-            query_correlation_spearman["rbo"][query] = spearmanr(trees_for_pearson[query], rbo_for_pearson[query])
-        final_correlation_pearson["kendall"] = (
+            query_correlation_spearman["trees"]["wc"][query] = spearmanr(trees_for_pearson[query],
+                                                                         wc_for_pearson[query])
+            query_correlation_spearman["trees"]["rbo"][query] = spearmanr(trees_for_pearson[query],
+                                                                          rbo_for_pearson[query])
+        final_correlation_pearson["trees"]["kendall"] = (
         np.mean([query_correlation_pearson["kendall"][q][0] for q in query_correlation_pearson["kendall"]]),
         np.mean([query_correlation_pearson["kendall"][q][1] for q in
                  query_correlation_pearson["kendall"]]))
-        final_correlation_pearson["wc"] = (
+        final_correlation_pearson["trees"]["wc"] = (
             np.mean([query_correlation_pearson["wc"][q][0] for q in query_correlation_pearson["wc"]]),
             np.mean([query_correlation_pearson["wc"][q][1] for q in
                      query_correlation_pearson["wc"]]))
-        final_correlation_pearson["rbo"] = (
+        final_correlation_pearson["trees"]["rbo"] = (
             np.mean([query_correlation_pearson["rbo"][q][0] for q in query_correlation_pearson["rbo"]]),
             np.mean([query_correlation_pearson["rbo"][q][1] for q in
                      query_correlation_pearson["rbo"]]))
-        final_correlation_spearman["kendall"] = (
+        final_correlation_spearman["trees"]["kendall"] = (
             np.mean([query_correlation_spearman["kendall"][q][0] for q in query_correlation_spearman["kendall"]]),
             np.mean([query_correlation_spearman["kendall"][q][1] for q in
                      query_correlation_spearman["kendall"]]))
-        final_correlation_spearman["wc"] = (
+        final_correlation_spearman["trees"]["wc"] = (
             np.mean([query_correlation_spearman["wc"][q][0] for q in query_correlation_spearman["wc"]]),
             np.mean([query_correlation_spearman["wc"][q][1] for q in
                      query_correlation_spearman["wc"]]))
-        final_correlation_spearman["rbo"] = (
+        final_correlation_spearman["trees"]["rbo"] = (
             np.mean([query_correlation_spearman["rbo"][q][0] for q in query_correlation_spearman["rbo"]]),
             np.mean([query_correlation_spearman["rbo"][q][1] for q in
                      query_correlation_spearman["rbo"]]))
 
-        print(final_correlation_pearson)
-        print(final_correlation_spearman)
+        print(final_correlation_pearson["trees"])
+        print(final_correlation_spearman["trees"])
 
     def create_change_percentage(self, cd):
         change = {}
