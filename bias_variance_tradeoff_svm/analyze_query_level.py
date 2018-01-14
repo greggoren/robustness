@@ -65,7 +65,7 @@ class analyze:
     def extract_score(self, scores):
         for model in scores:
             for epoch in scores[model]:
-                name = model.split("model_")[1]
+                name = model.split("svm_model")[1]
 
                 f = open(name + "_" + str(epoch) + ".txt", 'w')
                 for query in scores[model][epoch]:
