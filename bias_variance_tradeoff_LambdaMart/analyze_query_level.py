@@ -171,7 +171,7 @@ class analyze:
             query_correlation_spearman["trees"]["wc_reg"][query] = spearmanr(trees_for_pearson[query],
                                                                              wc_for_pearson["reg"][query])
             query_correlation_spearman["trees"]["wc_winner"][query] = spearmanr(trees_for_pearson[query],
-                                                                                wc_for_pearson[query])
+                                                                                wc_for_pearson["winner"][query])
             query_correlation_spearman["trees"]["rbo"][query] = spearmanr(trees_for_pearson[query],
                                                                           rbo_for_pearson[query])
             query_correlation_pearson["leaves"]["kendall_reg"][query] = pearsonr(leaves_for_pearson[query],
