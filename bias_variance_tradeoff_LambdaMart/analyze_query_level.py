@@ -326,7 +326,7 @@ class analyze:
                      query_correlation_spearman["leaves"]["rbo"]]),
             np.mean([query_correlation_spearman["leaves"]["rbo"][q][1] for q in
                      query_correlation_spearman["leaves"]["rbo"]]))
-        f = open("pearson_trees.tex")
+        f = open("pearson_trees.tex", 'w')
         f.write("\\begin{tabular}{c|c|c}\n")
         f.write("Metric & Correlation & P-value \\\\ \n")
         corr = final_correlation_pearson["trees"]["kendall_reg"]
@@ -342,7 +342,7 @@ class analyze:
         corr = final_correlation_pearson["trees"]["rbo"]
         f.write("RBO & " + str(corr[0]) + " & " + str(corr[1]) + " \\\\ \n")
         f.write("\\end{tabular}")
-        f = open("pearson_leaves.tex")
+        f = open("pearson_leaves.tex", 'w')
         f.write("\\begin{tabular}{c|c|c}\n")
         f.write("Metric & Correlation & P-value \\\\ \n")
         corr = final_correlation_pearson["leaves"]["kendall_reg"]
@@ -358,7 +358,7 @@ class analyze:
         corr = final_correlation_pearson["leaves"]["rbo"]
         f.write("RBO & " + str(corr[0]) + " & " + str(corr[1]) + " \\\\ \n")
         f.write("\\end{tabular}")
-        f = open("spearman_leaves.tex")
+        f = open("spearman_leaves.tex", 'w')
         f.write("\\begin{tabular}{c|c|c}\n")
         f.write("Metric & Correlation & P-value \\\\ \n")
         corr = final_correlation_spearman["leaves"]["kendall_reg"]
@@ -374,7 +374,7 @@ class analyze:
         corr = final_correlation_spearman["leaves"]["rbo"]
         f.write("RBO & " + str(corr[0]) + " & " + str(corr[1]) + " \\\\ \n")
         f.write("\\end{tabular}")
-        f = open("spearman_trees.tex")
+        f = open("spearman_trees.tex", 'w')
         f.write("\\begin{tabular}{c|c|c}\n")
         f.write("Metric & Correlation & P-value \\\\ \n")
         corr = final_correlation_spearman["trees"]["kendall_reg"]
