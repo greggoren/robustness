@@ -197,7 +197,7 @@ class analyze:
                      query_correlation_pearson["leaves"]["kendall"]]),
             np.mean([query_correlation_pearson["leaves"]["kendall"][q][1] for q in
                      query_correlation_pearson["leaves"]["kendall"]]))
-        final_correlation_pearson["leaves"]["leaves"]["wc"] = (
+        final_correlation_pearson["leaves"]["wc"] = (
             np.mean(
                 [query_correlation_pearson["leaves"]["wc"][q][0] for q in query_correlation_pearson["leaves"]["wc"]]),
             np.mean(
