@@ -130,14 +130,16 @@ class analyze:
         query_correlation_spearman = {
         j: {i: {} for i in ["kendall_max", "kendall_mean", "kendall_reg", "wc_reg", "wc_winner", "rbo"]} for j in
         ["trees", "leaves"]}
-        for query in kendall:
-            kendall_for_pearson[query] = []
+        for query in kendall["reg"]:
+            kendall_for_pearson["reg"][query] = []
+            kendall_for_pearson["max"][query] = []
+            kendall_for_pearson["mean"][query] = []
             trees_for_pearson[query] = []
             leaves_for_pearson[query] = []
             rbo_for_pearson[query] = []
             wc_for_pearson["reg"][query] = []
             wc_for_pearson["winner"][query] = []
-            for model in kendall[query]:
+            for model in kendall["reg"][query]:
                 kendall_for_pearson["reg"][query].append(kendall["reg"][query][model])
                 kendall_for_pearson["max"][query].append(kendall["max"][query][model])
                 kendall_for_pearson["mean"][query].append(kendall["mean"][query][model])
