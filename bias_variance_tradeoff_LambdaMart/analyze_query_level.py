@@ -182,7 +182,6 @@ class analyze:
         for model in rankings:
             rankings_list_lm = rankings[model]
             last_list_index_lm = {}
-            original_list_index_svm = {}
 
             epochs = sorted(list(rankings_list_lm.keys()))
             for epoch in epochs:
@@ -191,21 +190,20 @@ class analyze:
                         kendall[query] = {}
                         change_rate[query] = {}
                         rbo_min_models[query] = {}
-                    if kendall[query].get(model, False):
+                    if not kendall[query].get(model, False):
                         kendall[query][model] = []
                         change_rate[query][model] = []
                         rbo_min_models[query][model] = []
                     current_list_svm = rankings_list_lm[epoch][query]
                     if not last_list_index_lm.get(query, False):
                         last_list_index_lm[query] = current_list_svm
-                        original_list_index_svm[query] = current_list_svm
                         continue
                     if current_list_svm.index(5) != last_list_index_lm[query].index(5):
                         change_rate[query][model].append(1)
                     else:
                         change_rate[query][model].append(0)
                     kt = kendalltau(current_list_svm, last_list_index_lm[query])
-                    if kt is not None:
+                    if not np.isnan(kt):
                         kendall[query][model].append(kt)
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_lm[query])},
                                      {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
