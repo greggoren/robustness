@@ -220,9 +220,11 @@ class analyze:
         final_correlation_spearman["C"]["wc_reg"] = (
             np.mean(
                 [query_correlation_spearman["C"]["wc_reg"][q][0] for q in
-                 query_correlation_spearman["C"]["wc_reg"]]),
+                 query_correlation_spearman["C"]["wc_reg"] if
+                 not np.isnan(query_correlation_spearman["C"]["wc_reg"][q][0])]),
             np.mean([query_correlation_spearman["C"]["wc_reg"][q][1] for q in
-                     query_correlation_spearman["C"]["wc_reg"]]))
+                     query_correlation_spearman["C"]["wc_reg"] if
+                     not np.isnan(query_correlation_spearman["C"]["wc_reg"][q][0])]))
         final_correlation_spearman["C"]["wc_winner"] = (
             np.mean(
                 [query_correlation_spearman["C"]["wc_winner"][q][0] for q in
