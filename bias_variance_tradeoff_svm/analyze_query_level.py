@@ -292,8 +292,6 @@ class analyze:
             epochs = sorted(list(rankings_list_lm.keys()))
             for epoch in epochs:
                 for query in rankings_list_lm[epoch]:
-                    if query == "182":
-                        continue
                     if not kendall["reg"].get(query, False):
                         kendall["reg"][query] = {}
                         kendall["max"][query] = {}
@@ -310,7 +308,7 @@ class analyze:
                     if not last_list_index_lm.get(query, False):
                         last_list_index_lm[query] = current_list_svm
                         continue
-                    if current_list_svm.index(5) != last_list_index_lm[query].index(5):
+                    if ranks[model][epoch][query][0] != ranks[model][epoch - 1][query][0]:
                         change_rate[query][model]["reg"].append(1)
                         change_rate[query][model]["winner"].append(
                             float(1) / (weights[epoch][query][ranks[model][epoch][query][0]] + 1))
