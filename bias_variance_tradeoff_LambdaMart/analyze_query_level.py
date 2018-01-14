@@ -210,6 +210,7 @@ class analyze:
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_lm[query])},
                                      {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
                     rbo_min_models[query][model].append(rbo)
+                    last_list_index_lm[query] = current_list_svm
         for query in kendall:
             for model in kendall[query]:
                 kendall[query][model] = np.mean(kendall[query][model])
