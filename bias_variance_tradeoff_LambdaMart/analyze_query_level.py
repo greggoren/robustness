@@ -200,12 +200,13 @@ class analyze:
         final_correlation_pearson["leaves"]["leaves"]["wc"] = (
             np.mean(
                 [query_correlation_pearson["leaves"]["wc"][q][0] for q in query_correlation_pearson["leaves"]["wc"]]),
-            np.mean([query_correlation_pearson["leaves"]["wc"][q][1] for q in
-                     query_correlation_pearson["leaves"]["wc"]]))
+            np.mean(
+                [query_correlation_pearson["leaves"]["wc"][q][1] for q in query_correlation_pearson["leaves"]["wc"]]))
         final_correlation_pearson["leaves"]["rbo"] = (
-            np.mean([query_correlation_pearson["rbo"][q][0] for q in query_correlation_pearson["rbo"]]),
-            np.mean([query_correlation_pearson["rbo"][q][1] for q in
-                     query_correlation_pearson["rbo"]]))
+            np.mean(
+                [query_correlation_pearson["leaves"]["rbo"][q][0] for q in query_correlation_pearson["leaves"]["rbo"]]),
+            np.mean([query_correlation_pearson["leaves"]["rbo"][q][1] for q in
+                     query_correlation_pearson["leaves"]["rbo"]]))
         final_correlation_spearman["leaves"]["kendall"] = (
             np.mean([query_correlation_spearman["leaves"]["kendall"][q][0] for q in
                      query_correlation_spearman["leaves"]["kendall"]]),
