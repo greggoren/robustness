@@ -234,7 +234,7 @@ class analyze:
                 [query_correlation_spearman["C"]["rbo"][q][0] for q in query_correlation_spearman["C"]["rbo"]]),
             np.mean([query_correlation_spearman["C"]["rbo"][q][1] for q in
                      query_correlation_spearman["C"]["rbo"]]))
-
+        print(query_correlation_spearman["C"]["wc_reg"])
         f = open("pearson_C.tex", 'w')
         f.write("\\begin{tabular}{c|c|c}\n")
         f.write("Metric & Correlation & P-value \\\\ \n")
