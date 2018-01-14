@@ -202,7 +202,7 @@ class analyze:
                         change_rate[query][model].append(1)
                     else:
                         change_rate[query][model].append(0)
-                    kt = kendalltau(current_list_svm, last_list_index_lm[query])
+                    kt = kendalltau(current_list_svm, last_list_index_lm[query])[0]
                     if not np.isnan(kt):
                         kendall[query][model].append(kt)
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_lm[query])},
