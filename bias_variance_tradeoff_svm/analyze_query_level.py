@@ -82,7 +82,7 @@ class analyze:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1, 8):
+            for i in range(1, 9):
                 name = model.split("model_")[1]
 
                 score_file = name + "_" + str(i)
@@ -115,7 +115,7 @@ class analyze:
         rankings, ranks = self.retrieve_ranking(scores)
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, banned_queries, weights,
                                                                                   ranks)
-        self.extract_score(scores)
+        # self.extract_score(scores)
         kendall_for_pearson = {i: {} for i in ["reg", "max", "mean"]}
         C_for_pearson = {}
         # metrics = self.calculate_metrics(scores)
@@ -146,6 +146,12 @@ class analyze:
                 wc_for_pearson["reg"][query].append(change_rate[query][model]["reg"])
                 wc_for_pearson["winner"][query].append(change_rate[query][model]["winner"])
                 rbo_for_pearson[query].append(rbo_min_models[query][model])
+
+            print(kendall_for_pearson)
+            print(wc_for_pearson)
+            print(rbo_for_pearson)
+            print(C_for_pearson)
+
 
             query_correlation_pearson["C"]["kendall_reg"][query] = pearsonr(C_for_pearson[query],
                                                                             kendall_for_pearson["reg"][query])
