@@ -159,8 +159,21 @@ class analyze:
             np.mean([query_correlation_pearson["rbo"][q][0] for q in query_correlation_pearson["rbo"]]),
             np.mean([query_correlation_pearson["rbo"][q][1] for q in
                      query_correlation_pearson["rbo"]]))
+        final_correlation_spearman["kendall"] = (
+            np.mean([query_correlation_spearman["kendall"][q][0] for q in query_correlation_spearman["kendall"]]),
+            np.mean([query_correlation_spearman["kendall"][q][1] for q in
+                     query_correlation_spearman["kendall"]]))
+        final_correlation_spearman["wc"] = (
+            np.mean([query_correlation_spearman["wc"][q][0] for q in query_correlation_spearman["wc"]]),
+            np.mean([query_correlation_spearman["wc"][q][1] for q in
+                     query_correlation_spearman["wc"]]))
+        final_correlation_spearman["rbo"] = (
+            np.mean([query_correlation_spearman["rbo"][q][0] for q in query_correlation_spearman["rbo"]]),
+            np.mean([query_correlation_spearman["rbo"][q][1] for q in
+                     query_correlation_spearman["rbo"]]))
 
         print(final_correlation_pearson)
+        print(final_correlation_spearman)
 
     def create_change_percentage(self, cd):
         change = {}
