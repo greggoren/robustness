@@ -346,14 +346,16 @@ class analyze:
             epochs = sorted(list(rankings_list_lm.keys()))
             for epoch in epochs:
                 for query in rankings_list_lm[epoch]:
-                    if not kendall.get(query, False):
+                    if not kendall["reg"].get(query, False):
                         kendall["reg"][query] = {}
                         kendall["max"][query] = {}
                         kendall["mean"][query] = {}
                         change_rate[query] = {}
                         rbo_min_models[query] = {}
-                    if not kendall[query].get(model, False):
-                        kendall[query][model] = []
+                    if not kendall["reg"][query].get(model, False):
+                        kendall["reg"][query][model] = []
+                        kendall["mean"][query][model] = []
+                        kendall["max"][query][model] = []
                         change_rate[query][model] = {"reg": [], "winner": []}
                         rbo_min_models[query][model] = []
                     current_list_svm = rankings_list_lm[epoch][query]
