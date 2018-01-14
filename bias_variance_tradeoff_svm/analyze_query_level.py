@@ -343,17 +343,17 @@ class analyze:
     def get_all_scores(self, svms, competition_data):
         scores = {}
         for svm in svms:
+
             scores[svm] = {}
             epochs = sorted(list(competition_data.keys()))
+            print(epochs)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:
                     scores[svm][epoch][query] = {}
-                    fold = svm[0].query_to_fold_index[query]
-                    weights_svm = svm[0].weights_index[fold]
                     for doc in competition_data[epoch][query]:
                         features_vector = competition_data[epoch][query][doc]
-                        scores[svm][epoch][query][doc] = np.dot(weights_svm, features_vector.T)
+                        scores[svm][epoch][query][doc] = np.dot(svms[svm], features_vector.T)
         return scores
 
     def retrieve_ranking(self, scores):
