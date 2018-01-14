@@ -121,40 +121,51 @@ class analyze:
         leaves_for_pearson = {}
         # metrics = self.calculate_metrics(scores)
         rbo_for_pearson = {}
-        wc_for_pearson = {}
+        wc_for_pearson = {"reg": {}, "winner": {}}
         final_correlation_spearman = {j: {} for j in ["trees", "leaves"]}
         final_correlation_pearson = {j: {} for j in ["trees", "leaves"]}
-        query_correlation_pearson = {j: {i: {} for i in ["kendall", "wc", "rbo"]} for j in ["trees", "leaves"]}
-        query_correlation_spearman = {j: {i: {} for i in ["kendall", "wc", "rbo"]} for j in ["trees", "leaves"]}
+        query_correlation_pearson = {j: {i: {} for i in ["kendall", "wc_reg", "wc_winner", "rbo"]} for j in
+                                     ["trees", "leaves"]}
+        query_correlation_spearman = {j: {i: {} for i in ["kendall", "wc_reg", "wc_winner", "rbo"]} for j in
+                                      ["trees", "leaves"]}
         for query in kendall:
             kendall_for_pearson[query] = []
             trees_for_pearson[query] = []
             leaves_for_pearson[query] = []
             rbo_for_pearson[query] = []
-            wc_for_pearson[query] = []
+            wc_for_pearson["reg"][query] = []
+            wc_for_pearson["winner"][query] = []
             for model in kendall[query]:
                 kendall_for_pearson[query].append(kendall[query][model])
                 trees, leaves = tuple((model.split("model_")[1].split("_")[0], model.split("model_")[1].split("_")[1]))
                 trees_for_pearson[query].append(int(trees))
                 leaves_for_pearson[query].append(int(leaves))
-                wc_for_pearson[query].append(change_rate[query][model])
+                wc_for_pearson["reg"][query].append(change_rate[query][model]["reg"])
+                wc_for_pearson["winner"][query].append(change_rate[query][model]["winner"])
                 rbo_for_pearson[query].append(rbo_min_models[query][model])
 
             query_correlation_pearson["trees"]["kendall"][query] = pearsonr(trees_for_pearson[query],
                                                                             kendall_for_pearson[query])
-            query_correlation_pearson["trees"]["wc"][query] = pearsonr(trees_for_pearson[query], wc_for_pearson[query])
+            query_correlation_pearson["trees"]["wc_reg"][query] = pearsonr(trees_for_pearson[query],
+                                                                           wc_for_pearson["reg"][query])
+            query_correlation_pearson["trees"]["wc_winner"][query] = pearsonr(trees_for_pearson[query],
+                                                                              wc_for_pearson["winner"][query])
             query_correlation_pearson["trees"]["rbo"][query] = pearsonr(trees_for_pearson[query],
                                                                         rbo_for_pearson[query])
             query_correlation_spearman["trees"]["kendall"][query] = spearmanr(trees_for_pearson[query],
                                                                      kendall_for_pearson[query])
-            query_correlation_spearman["trees"]["wc"][query] = spearmanr(trees_for_pearson[query],
-                                                                         wc_for_pearson[query])
+            query_correlation_spearman["trees"]["wc_reg"][query] = spearmanr(trees_for_pearson[query],
+                                                                             wc_for_pearson[query])
+            query_correlation_spearman["trees"]["wc_winner"][query] = spearmanr(trees_for_pearson[query],
+                                                                                wc_for_pearson[query])
             query_correlation_spearman["trees"]["rbo"][query] = spearmanr(trees_for_pearson[query],
                                                                           rbo_for_pearson[query])
             query_correlation_pearson["leaves"]["kendall"][query] = pearsonr(leaves_for_pearson[query],
                                                                              kendall_for_pearson[query])
-            query_correlation_pearson["leaves"]["wc"][query] = pearsonr(leaves_for_pearson[query],
-                                                                        wc_for_pearson[query])
+            query_correlation_pearson["leaves"]["wc_reg"][query] = pearsonr(leaves_for_pearson[query],
+                                                                            wc_for_pearson["reg"][query])
+            query_correlation_pearson["leaves"]["wc_winner"][query] = pearsonr(leaves_for_pearson[query],
+                                                                               wc_for_pearson["winner"][query])
             query_correlation_pearson["leaves"]["rbo"][query] = pearsonr(leaves_for_pearson[query],
                                                                          rbo_for_pearson[query])
             query_correlation_spearman["leaves"]["kendall"][query] = spearmanr(leaves_for_pearson[query],
@@ -168,10 +179,16 @@ class analyze:
                      query_correlation_pearson["trees"]["kendall"]]),
             np.mean([query_correlation_pearson["trees"]["kendall"][q][1] for q in
                      query_correlation_pearson["trees"]["kendall"]]))
-        final_correlation_pearson["trees"]["wc"] = (
-            np.mean([query_correlation_pearson["trees"]["wc"][q][0] for q in query_correlation_pearson["trees"]["wc"]]),
-            np.mean([query_correlation_pearson["trees"]["wc"][q][1] for q in
-                     query_correlation_pearson["trees"]["wc"]]))
+        final_correlation_pearson["trees"]["wc_reg"] = (
+            np.mean([query_correlation_pearson["trees"]["wc_reg"][q][0] for q in
+                     query_correlation_pearson["trees"]["wc_reg"]]),
+            np.mean([query_correlation_pearson["trees"]["wc_reg"][q][1] for q in
+                     query_correlation_pearson["trees"]["wc_reg"]]))
+        final_correlation_pearson["trees"]["wc_winner"] = (
+            np.mean([query_correlation_pearson["trees"]["wc_winner"][q][0] for q in
+                     query_correlation_pearson["trees"]["wc_winner"]]),
+            np.mean([query_correlation_pearson["trees"]["wc_winner"][q][1] for q in
+                     query_correlation_pearson["trees"]["wc_winner"]]))
         final_correlation_pearson["trees"]["rbo"] = (
             np.mean(
                 [query_correlation_pearson["trees"]["rbo"][q][0] for q in query_correlation_pearson["trees"]["rbo"]]),
@@ -197,11 +214,20 @@ class analyze:
                      query_correlation_pearson["leaves"]["kendall"]]),
             np.mean([query_correlation_pearson["leaves"]["kendall"][q][1] for q in
                      query_correlation_pearson["leaves"]["kendall"]]))
-        final_correlation_pearson["leaves"]["wc"] = (
+        final_correlation_pearson["leaves"]["wc_reg"] = (
             np.mean(
-                [query_correlation_pearson["leaves"]["wc"][q][0] for q in query_correlation_pearson["leaves"]["wc"]]),
+                [query_correlation_pearson["leaves"]["wc_reg"][q][0] for q in
+                 query_correlation_pearson["leaves"]["wc_reg"]]),
             np.mean(
-                [query_correlation_pearson["leaves"]["wc"][q][1] for q in query_correlation_pearson["leaves"]["wc"]]))
+                [query_correlation_pearson["leaves"]["wc_reg"][q][1] for q in
+                 query_correlation_pearson["leaves"]["wc_reg"]]))
+        final_correlation_pearson["leaves"]["wc_winner"] = (
+            np.mean(
+                [query_correlation_pearson["leaves"]["wc_winner"][q][0] for q in
+                 query_correlation_pearson["leaves"]["wc_winner"]]),
+            np.mean(
+                [query_correlation_pearson["leaves"]["wc_winner"][q][1] for q in
+                 query_correlation_pearson["leaves"]["wc_winner"]]))
         final_correlation_pearson["leaves"]["rbo"] = (
             np.mean(
                 [query_correlation_pearson["leaves"]["rbo"][q][0] for q in query_correlation_pearson["leaves"]["rbo"]]),
@@ -212,11 +238,18 @@ class analyze:
                      query_correlation_spearman["leaves"]["kendall"]]),
             np.mean([query_correlation_spearman["leaves"]["kendall"][q][1] for q in
                      query_correlation_spearman["leaves"]["kendall"]]))
-        final_correlation_spearman["leaves"]["wc"] = (
+        final_correlation_spearman["leaves"]["wc_reg"] = (
             np.mean(
-                [query_correlation_spearman["leaves"]["wc"][q][0] for q in query_correlation_spearman["leaves"]["wc"]]),
-            np.mean([query_correlation_spearman["leaves"]["wc"][q][1] for q in
-                     query_correlation_spearman["leaves"]["wc"]]))
+                [query_correlation_spearman["leaves"]["wc_reg"][q][0] for q in
+                 query_correlation_spearman["leaves"]["wc_reg"]]),
+            np.mean([query_correlation_spearman["leaves"]["wc_reg"][q][1] for q in
+                     query_correlation_spearman["leaves"]["wc_reg"]]))
+        final_correlation_spearman["leaves"]["wc_winner"] = (
+            np.mean(
+                [query_correlation_spearman["leaves"]["wc_winner"][q][0] for q in
+                 query_correlation_spearman["leaves"]["wc_winner"]]),
+            np.mean([query_correlation_spearman["leaves"]["wc_winner"][q][1] for q in
+                     query_correlation_spearman["leaves"]["wc_winner"]]))
         final_correlation_spearman["leaves"]["rbo"] = (
             np.mean([query_correlation_spearman["leaves"]["rbo"][q][0] for q in
                      query_correlation_spearman["leaves"]["rbo"]]),
@@ -258,14 +291,16 @@ class analyze:
                         rbo_min_models[query] = {}
                     if not kendall[query].get(model, False):
                         kendall[query][model] = []
-                        change_rate[query][model] = []
+                        change_rate[query][model] = {"reg": [], "winner": []}
                         rbo_min_models[query][model] = []
                     current_list_svm = rankings_list_lm[epoch][query]
                     if not last_list_index_lm.get(query, False):
                         last_list_index_lm[query] = current_list_svm
                         continue
                     if current_list_svm.index(5) != last_list_index_lm[query].index(5):
-                        change_rate[query][model].append(1)
+                        change_rate[query][model]["reg"].append(1)
+                        change_rate[query][model]["winner"].append(
+                            float(1) / (weights[epoch][query][ranks[model][epoch][query][0]] + 1))
                     else:
                         change_rate[query][model].append(0)
                     kt = kendalltau(current_list_svm, last_list_index_lm[query])[0]
@@ -279,7 +314,8 @@ class analyze:
             for model in kendall[query]:
                 kendall[query][model] = np.mean(kendall[query][model])
                 rbo_min_models[query][model] = np.mean(rbo_min_models[query][model])
-                change_rate[query][model] = np.mean(change_rate[query][model])
+                change_rate[query][model]["reg"] = np.mean(change_rate[query][model]["reg"])
+                change_rate[query][model]["winner"] = np.mean(change_rate[query][model]["winner"])
         return kendall, change_rate, rbo_min_models
 
     def get_all_scores(self, svms, competition_data):
