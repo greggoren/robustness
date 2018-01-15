@@ -207,7 +207,7 @@ class analyze:
         f.write("\\end{tabular}")
         f.close()
 
-    def calculate_average_kendall_tau(self, rankings, values, weights, ranks):
+    def calculate_average_kendall_tau(self, rankings, weights, ranks):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
