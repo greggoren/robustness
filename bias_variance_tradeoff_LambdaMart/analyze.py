@@ -132,7 +132,8 @@ class analyze:
         mrr_for_pearson = []
         kendall_max_for_pearson = []
         kendall_mean_for_pearson = []
-        wc_geo_mean_for_pearson = []
+        wc_winner_for_pearson = []
+        wc_for_pearson = []
         for key in keys:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             trees_for_pearson.append(int(trees))
@@ -146,9 +147,10 @@ class analyze:
             change_max = round(np.mean(change_rate[key][0]), 3)
             wc_max_for_pearson.append(change_max)
             change_mean = round(np.mean(change_rate[key][2]), 3)
-
             change = round(np.mean(change_rate[key][3]), 3)
-            wc_geo_mean_for_pearson.append(change)
+            wc_for_pearson.append(change)
+            winner_change_winner = round(np.mean(change_rate[key][4]), 3)
+            wc_winner_for_pearson.append(winner_change_winner)
             wc_mean_for_pearson.append(change_mean)
             change_weighted = round(np.mean(change_rate[key][1]), 3)
             wc_weighted_for_pearson.append(change_weighted)
@@ -163,63 +165,55 @@ class analyze:
             kendall_max_for_pearson.append(max_w_kt)
             mean_w_kt = np.mean(kendall[key][3])
             kendall_mean_for_pearson.append(mean_w_kt)
-            # tmp = ["LambdaMart", trees, leaves, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map,
-            #        mrr]
-            # tmp = ["LambdaMart", trees, leaves, change, m_change, nd, map, mrr]
-            # line = " & ".join(tmp) + " \\\\ \n"
-            # table_file.write(line)
-            # print(metrics[key_lambdaMart][2])
         table_file.write("\\end{longtable}")
-        # print("leaves")
-        # print(pearsonr(leaves_for_pearson, kendall_for_pearson))
-        # print(pearsonr(leaves_for_pearson, rbo_for_pearson))
-        # # print(pearsonr(leaves_for_pearson, wc_for_pearson))
-        # print("max")
-        # print(spearmanr(leaves_for_pearson, wc_max_for_pearson))
-        # print("weighted")
-        # print(spearmanr(leaves_for_pearson, wc_weighted_for_pearson))
-        # print("mean")
-        # print(spearmanr(leaves_for_pearson, wc_mean_for_pearson))
-        # print("winner")
-        # print("spearman", spearmanr(leaves_for_pearson, wc_geo_mean_for_pearson))
-        # print("pearson", pearsonr(leaves_for_pearson, wc_geo_mean_for_pearson))
-        #
-        # print(pearsonr(leaves_for_pearson, ndcg_for_pearson))
-        # print(pearsonr(leaves_for_pearson, map_for_pearson))
-        # print(pearsonr(leaves_for_pearson, mrr_for_pearson))
-        # print("trees")
-        # print(pearsonr(trees_for_pearson, kendall_for_pearson))
-        # print(pearsonr(trees_for_pearson, rbo_for_pearson))
-        # print("max")
-        # print(spearmanr(trees_for_pearson, wc_max_for_pearson))
-        # print("weighted")
-        # print(spearmanr(trees_for_pearson, wc_weighted_for_pearson))
-        # print("mean")
-        # print(spearmanr(trees_for_pearson, wc_mean_for_pearson))
-        # print(pearsonr(trees_for_pearson, ndcg_for_pearson))
-        # print(pearsonr(trees_for_pearson, map_for_pearson))
-        # print(pearsonr(trees_for_pearson, mrr_for_pearson))
-        # print("winner")
-        # print("spearman", spearmanr(trees_for_pearson, wc_geo_mean_for_pearson))
-        # print("pearson", pearsonr(trees_for_pearson, wc_geo_mean_for_pearson))
-        print("leaves")
-        print("max")
-        print("pearson", pearsonr(leaves_for_pearson, kendall_max_for_pearson))
-        print("spearman", spearmanr(leaves_for_pearson, kendall_max_for_pearson))
-        print("mean")
-        print("pearson", pearsonr(leaves_for_pearson, kendall_mean_for_pearson))
-        print("spearman", spearmanr(leaves_for_pearson, kendall_mean_for_pearson))
-        print("trees")
-        print("max")
-        print("pearson", pearsonr(trees_for_pearson, kendall_max_for_pearson))
-        print("spearman", spearmanr(trees_for_pearson, kendall_max_for_pearson))
-        print("mean")
-        print("pearson", pearsonr(trees_for_pearson, kendall_mean_for_pearson))
-        print("spearman", spearmanr(trees_for_pearson, kendall_mean_for_pearson))
-        with open("mean_max_trees_w_kt", 'wb') as p1:
-            pickle.dump((trees_for_pearson, kendall_mean_for_pearson, kendall_max_for_pearson), p1)
-        with open("mean_max_leaves_w_kt", 'wb') as p2:
-            pickle.dump((leaves_for_pearson, kendall_mean_for_pearson, kendall_max_for_pearson), p2)
+
+        f = open("pearson_corelation", 'w')
+        f.write("\\begin{tabular}{c|c|c|c} \n")
+        f.write("Metric & #Tress & #Leaves \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, kendall_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, kendall_for_pearson)
+        f.write("Kendall-$\\tau$ & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, kendall_max_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, kendall_max_for_pearson)
+        f.write("Kendall-$\\tau$ max normalized & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, kendall_mean_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, kendall_mean_for_pearson)
+        f.write("Kendall-$\\tau$ mean normalized & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_mean_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_mean_for_pearson)
+        f.write("Winner Change mean& " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_max_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_max_for_pearson)
+        f.write("Winner Change max & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_mean_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_mean_for_pearson)
+        f.write("Winner Change mean & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_weighted_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_weighted_for_pearson)
+        f.write("Winner Change weighted & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_for_pearson)
+        f.write("Winner Change & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, wc_winner_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, wc_winner_for_pearson)
+        f.write("Winner Change winner & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        corr_trees = pearsonr(trees_for_pearson, rbo_for_pearson)
+        corr_leaves = pearsonr(leaves_for_pearson, rbo_for_pearson)
+        f.write("RBO & " + str(corr_trees[0]) + " (" + str(corr_trees[1]) + ") & " + str(
+            corr_leaves[0]) + " (" + str(corr_leaves[1]) + ")   \\\\ \n")
+        f.write("\\end{tabular}")
+        f.close()
+
+
     def create_change_percentage(self, cd):
         change = {}
         for epoch in cd:
@@ -248,6 +242,7 @@ class analyze:
             change_rate_svm_epochs_mean = []
             change_rate_svm_epochs_weighted = []
             change_rate_svm_epochs = []
+            change_rate_winner_svm_epochs = []
             rbo_min = []
             rbo_min_orig = []
             max_w_kt_svm = []
@@ -263,7 +258,8 @@ class analyze:
                 sum_mean_w_kt = 0
                 n_q=0
                 change_rate_svm_mean = 0
-                change_rate_svm = 0
+                wc_change = 0
+                change_rate_winner_svm = 0
                 change_rate_svm_max = 0
                 change_rate_svm_weighted = 0
                 meta_rbo[svm] = {p: [] for p in values}
@@ -275,13 +271,14 @@ class analyze:
                         continue
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
                     if current_list_svm.index(5) != last_list_index_svm[query].index(5):
+                        wc_change += 1
                         change_rate_svm_max += (
                             float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
                         change_rate_svm_mean += (
                             float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm += (
+                        change_rate_winner_svm += (
                             float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
                         change_rate_svm_weighted += (
                             float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
@@ -309,8 +306,9 @@ class analyze:
                     continue
                 max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
                 mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
+                change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
                 change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
-                change_rate_svm_epochs.append(float(change_rate_svm_max) / n_q)
+                change_rate_svm_epochs.append(float(change_rate) / n_q)
                 change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
                 change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
@@ -320,7 +318,8 @@ class analyze:
             kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
-            change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean, change_rate_svm)
+                change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
+                change_rate_winner_svm_epochs, change_rate_svm_epochs)
         return kendall, change_rate, rbo_min_models
 
 
