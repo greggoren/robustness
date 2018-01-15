@@ -164,56 +164,56 @@ class analyze:
             kendall_mean_for_pearson.append(mean_w_kt)
         table_file.write("\\end{longtable}")
 
-        f = open("pearson_correlation.tex", 'w')
+        f = open("spearman_correlation.tex", 'w')
         f.write("\\begin{tabular}{c|c|c|c} \n")
         f.write("Metric & #Tress & #Leaves \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, kendall_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, kendall_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, kendall_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, kendall_for_pearson)
         f.write(
             "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, kendall_max_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, kendall_max_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, kendall_max_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, kendall_max_for_pearson)
         f.write("Kendall-$\\tau$ max normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") & " + str(round(corr_leaves[0], 3)) + " (" + str(
             round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, kendall_mean_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, kendall_mean_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, kendall_mean_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, kendall_mean_for_pearson)
         f.write("Kendall-$\\tau$ mean normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") & " + str(round(corr_leaves[0], 3)) + " (" + str(
             round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_mean_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_mean_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_mean_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_mean_for_pearson)
         f.write(
             "Winner Change mean& " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_max_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_max_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_max_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_max_for_pearson)
         f.write(
             "Winner Change max & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_mean_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_mean_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_mean_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_mean_for_pearson)
         f.write(
             "Winner Change mean & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_weighted_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_weighted_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_weighted_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_weighted_for_pearson)
         f.write("Winner Change weighted & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") & " + str(round(corr_leaves[0], 3)) + " (" + str(
             round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_for_pearson)
         f.write(
             "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, wc_winner_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, wc_winner_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, wc_winner_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, wc_winner_for_pearson)
         f.write("Winner Change winner & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") & " + str(round(corr_leaves[0], 3)) + " (" + str(
             round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(trees_for_pearson, rbo_for_pearson)
-        corr_leaves = pearsonr(leaves_for_pearson, rbo_for_pearson)
+        corr_trees = spearmanr(trees_for_pearson, rbo_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, rbo_for_pearson)
         f.write("RBO & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(round(
             corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
         f.write("\\end{tabular}")
