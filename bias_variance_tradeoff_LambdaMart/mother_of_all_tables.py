@@ -1,5 +1,5 @@
 import os
-from bias_variance_tradeoff_LambdaMart import analyze_query_level as a
+from bias_variance_tradeoff_LambdaMart import analyze as a
 import prep as p
 import numpy as np
 
