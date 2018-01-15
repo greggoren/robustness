@@ -168,6 +168,7 @@ class analyze:
         f.write("\\begin{tabular}{c|c|c|c} \n")
         f.write("Metric & #Tress & #Leaves \\\\ \n")
         corr_trees = spearmanr(trees_for_pearson, kendall_for_pearson)
+        print(corr_trees)
         corr_leaves = spearmanr(leaves_for_pearson, kendall_for_pearson)
         f.write(
             "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
