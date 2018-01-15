@@ -204,6 +204,7 @@ class analyze:
             round(corr_leaves[1], 3)) + ")   \\\\ \n")
         corr_trees = spearmanr(trees_for_pearson, wc_for_pearson)
         corr_leaves = spearmanr(leaves_for_pearson, wc_for_pearson)
+        print(corr_leaves[0], corr_leaves[1])
         f.write(
             "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
