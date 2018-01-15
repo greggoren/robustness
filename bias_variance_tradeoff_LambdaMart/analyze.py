@@ -308,7 +308,7 @@ class analyze:
                 mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
                 change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
                 change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
-                change_rate_svm_epochs.append(float(change_rate) / n_q)
+                change_rate_svm_epochs.append(float(wc_change) / n_q)
                 change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
                 change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
