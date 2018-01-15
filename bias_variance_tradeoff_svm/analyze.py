@@ -242,7 +242,6 @@ class analyze:
                 change_rate_winner_svm = 0
                 change_rate_svm_max = 0
                 change_rate_svm_weighted = 0
-                meta_rbo[svm] = {p: [] for p in values}
                 for query in rankings_list_svm[epoch]:
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
