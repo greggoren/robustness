@@ -138,24 +138,25 @@ class analyze:
         ndcg_for_pearson = []
         map_for_pearson = []
         mrr_for_pearson = []
+        wc_for_pearson = []
+        wc_winner_for_pearson = []
         for key in keys:
             model = key.split("svm_model")[1]
             C_for_pearson.append(float(model))
             average_kt = str(round(np.mean(kendall[key][0]), 3))
             kendall_for_pearson.append(float(average_kt))
-            max_kt = str(round(max(kendall[key][0]), 3))
             average_rbo = str(round(np.mean(rbo_min_models[key][0]), 3))
             rbo_for_pearson.append(float(average_rbo))
-            max_rbo = str(round(max(rbo_min_models[key][0]), 3))
-            change_max = round(np.mean(change_rate[key][0]), 3)
+            change_max = np.mean(change_rate[key][0])
             wc_max_for_pearson.append(change_max)
             change_mean = round(np.mean(change_rate[key][2]), 3)
+            change = np.mean(change_rate[key][3])
+            wc_for_pearson.append(change)
+            winner_change_winner = np.mean(change_rate[key][4])
+            wc_winner_for_pearson.append(winner_change_winner)
             wc_mean_for_pearson.append(change_mean)
-            change = round(np.mean(change_rate[key][3]), 3)
-            wc_pearson.append(change)
             change_weighted = round(np.mean(change_rate[key][1]), 3)
             wc_weighted_for_pearson.append(change_weighted)
-            m_change = str(round(min(change_rate[key][0]), 3))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
             ndcg_for_pearson.append(float(nd))
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
@@ -166,36 +167,47 @@ class analyze:
             kendall_max_for_pearson.append(max_w_kt)
             mean_w_kt = np.mean(kendall[key][3])
             kendall_mean_for_pearson.append(mean_w_kt)
-            # tmp = ["SVMRank", model, change, m_change, nd, map, mrr]
-            # tmp = ["SVMRank", model, average_kt, max_kt, average_rbo, max_rbo, change, m_change, nd, map, mrr]
-            # line = " & ".join(tmp) + " \\\\ \n"
-            # table_file.write(line)
         table_file.write("\\end{longtable}")
-        # print(pearsonr(C_for_pearson, kendall_for_pearson))
-        # print(pearsonr(C_for_pearson, rbo_for_pearson))
-        # print("max")
-        # print(spearmanr(C_for_pearson, wc_max_for_pearson))
-        # # print(spearmanr(C_for_pearson, wc_max_for_pearson))
-        # print("winner")
-        # print("spearman", spearmanr(C_for_pearson, wc_pearson))
-        # print("pearson", pearsonr(C_for_pearson, wc_pearson))
-        # print("weighted")
-        # print(spearmanr(C_for_pearson, wc_weighted_for_pearson))
-        # print("mean")
-        # print(spearmanr(C_for_pearson, wc_mean_for_pearson))
-        # print(pearsonr(C_for_pearson, ndcg_for_pearson))
-        # print(pearsonr(C_for_pearson, map_for_pearson))
-        # print(pearsonr(C_for_pearson, mrr_for_pearson))
-        # print("max")
-        print("pearson", pearsonr(C_for_pearson, kendall_max_for_pearson))
-        print("spearman", spearmanr(C_for_pearson, kendall_max_for_pearson))
-        print("mean")
-        print("pearson", pearsonr(C_for_pearson, kendall_mean_for_pearson))
-        print("spearman", spearmanr(C_for_pearson, kendall_mean_for_pearson))
-        with open("mean_max_c_w_kt", 'wb') as p1:
-            pickle.dump((C_for_pearson, kendall_mean_for_pearson, kendall_max_for_pearson), p1)
 
-    def calculate_average_kendall_tau(self, rankings, weights, ranks):
+        f = open("spearman_correlation.tex", 'w')
+        f.write("\\begin{tabular}{c|c|c|c} \n")
+        f.write("Metric & #Tress & #Leaves \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
+        f.write(
+            "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, kendall_max_for_pearson)
+        f.write("Kendall-$\\tau$ max normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, kendall_mean_for_pearson)
+        f.write("Kendall-$\\tau$ mean normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
+        f.write(
+            "Winner Change mean& " + str(round(corr_trees[0], 3)) + " (" + str(
+                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_max_for_pearson)
+        f.write(
+            "Winner Change max & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
+        f.write(
+            "Winner Change mean & " + str(round(corr_trees[0], 3)) + " (" + str(
+                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_weighted_for_pearson)
+        f.write("Winner Change weighted & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_for_pearson)
+        print(wc_for_pearson)
+        f.write(
+            "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, wc_winner_for_pearson)
+        f.write("Winner Change winner & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = spearmanr(C_for_pearson, rbo_for_pearson)
+        f.write("RBO & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        f.write("\\end{tabular}")
+        f.close()
+
+    def calculate_average_kendall_tau(self, rankings, values, weights, ranks):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
@@ -203,8 +215,6 @@ class analyze:
         for svm in rankings:
             rankings_list_svm = rankings[svm]
             kt_svm = []
-            max_w_kt_svm = []
-            mean_w_kt_svm = []
             kt_svm_orig = []
             last_list_index_svm={}
             original_list_index_svm = {}
@@ -212,22 +222,27 @@ class analyze:
             change_rate_svm_epochs_mean = []
             change_rate_svm_epochs_weighted = []
             change_rate_svm_epochs = []
+            change_rate_winner_svm_epochs = []
             rbo_min = []
             rbo_min_orig = []
-
-            for epoch in rankings_list_svm:
+            max_w_kt_svm = []
+            mean_w_kt_svm = []
+            epochs = sorted(list(rankings_list_svm.keys()))
+            for epoch in epochs:
 
                 sum_svm = 0
                 sum_rbo_min = 0
                 sum_rbo_min_orig = 0
                 sum_svm_original = 0
+                sum_max_w_kt = 0
+                sum_mean_w_kt = 0
                 n_q=0
                 change_rate_svm_mean = 0
-                change_rate_svm = 0
+                wc_change = 0
+                change_rate_winner_svm = 0
                 change_rate_svm_max = 0
                 change_rate_svm_weighted = 0
-                sum_mean_w_kt = 0
-                sum_max_w_kt = 0
+                meta_rbo[svm] = {p: [] for p in values}
                 for query in rankings_list_svm[epoch]:
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query,False):
@@ -235,33 +250,26 @@ class analyze:
                         original_list_index_svm[query]=current_list_svm
                         continue
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
-                    # if current_list_svm.index(5) != last_list_index_svm[query].index(
-                    #         5):
-                    if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
+                    if current_list_svm.index(5) != last_list_index_svm[query].index(5):
+                        wc_change += 1
                         change_rate_svm_max += (
                             float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm += (float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
-                        # change_rate_svm_geo_mean += (float(1) / math.sqrt(
-                        #     weights[epoch][query][ranks[svm][epoch][query][0]] * weights[epoch][query][
-                        #         ranks[svm][epoch - 1][query][0]]))
                         change_rate_svm_mean += (
                             float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
+                        change_rate_winner_svm += (
+                            float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
                         change_rate_svm_weighted += (
                             float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
-                        # change_rate_svm_weighted += (
-
-                        # change_rate_svm += (float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
-                        #                                     weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        # change_rate_svm += 1
-                    n_q += 1
-                    kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     sum_max_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
                                                          weights[epoch][query], "max")
                     sum_mean_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
                                                           weights[epoch][query], "mean")
+
+                    n_q += 1
+                    kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
                     kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
                                           {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
@@ -270,28 +278,28 @@ class analyze:
                     sum_rbo_min += rbo
                     sum_rbo_min_orig += rbo_orig
                     if not np.isnan(kt):
-
                         sum_svm += kt
                     if not np.isnan(kt_orig):
                         sum_svm_original += kt_orig
                     last_list_index_svm[query] = current_list_svm
                 if n_q==0:
                     continue
-                change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
-                change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
-                change_rate_svm_epochs.append(float(change_rate_svm) / n_q)
-                change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
-                kt_svm.append(float(sum_svm) / n_q)
                 max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
                 mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
+                change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
+                change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
+                change_rate_svm_epochs.append(float(wc_change) / n_q)
+                change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
+                change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
+                kt_svm.append(float(sum_svm) / n_q)
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
                 rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
             kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
-                change_rate_svm_epochs_max, change_rate_svm_weighted, change_rate_svm_epochs_mean,
-                change_rate_svm_epochs)
+                change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
+                change_rate_winner_svm_epochs, change_rate_svm_epochs)
         return kendall, change_rate, rbo_min_models
 
 
