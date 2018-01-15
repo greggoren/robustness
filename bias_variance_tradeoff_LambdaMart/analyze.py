@@ -145,7 +145,7 @@ class analyze:
             change_max = np.mean(change_rate[key][0])
             wc_max_for_pearson.append(change_max)
             change_mean = round(np.mean(change_rate[key][2]), 3)
-            change = np.mean(change_rate[key][3]), 3
+            change = np.mean(change_rate[key][3])
             wc_for_pearson.append(change)
             winner_change_winner = np.mean(change_rate[key][4])
             wc_winner_for_pearson.append(winner_change_winner)
