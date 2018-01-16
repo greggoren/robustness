@@ -128,6 +128,8 @@ class analyze:
         bins = {i: {} for i in epochs if i != 1}
 
         for epoch in epochs:
+            if epoch == 1:
+                continue
             jumps = 0.1
             start = 0
             end = 0.1
