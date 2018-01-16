@@ -154,10 +154,6 @@ class analyze:
                 if epoch == 1:
                     continue
                 for query in rankings_list_svm[epoch]:
-                    current_list_svm = rankings_list_svm[epoch][query]
-                    if not last_list_index_svm.get(query, False):
-                        last_list_index_svm[query] = current_list_svm
-                        continue
                     if ranks[model][epoch][query][0] != ranks[model][epoch - 1][query][0]:
                         new_winner = ranks[model][epoch][query][0]
                         former_winner = ranks[model][epoch - 1][query][0]
