@@ -49,7 +49,7 @@ def upload_models(models_dir):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    analyze = a.analysis()
+    analyze = a.analyze()
     model_file = open("../svm_model", 'rb')
     banned_queries = []  # get_banned("banned")
     w = pickle.load(model_file)  # recover_model("model_light_svm")#pickle.load(model_file)
