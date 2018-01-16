@@ -171,8 +171,8 @@ class analyze:
                                 bins_for_new_winner_self_similarity[epoch][(start, end)] += 1
                             if similarity_to_winner >= start and similarity_to_winner <= end:
                                 bins_for_winner_similarity[epoch][(start, end)] += 1
-            total_self = {i: 0 for i in bins_for_winner_similarity[1]}
-            total_to_winner = {i: 0 for i in bins_for_winner_similarity[1]}
+            total_self = {i: 0 for i in bins_for_winner_similarity[2]}
+            total_to_winner = {i: 0 for i in bins_for_winner_similarity[2]}
             for epoch in bins_for_winner_similarity:
                 self_hist_values_sum = sum(list(bins_for_new_winner_self_similarity[epoch].values()))
                 winner_to_winner_hist_values_sum = sum(list(bins_for_new_winner_self_similarity[epoch].values()))
