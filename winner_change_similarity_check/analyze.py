@@ -166,7 +166,7 @@ class analyze:
                         former_winner_vec = competition_data[epoch][query][former_winner]
                         self_similarity = self.cosine_similarity(new_winner_current_vec, new_winner_former_vec)
                         similarity_to_winner = self.cosine_similarity(new_winner_current_vec, former_winner_vec)
-                        for start, end in bins_for_new_winner_self_similarity:
+                        for start, end in bins_for_new_winner_self_similarity[epoch]:
                             if self_similarity >= start and self_similarity <= end:
                                 bins_for_new_winner_self_similarity[epoch][(start, end)] += 1
                             if similarity_to_winner >= start and similarity_to_winner <= end:
