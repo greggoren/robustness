@@ -1,5 +1,5 @@
 import os
-from  winner_change_similarity_check import analyze as a
+from  winner_change_similarity_check import analyze_svm as a
 import prep as p
 import numpy as np
 import pickle
