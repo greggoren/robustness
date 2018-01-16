@@ -19,5 +19,5 @@ if __name__ == "__main__":
     banned_queries = get_banned("../banned")
 
     models = {"../testmodel_250_50": "../testmodel250_50"}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_L")
     analyze.create_table(competition_data, models, banned_queries)
