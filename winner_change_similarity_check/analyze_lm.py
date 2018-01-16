@@ -101,6 +101,12 @@ class analyze:
                 index += 1
         return result
 
+    def create_data_set_file(self, X, queries, feature_file_name):
+        with open(feature_file_name, 'w') as feature_file:
+            for i, doc in enumerate(X):
+                features = " ".join([str(a + 1) + ":" + str(b) for a, b in enumerate(doc)])
+                line = "1 qid:" + queries[i] + " " + features + "\n"
+                feature_file.write(line)
     def create_lambdaMart_scores(self, competition_data, models):
         scores = {model: {epoch: {q: {} for q in list(competition_data[epoch].keys())} for epoch in competition_data}
                   for model in
