@@ -143,7 +143,7 @@ class analyze:
 
     def bin_creator(self, epochs):
         bins = {i: {} for i in epochs if i != 1}
-
+        print(epochs)
         for epoch in epochs:
             if epoch == 1:
                 continue

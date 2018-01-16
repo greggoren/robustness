@@ -16,7 +16,7 @@ def create_bar_plot(title, file_name, xlabel, ylabel, stats):
 
 
 bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = pickle.load(
-    open("bins_stats_lm", 'rb'))
+    open("bins_stats_lm_current", 'rb'))
 for epoch in bins_for_new_winner_self_similarity:
     create_bar_plot("Similarity to previous vector on winner change event in epoch" + str(epoch),
                     "self_sim" + str(epoch), "Bin", "%", bins_for_new_winner_self_similarity[epoch])
