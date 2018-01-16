@@ -169,7 +169,7 @@ class analyze:
                         for key in bins_for_new_winner_self_similarity[epoch]:
                             start, end = key
                             if self_similarity >= start and self_similarity <= end:
-                                bins_for_new_winner_self_similarity[epoch][(start, end)] += 1
+                                bins_for_new_winner_self_similarity[epoch][key] += 1
                             if similarity_to_winner >= start and similarity_to_winner <= end:
                                 bins_for_winner_similarity[epoch][key] += 1
             total_self = {i: 0 for i in bins_for_winner_similarity[2]}
