@@ -114,12 +114,15 @@ class analyze:
 
         return change
 
-    def create_table(self, competition_data, svms, banned_queries):
+    def create_table(self, competition_data, models, banned_queries):
 
-        scores = self.get_all_scores(svms, competition_data)
+        scores = self.get_all_scores(models, competition_data)
         rankings, ranks = self.retrieve_ranking(scores)
         bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
             rankings, ranks, competition_data)
+        with open("bins_stats", 'wb') as f:
+            pickle.dump((bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner),
+                        f)
 
     def bin_creator(self, epochs):
         bins = {i: {} for i in epochs if i != 1}

@@ -1,8 +1,8 @@
 import os
-from bias_variance_tradeoff_svm import analyze_query_level as a
+from  winner_change_similarity_check import analyze as a
 import prep as p
 import numpy as np
-
+import pickle
 
 def create_mhs(dir):
     mhs = []
@@ -49,11 +49,11 @@ def upload_models(models_dir):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    analyze = a.analyze()
-    svms = upload_models("models_light")
-    for svm in svms:
-        w = svms[svm]
-        if len(w) != 26:
-            print(w)
+    analyze = a.analysis()
+    model_file = open("../svm_model", 'rb')
+    banned_queries = []  # get_banned("banned")
+    w = pickle.load(model_file)  # recover_model("model_light_svm")#pickle.load(model_file)
+
+    models = {"svm": w}
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    analyze.create_table(competition_data, svms, [])
+    analyze.create_table(competition_data, models, [])
