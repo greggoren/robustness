@@ -138,7 +138,6 @@ class analyze:
                 start = round(end, 3)
                 end += jumps
                 end = round(end, 3)
-                end += jumps
         return bins
 
     def calculate_average_kendall_tau(self, rankings, ranks, competition_data):

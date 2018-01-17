@@ -55,7 +55,7 @@ class analyze:
     def cosine_similarity(self, v1, v2):
         sumxx, sumxy, sumyy = 0, 0, 0
         for i in range(len(v1)):
-            x = v1[i];
+            x = v1[i]
             y = v2[i]
             sumxx += x * x
             sumyy += y * y
@@ -155,7 +155,6 @@ class analyze:
                 start = round(end, 3)
                 end += jumps
                 end = round(end, 3)
-                end += jumps
         return bins
 
     def calculate_average_kendall_tau(self, rankings, ranks, competition_data, banned):
