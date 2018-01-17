@@ -1,14 +1,10 @@
 import subprocess
 import numpy as np
+import xml.etree.ElementTree as ET
 import pickle
-from scipy.stats import kendalltau
-from kendall_tau import weighted_kendall_tau
+from sklearn.feature_extraction.text import CountVectorizer
+
 import math
-from statsmodels.genmod.families.links import sqrt
-from sklearn.metrics.pairwise import cosine_similarity
-import RBO as r
-from scipy.stats import pearsonr
-from scipy.stats import spearmanr
 
 
 def run_command(command):
@@ -38,6 +34,24 @@ class analyze:
         for line in run_bash_command(command):
             print(line)
         return final
+
+    def retrieve_text(self):
+        text = {}
+        tree = ET.parse('../data/documents.trectext')
+        root = tree.getroot()
+        for doc in root:
+            for att in doc:
+                if att.tag == "DOCNO":
+                    epoch = int(att.text.split("-")[1])
+                    if not text.get(epoch, False):
+                        text[epoch] = {}
+                    query = att.text.split("-")[2]
+                    if not text[epoch].get(query, False):
+                        text[epoch][query] = {}
+                    doc = att.text.split("-")[3]
+                else:
+                    text[epoch][query][doc] = att.text
+        return text
 
     def extract_score(self, scores):
         for svm in scores:
@@ -113,7 +127,6 @@ class analyze:
                   models}
         print(scores)
         for epoch in competition_data:
-
             order = {_e: {} for _e in competition_data}
             data_set = []
             queries = []
@@ -132,11 +145,13 @@ class analyze:
         return scores
 
     def create_table(self, competition_data, models, banned_queries):
-
+        text = self.retrieve_text()
         scores = self.create_lambdaMart_scores(competition_data, models)
         rankings, ranks = self.retrieve_ranking(scores)
+        # bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
+        #     rankings, ranks, competition_data, banned_queries)
         bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
-            rankings, ranks, competition_data, banned_queries)
+            rankings, ranks, text, banned_queries)
         with open("bins_stats", 'wb') as f:
             pickle.dump((bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner),
                         f)
@@ -177,8 +192,17 @@ class analyze:
                         new_winner_current_vec = competition_data[epoch][query][new_winner]
                         new_winner_former_vec = competition_data[epoch - 1][query][new_winner]
                         former_winner_vec = competition_data[epoch][query][former_winner]
-                        self_similarity = self.cosine_similarity(new_winner_current_vec, new_winner_former_vec)
-                        similarity_to_winner = self.cosine_similarity(new_winner_current_vec, former_winner_vec)
+                        new_winner_to_former_winner = CountVectorizer.fit_transform(
+                            [new_winner_current_vec, former_winner]).toarray()
+                        new_winner_to_former_self = CountVectorizer.fit_transform(
+                            [new_winner_current_vec, new_winner_former_vec]).toarray()
+
+                        self_similarity = self.cosine_similarity(new_winner_to_former_self[0],
+                                                                 new_winner_to_former_self[1])
+                        # self_similarity = self.cosine_similarity(new_winner_current_vec, new_winner_former_vec)
+                        # similarity_to_winner = self.cosine_similarity(new_winner_current_vec, former_winner_vec)
+                        similarity_to_winner = self.cosine_similarity(new_winner_to_former_winner[0],
+                                                                      new_winner_to_former_winner[1])
                         for key in bins_for_new_winner_self_similarity[epoch]:
                             start, end = key
                             if self_similarity >= start and self_similarity <= end:

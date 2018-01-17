@@ -8,10 +8,11 @@ def create_bar_plot(title, file_name, xlabel, ylabel, stats):
     ax = fig.add_subplot(111)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    print(sorted(list(stats.keys()), key=lambda x: x[0]))
-    indexes = [list(stats.keys()).index(i) + 1 for i in sorted(list(stats.keys()), key=lambda x: x[0])]
+    sorted_keys = sorted(list(stats.keys()), key=lambda x: x[0])
 
-    plt.bar(indexes, list(stats.values()), color='b', align='center')
+    values = [stats[i] for i in sorted_keys]
+    indexes = [sorted_keys.index(i) + 1 for i in sorted_keys]
+    plt.bar(indexes, values, color='b', align='center')
     # plt.hist(stats)
     plt.savefig(file_name)
     plt.clf()
