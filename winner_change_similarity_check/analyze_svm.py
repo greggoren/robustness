@@ -147,7 +147,6 @@ class analyze:
 
         for model in rankings:
             rankings_list_svm = rankings[model]
-            last_list_index_svm = {}
             epochs = sorted(list(rankings_list_svm.keys()))
             for epoch in epochs:
                 if epoch == 1:
