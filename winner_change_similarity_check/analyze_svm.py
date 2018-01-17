@@ -119,7 +119,7 @@ class analyze:
         scores = self.get_all_scores(models, competition_data)
         rankings, ranks = self.retrieve_ranking(scores)
         bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
-            rankings, ranks, competition_data)
+            rankings, ranks, competition_data, banned_queries)
         with open("bins_stats", 'wb') as f:
             pickle.dump((bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner),
                         f)
@@ -140,7 +140,7 @@ class analyze:
                 end = round(end, 3)
         return bins
 
-    def calculate_average_kendall_tau(self, rankings, ranks, competition_data):
+    def calculate_average_kendall_tau(self, rankings, ranks, competition_data, banned):
         epochs = list(competition_data.keys())
         bins_for_new_winner_self_similarity = self.bin_creator(epochs)
         bins_for_winner_similarity = self.bin_creator(epochs)
@@ -152,6 +152,8 @@ class analyze:
                 if epoch == 1:
                     continue
                 for query in rankings_list_svm[epoch]:
+                    # if query in banned[epoch] or query in banned[epoch - 1]:
+                    #     continue
                     if ranks[model][epoch][query][0] != ranks[model][epoch - 1][query][0]:
                         new_winner = ranks[model][epoch][query][0]
                         former_winner = ranks[model][epoch - 1][query][0]

@@ -169,8 +169,8 @@ class analyze:
                 if epoch == 1:
                     continue
                 for query in rankings_list_svm[epoch]:
-                    if query in banned[epoch] or query in banned[epoch - 1]:
-                        continue
+                    # if query in banned[epoch] or query in banned[epoch - 1]:
+                    #     continue
                     if ranks[model][epoch][query][0] != ranks[model][epoch - 1][query][0]:
                         new_winner = ranks[model][epoch][query][0]
                         former_winner = ranks[model][epoch - 1][query][0]
