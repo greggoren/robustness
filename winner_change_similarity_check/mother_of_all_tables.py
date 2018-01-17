@@ -60,9 +60,9 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     model_file = open("../svm_model", 'rb')
-    banned_queries = []  # get_banned("../banned")
+    banned_queries = get_banned("../banned")
     w = pickle.load(model_file)
 
     models = {"svm": w}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_S")
     analyze.create_table(competition_data, models, banned_queries)
