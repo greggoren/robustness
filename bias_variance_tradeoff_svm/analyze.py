@@ -123,7 +123,9 @@ class analyze:
             cons_for_corr.append(model_scores_diff_consecutive_winner_to_loser[model])
             swap_for_corr.append(model_scores_diff_current_former_winner[model])
         print(pearsonr(C_for_corr, cons_for_corr))
+        print(spearmanr(C_for_corr, cons_for_corr))
         print(pearsonr(C_for_corr, swap_for_corr))
+        print(spearmanr(C_for_corr, swap_for_corr))
 
     def create_score_diffs(self, ranks, scores):
         model_scores_diff_current_former_winner = {}
@@ -141,7 +143,8 @@ class analyze:
                         model_scores_diff_current_former_winner[model].append(float(abs(
                             scores[model][epoch][query][current_winner] - scores[model][epoch][query][
                                 former_winner])) / abs(
-                            scores[model][epoch][query][current_winner] - scores[model][epoch][query][former_winner]))
+                            scores[model][epoch - 1][query][current_winner] - scores[model][epoch - 1][query][
+                                former_winner]))
                     else:
                         current_winner = ranks[model][epoch][query][0]
                         second = ranks[model][epoch][query][1]
