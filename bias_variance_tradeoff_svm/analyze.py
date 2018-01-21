@@ -130,7 +130,7 @@ class analyze:
         model_scores_diff_consecutive_winner_to_loser = {}
         for model in ranks:
             model_scores_diff_current_former_winner[model] = []
-            model_scores_diff_consecutive_winner_to_loser[model]
+            model_scores_diff_consecutive_winner_to_loser[model] = []
             for epoch in ranks[model]:
                 if epoch == 1:
                     continue
