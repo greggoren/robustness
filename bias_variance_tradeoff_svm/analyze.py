@@ -131,16 +131,19 @@ class analyze:
         model_scores_diff_current_former_winner = {}
         model_scores_diff_consecutive_winner_to_loser = {}
         for model in ranks:
-            model_scores_diff_current_former_winner[model] = []
-            model_scores_diff_consecutive_winner_to_loser[model] = []
+            model_scores_diff_current_former_winner[model] = {}
+            model_scores_diff_consecutive_winner_to_loser[model] = {}
             for epoch in ranks[model]:
                 if epoch == 1:
+
                     continue
+                model_scores_diff_current_former_winner[model][epoch] = []
+                model_scores_diff_consecutive_winner_to_loser[model][epoch] = []
                 for query in ranks[model][epoch]:
                     if ranks[model][epoch][query][0] != ranks[model][epoch - 1][query][0]:
                         former_winner = ranks[model][epoch - 1][query][0]
                         current_winner = ranks[model][epoch][query][0]
-                        model_scores_diff_current_former_winner[model].append(float(abs(
+                        model_scores_diff_current_former_winner[model][epoch].append(float(abs(
                             scores[model][epoch][query][current_winner] - scores[model][epoch][query][
                                 former_winner])) / abs(
                             scores[model][epoch - 1][query][current_winner] - scores[model][epoch - 1][query][
@@ -151,11 +154,20 @@ class analyze:
                         value = float(abs(
                             scores[model][epoch][query][current_winner] - scores[model][epoch][query][second])) / abs(
                             scores[model][epoch - 1][query][current_winner] - scores[model][epoch - 1][query][second])
-                        model_scores_diff_consecutive_winner_to_loser[model].append(value)
+                        model_scores_diff_consecutive_winner_to_loser[model][epoch].append(value)
         for model in model_scores_diff_consecutive_winner_to_loser:
+            for epoch in model_scores_diff_consecutive_winner_to_loser[model]:
+                model_scores_diff_consecutive_winner_to_loser[model][epoch] = np.mean(
+                    model_scores_diff_consecutive_winner_to_loser[model][epoch])
+                model_scores_diff_current_former_winner[model][epoch] = np.mean(
+                    model_scores_diff_current_former_winner[model][epoch])
+        for model in model_scores_diff_current_former_winner:
+            model_scores_diff_current_former_winner[model] = np.mean(
+                [model_scores_diff_current_former_winner[model][e] for e in
+                 model_scores_diff_current_former_winner[model]])
             model_scores_diff_consecutive_winner_to_loser[model] = np.mean(
-                model_scores_diff_consecutive_winner_to_loser[model])
-            model_scores_diff_current_former_winner[model] = np.mean(model_scores_diff_current_former_winner[model])
+                [model_scores_diff_consecutive_winner_to_loser[model][e] for e in
+                 model_scores_diff_consecutive_winner_to_loser[model]])
         return model_scores_diff_consecutive_winner_to_loser, model_scores_diff_current_former_winner
 
     def create_table(self, competition_data, svms, banned_queries):
