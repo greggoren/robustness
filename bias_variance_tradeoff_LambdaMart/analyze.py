@@ -1,5 +1,6 @@
 import pickle
 import itertools
+import math
 import subprocess
 import numpy as np
 from scipy.stats import kendalltau
@@ -23,6 +24,16 @@ def run_bash_command(command):
     return out
 
 class analyze:
+    def cosine_similarity(self, v1, v2):
+        sumxx, sumxy, sumyy = 0, 0, 0
+        for i in range(len(v1)):
+            x = v1[i]
+            y = v2[i]
+            sumxx += x * x
+            sumyy += y * y
+            sumxy += x * y
+        return sumxy / math.sqrt(sumxx * sumyy)
+
     def create_lambdaMart_scores(self, competition_data, models):
         scores = {model: {epoch: {q: {} for q in list(competition_data[epoch].keys())} for epoch in competition_data}
                   for model in
@@ -230,8 +241,11 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                    #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    v1 = cd[epoch][query][doc] / np.linalg.norm(cd[epoch][query][doc])
+                    v2 = cd[epoch - 1][query][doc] / np.linalg.norm(cd[epoch - 1][query][doc])
+                    change[epoch][query][doc] = self.cosine_similarity(v1, v2)
         return change
 
     def calculate_average_kendall_tau(self, rankings, values, weights, ranks):
