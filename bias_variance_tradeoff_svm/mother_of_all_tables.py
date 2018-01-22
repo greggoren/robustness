@@ -56,5 +56,5 @@ if __name__ == "__main__":
         if len(w) != 26:
             print(w)
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    # analyze.create_table(competition_data, svms, [])
-    analyze.score_experiment(competition_data, svms)
+    analyze.create_table(competition_data, svms, [])
+    # analyze.score_experiment(competition_data, svms)

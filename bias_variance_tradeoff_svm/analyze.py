@@ -89,6 +89,15 @@ class analyze:
             metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
         return metrics
 
+    def cosine_similarity(self, v1, v2):
+        sumxx, sumxy, sumyy = 0, 0, 0
+        for i in range(len(v1)):
+            x = v1[i]
+            y = v2[i]
+            sumxx += x * x
+            sumyy += y * y
+            sumxy += x * y
+        return sumxy / math.sqrt(sumxx * sumyy)
     def create_change_percentage(self, cd):
         change = {}
         for epoch in cd:
@@ -98,15 +107,13 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    # change[epoch][query][doc] = np.linalg.norm(
-                    #     cd[epoch][query][doc] - cd[epoch - 1][query][doc], ord=1) / np.linalg.norm(
-                    #     cd[epoch - 1][query][doc], ord=1)
-                    # change[epoch][query][doc] = float(1) / self.cosine_similarity(cd[epoch - 1][query][doc],
-                    #                                                               cd[epoch][query][doc])
-                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
-
+                    # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                    #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    v1 = cd[epoch][query][doc] / np.linalg.norm(cd[epoch][query][doc])
+                    v2 = cd[epoch - 1][query][doc] / np.linalg.norm(cd[epoch - 1][query][doc])
+                    change[epoch][query][doc] = self.cosine_similarity(v1, v2)
         return change
+
 
     def score_experiment(self, cd, models):
         scores = self.get_all_scores(models, cd)
@@ -229,40 +236,40 @@ class analyze:
             kendall_mean_for_pearson.append(mean_w_kt)
         table_file.write("\\end{longtable}")
 
-        f = open("pearson_correlation.tex", 'w')
+        f = open("spearman_correlation.tex", 'w')
         f.write("\\begin{tabular}{c|c|c|c} \n")
         f.write("Metric & #Tress & #Leaves \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, kendall_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
         f.write(
             "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, kendall_max_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, kendall_max_for_pearson)
         f.write("Kendall-$\\tau$ max normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, kendall_mean_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, kendall_mean_for_pearson)
         f.write("Kendall-$\\tau$ mean normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_mean_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
         f.write(
             "Winner Change mean& " + str(round(corr_trees[0], 3)) + " (" + str(
                 round(corr_trees[1], 3)) + ") &  \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_max_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_max_for_pearson)
         f.write(
             "Winner Change max & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_mean_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
         f.write(
             "Winner Change mean & " + str(round(corr_trees[0], 3)) + " (" + str(
                 round(corr_trees[1], 3)) + ") &  \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_weighted_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_weighted_for_pearson)
         f.write("Winner Change weighted & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_for_pearson)
         print(wc_for_pearson)
         f.write(
             "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, wc_winner_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, wc_winner_for_pearson)
         f.write("Winner Change winner & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = pearsonr(C_for_pearson, rbo_for_pearson)
+        corr_trees = spearmanr(C_for_pearson, rbo_for_pearson)
         f.write("RBO & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         f.write("\\end{tabular}")
         f.close()
