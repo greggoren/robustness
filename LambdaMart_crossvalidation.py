@@ -40,9 +40,5 @@ if __name__=="__main__":
         evaluator.create_trec_eval_file(test,queries,results,"_".join([str(a) for a in (trees_number,leaf_number)]))
         # final_trec_eval = evaluator.order_trec_file(trec_file)
         fold_number += 1
-    final=evaluator.order_trec_file(params.score_file)
-    evaluator.run_trec_eval_on_test(final)
-
-
-
-
+    # final=evaluator.order_trec_file(params.score_file)
+    evaluator.run_trec_eval_on_test(scores_file)
