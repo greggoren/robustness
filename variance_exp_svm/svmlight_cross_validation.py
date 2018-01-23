@@ -87,7 +87,8 @@ def check_dict(scores):
 
 if __name__ == "__main__":
 
-    C_array = [float(i + 1) / 1000 for i in range(10)]
+    # C_array = [float(i + 1) / 1000 for i in range(10)]
+    C_array = []
     C_array.extend([float(i + 1) / 100 for i in range(10)])
     C_array.extend([float(i + 1) / 10 for i in range(10)])
     C_array.extend([float(i + 1) for i in range(5)])
@@ -99,13 +100,14 @@ if __name__ == "__main__":
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
     scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
     number_of_queries = len(set(queries))
-    part = 1
+    part = 2
     for C in C_array:
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
         if not check_dict(scores):
-            with open("variance_data" + str(part), 'wb') as data:
-                pickle.dump(scores, data)
+            data = open("variance_data" + str(part), 'wb')
+            pickle.dump(scores, data)
+            data.close()
             part += 1
             scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
         for train, test in folds:

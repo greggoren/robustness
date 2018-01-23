@@ -1,3 +1,5 @@
-import pickle
-model = pickle.load(open("test/svm_model_minmax.pickle0.001_10.0_10.0",'rb'))
-print(model.w)
+import itertools
+
+a = range(40)
+for comb in list(itertools.combinations(a, 35))[30]:
+    print(comb)
