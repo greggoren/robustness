@@ -80,8 +80,8 @@ if __name__ == "__main__":
     C_array = [float(i + 1) / 1000 for i in range(10)]
     C_array.extend([float(i + 1) / 100 for i in range(10)])
     C_array.extend([float(i + 1) / 10 for i in range(10)])
-    C_array.extend([float(i + 1) for i in range(10)])
-    C_array.extend([float(i + 1) * 10 for i in range(10)])
+    C_array.extend([float(i + 1) for i in range(5)])
+    C_array.extend([float(i + 1) * 10 for i in range(5)])
     # C_array.extend([float(i + 1) * 100 for i in range(10)])
 
     start = time.time()
@@ -93,11 +93,11 @@ if __name__ == "__main__":
     for C in C_array:
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
-        if len(scores) > 15:
+        if len(scores) > 10:
             with open("variance_data" + str(part), 'wb') as data:
                 pickle.dump(scores, data)
             part += 1
-            scores = {}
+            scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
         for train, test in folds:
 
             func = partial(f, fold_number, C)
