@@ -39,8 +39,8 @@ class model_handler_LambdaMart():
                 os.makedirs("models/" + str(fold))
         except:
             print("collision on models dir")
-        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrels ' + qrels + ' -metric2t NDCG@20' \
-                                                                                                                       ' -tree ' + str(
+        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + qrels + ' -metric2t NDCG@20' \
+                                                                                                                      ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
             fold) + "/" + add + 'model_' + str(number_of_trees) + "_" + str(number_of_leaves) + str(subset)
         print("command = ", command)
