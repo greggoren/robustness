@@ -41,4 +41,4 @@ if __name__=="__main__":
         # final_trec_eval = evaluator.order_trec_file(trec_file)
         fold_number += 1
     # final=evaluator.order_trec_file(params.score_file)
-    evaluator.run_trec_eval_on_test(scores_file)
+    evaluator.run_trec_eval_on_test(params.scores_file)
