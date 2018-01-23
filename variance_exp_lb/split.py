@@ -2,7 +2,7 @@ from variance_exp_lb import preprocess_clueweb as p
 import itertools
 import params
 import numpy as np
-
+import random
 
 def get_results(score_file, test_indices):
     results = {}
@@ -21,6 +21,8 @@ if __name__ == "__main__":
         train_queries = set(queries[train])
         subsets_train_queries = []
         for combination in itertools.combinations(train_queries, 150):
+            if random.random() <= 0.8:
+                continue
             if len(subsets_train_queries) > 30:
                 break
             subsets_train_queries.append(combination)
