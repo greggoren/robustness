@@ -58,7 +58,7 @@ class model_handler_LambdaMart():
             print("collision on scores dir")
         features = test_file
         model_path = "models/" + str(fold) + "/model_" + str(trees) + "_" + str(
-            leaves)
+            leaves) + str(subset)
         self.run_bash_command('touch ' + score_file)
         command = java_path + " -jar " + jar_path + " -load " + model_path + " -rank " + features + " -score " + score_file
         self.run_bash_command(command)
