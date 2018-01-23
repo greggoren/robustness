@@ -98,7 +98,7 @@ class model_handler_LambdaMart():
 
     def fit_model_on_train_set_for_variance(self, qrels, fold, subset):
         train_file = "train/" + str(fold) + "/features" + str(subset)
-        test_file = "test/" + str(fold) + "features0_test"
+        test_file = "test/" + str(fold) + "/features0_test"
         print("fitting model on trees=", self.trees_number, "leaves = ", self.leaf_number)
         self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold, qrels, subset)
         score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number, subset)
