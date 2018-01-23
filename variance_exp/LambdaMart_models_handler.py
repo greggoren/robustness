@@ -41,11 +41,11 @@ class model_handler_LambdaMart():
         print("command = ", command)
         self.run_bash_command(command)
 
-    def run_model(self, test_file, fold, trees, leaves):
+    def run_model(self, test_file, fold, trees, leaves, subset):
         java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "scores/" + str(fold) + "/score" + str(trees) + "_" + str(
-            leaves)
+            leaves) + "#" + str(subset)
         if not os.path.exists("scores/" + str(fold) + "/"):
             os.makedirs("scores/" + str(fold) + "/")
         features = test_file
@@ -93,5 +93,5 @@ class model_handler_LambdaMart():
         test_file = "test/" + str(fold) + "features_test0"
         print("fitting model on trees=", self.trees_number, "leaves = ", self.leaf_number)
         self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold, qrels, subset)
-        score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number)
+        score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number, subset)
         return score_file

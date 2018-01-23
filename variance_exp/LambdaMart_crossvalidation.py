@@ -14,14 +14,14 @@ def get_results(score_file, test_indices):
     return results
 
 
-def update_scores(results, scores):
+def update_scores(results, scores, subset):
     for index in results:
-        scores[index].append(results[index])
+        scores[subset][index].append(results[index])
     return scores
 if __name__ == "__main__":
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
-    scores = {i: [] for i in range(len(queries))}
+    scores = {subset: {i: [] for i in range(len(queries))} for subset in range(31)}
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
@@ -37,8 +37,9 @@ if __name__ == "__main__":
         f = functools.partial(model_handler.fit_model_on_train_set_for_variance, params.qrels, fold_number)
         score_files = p.map(f, range(31))
         for score in score_files:
+            subset = int(score.split("#")[1])
             results = get_results(score, test)
-            scores = update_scores(results, scores)
+            scores = update_scores(results, scores, subset)
         fold_number += 1
     with open("variance_data", 'wb') as data:
         pickle.dump(scores, data)
