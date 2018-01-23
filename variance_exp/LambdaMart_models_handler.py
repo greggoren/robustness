@@ -5,7 +5,7 @@ import os
 
 
 class model_handler_LambdaMart():
-    def __init__(self, leaves, trees):
+    def __init__(self, trees, leaves):
         self.leaf_number = leaves
         self.trees_number = trees
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
@@ -27,17 +27,17 @@ class model_handler_LambdaMart():
         self.query_to_fold_index.update(tmp)
 
     def create_model_LambdaMart(self, number_of_trees, number_of_leaves, train_file,
-                                fold, test=False):
+                                fold, qrels, subset, test=False):
 
         if test:
             add = "test"
         else:
             add = ""
 
-        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -metric2t NDCG@20' \
-                                                                                        ' -tree ' + str(
+        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrels ' + qrels + ' -metric2t NDCG@20' \
+                                                                                                                       ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
-            fold) + "/" + add + 'model_' + str(number_of_trees) + "_" + str(number_of_leaves)
+            fold) + "/" + add + 'model_' + str(number_of_trees) + "_" + str(number_of_leaves) + str(subset)
         print("command = ", command)
         self.run_bash_command(command)
 
@@ -78,12 +78,20 @@ class model_handler_LambdaMart():
             results = {test_indices[i]: score.split()[2].rstrip() for i, score in enumerate(scores)}
             return results
 
-    def fit_model_on_train_set_and_run(self, train_file, test_file, test_indices, queries, evaluator, fold):
+    def fit_model_on_train_set_and_run(self, train_file, test_file, test_indices, queries, evaluator, qrels, fold):
         print("fitting model on trees=", self.trees_number, "leaves = ", self.leaf_number)
-        self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold)
+        self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold, qrels)
         score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number)
         results = self.retrieve_scores(test_indices, score_file)
         trec_file = evaluator.create_trec_eval_file(test_indices, queries, results,
                                                     "model_" + str(self.trees_number) + "_" + str(self.leaf_number),
                                                     validation=False)
         return trec_file
+
+    def fit_model_on_train_set_for_variance(self, qrels, fold, subset):
+        train_file = "train/" + str(fold) + "/features" + str(subset)
+        test_file = "test/" + str(fold) + "features_test0"
+        print("fitting model on trees=", self.trees_number, "leaves = ", self.leaf_number)
+        self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold, qrels, subset)
+        score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number)
+        return score_file

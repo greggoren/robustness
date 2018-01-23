@@ -24,7 +24,7 @@ if __name__ == "__main__":
     fold_number = 1
     trees = int(sys.argv[1])
     leaves = int(sys.argv[2])
-    model_handler = mh.model_handler_LambdaMart(trees, leaves)
+    model_handler = mh.model_handler_LambdaMart(leaves, trees)
     for train, test in folds:
         model_handler.set_queries_to_folds(queries, test, fold_number)
         train_file = "features" + str(fold_number)
