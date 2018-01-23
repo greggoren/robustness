@@ -1,4 +1,4 @@
-from variance_exp import preprocess_clueweb as p
+from variance_exp_lb import preprocess_clueweb as p
 import itertools
 import params
 import numpy as np
