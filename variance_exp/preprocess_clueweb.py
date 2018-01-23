@@ -80,14 +80,14 @@ class preprocess:
                 test_indices.extend(relevant_indices)
         return train_indices, test_indices
 
-    def create_train_file(self, X, y, queries, fold, test=False):
+    def create_train_file(self, X, y, queries, fold, subset_num, test=False):
         folder = "train" + str(fold) + "/"
         if test:
             add = "_test"
             folder = "test" + str(fold) + "/"
         if not os.path.exists(folder):
             os.makedirs(folder)
-        train_file = folder + "features" + add + str(fold)
+        train_file = folder + "features" + str(subset_num) + add
         with open(train_file, 'w') as feature_file:
             for i, doc in enumerate(X):
                 features = " ".join([str(a + 1) + ":" + str(b) for a, b in enumerate(doc)])

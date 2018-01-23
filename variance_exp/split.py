@@ -25,10 +25,11 @@ if __name__ == "__main__":
                 break
             subsets_train_queries.append(combination)
         new_train = []
-        for subset in subsets_train_queries:
+        for subset_num, subset in enumerate(subsets_train_queries):
             for query in subset:
                 new_train.extend(np.where(queries == query)[0])
             new_train = np.array(new_train)
-            train_file = preprocess.create_train_file(X[new_train], y[new_train], queries[new_train], fold_number)
-        test_file = preprocess.create_train_file(X[test], y[test], queries[test], fold_number, True)
+            train_file = preprocess.create_train_file(X[new_train], y[new_train], queries[new_train], subset_num,
+                                                      fold_number)
+        test_file = preprocess.create_train_file(X[test], y[test], queries[test], fold_number, 0, True)
         fold_number += 1
