@@ -150,10 +150,11 @@ class analyze:
         rankings, ranks = self.retrieve_ranking(scores)
         # bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
         #     rankings, ranks, competition_data, banned_queries)
-        bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner = self.calculate_average_kendall_tau(
+        bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner, spc, lpc = self.calculate_average_kendall_tau(
             rankings, ranks, text, banned_queries)
         with open("bins_stats", 'wb') as f:
-            pickle.dump((bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner),
+            pickle.dump((bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner,
+                         spc, lpc),
                         f)
 
     def bin_creator(self, epochs):
@@ -172,11 +173,28 @@ class analyze:
                 end = round(end, 3)
         return bins
 
+    def create_change_percentage(self, cd):
+        change = {}
+        for epoch in cd:
+            if epoch == 1:
+                continue
+            change[epoch] = {}
+            for query in cd[epoch]:
+                change[epoch][query] = {}
+                for doc in cd[epoch][query]:
+                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+        return change
+
+
+
     def calculate_average_kendall_tau(self, rankings, ranks, competition_data, banned):
+        weights = self.create_change_percentage(competition_data)
         epochs = list(competition_data.keys())
         bins_for_new_winner_self_similarity = self.bin_creator(epochs)
         bins_for_winner_similarity = self.bin_creator(epochs)
-
+        spc = {e: [] for e in epochs}
+        lpc = {e: [] for e in epochs}
         for model in rankings:
             rankings_list_svm = rankings[model]
             epochs = sorted(list(rankings_list_svm.keys()))
@@ -192,23 +210,17 @@ class analyze:
                         new_winner_current_vec = competition_data[epoch][query][new_winner]
                         new_winner_former_vec = competition_data[epoch - 1][query][new_winner]
                         former_winner_vec = competition_data[epoch][query][former_winner]
-                        new_winner_to_former_winner = CountVectorizer.fit_transform(
-                            [new_winner_current_vec, former_winner]).toarray()
-                        new_winner_to_former_self = CountVectorizer.fit_transform(
-                            [new_winner_current_vec, new_winner_former_vec]).toarray()
-
-                        self_similarity = self.cosine_similarity(new_winner_to_former_self[0],
-                                                                 new_winner_to_former_self[1])
-                        # self_similarity = self.cosine_similarity(new_winner_current_vec, new_winner_former_vec)
-                        # similarity_to_winner = self.cosine_similarity(new_winner_current_vec, former_winner_vec)
-                        similarity_to_winner = self.cosine_similarity(new_winner_to_former_winner[0],
-                                                                      new_winner_to_former_winner[1])
+                        self_similarity = self.cosine_similarity(new_winner_current_vec, new_winner_former_vec)
+                        similarity_to_winner = self.cosine_similarity(new_winner_current_vec, former_winner_vec)
                         for key in bins_for_new_winner_self_similarity[epoch]:
                             start, end = key
                             if self_similarity >= start and self_similarity <= end:
                                 bins_for_new_winner_self_similarity[epoch][key] += 1
                             if similarity_to_winner >= start and similarity_to_winner <= end:
                                 bins_for_winner_similarity[epoch][key] += 1
+                        spc[epoch].append(weights[epoch][query][ranks[model][epoch][query][0]])
+                    else:
+                        lpc[epoch].append(weights[epoch][query][ranks[model][epoch - 1][query][1]])
             total_self = {i: 0 for i in bins_for_winner_similarity[2]}
             total_to_winner = {i: 0 for i in bins_for_winner_similarity[2]}
             for epoch in bins_for_winner_similarity:
@@ -225,7 +237,15 @@ class analyze:
             for key in total_self:
                 total_self[key] = float(total_self[key]) / len(epochs)
                 total_to_winner[key] = float(total_to_winner[key]) / len(epochs)
-        return bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner
+            for epoch in spc:
+                if epoch == 1:
+                    continue
+                spc[epoch] = np.mean(spc[epoch])
+                lpc[epoch] = np.mean(lpc[epoch])
+            spc.pop(1)
+            lpc.pop(1)
+
+        return bins_for_new_winner_self_similarity, bins_for_winner_similarity, total_self, total_to_winner, spc, lpc
 
     def get_all_scores(self, svms, competition_data):
         scores = {}

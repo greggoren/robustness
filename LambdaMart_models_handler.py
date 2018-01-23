@@ -3,8 +3,7 @@ import operator
 import subprocess
 import os
 class model_handler_LambdaMart():
-
-    def __init__(self,leaves,trees):
+    def __init__(self, trees, leaves):
         self.leaves_param = leaves
         self.trees_param = trees
         self.java_path = "/lv_local/home/sgregory/jdk1.8.0_121/bin/java"
