@@ -20,7 +20,7 @@ if __name__ == "__main__":
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
-    folds = preprocess.create_folds(X, y, queries, 5)
+
     # trees = int(sys.argv[1])
     # leaves = int(sys.argv[2])
     trees = 100
@@ -28,6 +28,7 @@ if __name__ == "__main__":
     for leaf in leaves:
         fold_number = 1
         model_handler = mh.model_handler_LambdaMart(leaf, trees)
+        folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
             model_handler.set_queries_to_folds(queries, test, fold_number)
             train_file = "features" + str(fold_number)
