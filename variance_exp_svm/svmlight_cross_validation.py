@@ -59,27 +59,6 @@ def retrieve_scores(test_indices, score_file):
         return results
 
 
-def recover_model(model):
-    indexes_covered = []
-    weights = []
-    with open(model) as model_file:
-        for line in model_file:
-            if line.__contains__(":"):
-                wheights = line.split()
-                wheights_length = len(wheights)
-
-                for index in range(1, wheights_length - 1):
-
-                    feature_id = int(wheights[index].split(":")[0])
-                    if index < feature_id:
-                        for repair in range(index, feature_id):
-                            if repair in indexes_covered:
-                                continue
-                            weights.append(0)
-                            indexes_covered.append(repair)
-                    weights.append(float(wheights[index].split(":")[1]))
-                    indexes_covered.append(feature_id)
-    return np.array(weights)
 
 
 def f(fold, C, subset):
@@ -110,18 +89,20 @@ if __name__ == "__main__":
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
     scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
     number_of_queries = len(set(queries))
-
+    p = Pool(15)
     for C in C_array:
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
-            p = Pool(15)
+
             func = partial(f, fold_number, C)
-            score_files = p.map(func, range(31))
-            for score in score_files:
-                subset = int(score.split("#")[1])
-                results = retrieve_scores(test, score)
-                scores = update_scores(results, scores, C)
+            with Pool(processes=15) as pool:
+                score_files = pool.map(func, range(31))
+                # score_files = p.map(func, range(31))
+                for score in score_files:
+                    subset = int(score.split("#")[1])
+                    results = retrieve_scores(test, score)
+                    scores = update_scores(results, scores, C)
             fold_number += 1
     print("it took:", time.time() - start)
     with open("variance_data", 'wb') as data:
