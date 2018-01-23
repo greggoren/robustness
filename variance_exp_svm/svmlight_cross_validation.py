@@ -89,10 +89,15 @@ if __name__ == "__main__":
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
     scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
     number_of_queries = len(set(queries))
-    p = Pool(15)
+    part = 1
     for C in C_array:
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
+        if len(scores) > 15:
+            with open("variance_data" + str(part), 'wb') as data:
+                pickle.dump(scores, data)
+            part += 1
+            scores = {}
         for train, test in folds:
 
             func = partial(f, fold_number, C)
@@ -105,5 +110,5 @@ if __name__ == "__main__":
                     scores = update_scores(results, scores, C)
             fold_number += 1
     print("it took:", time.time() - start)
-    with open("variance_data", 'wb') as data:
+    with open("variance_data" + str(part), 'wb') as data:
         pickle.dump(scores, data)
