@@ -107,7 +107,7 @@ if __name__ == "__main__":
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
-            p = Pool(10)
+            p = Pool(4)
             func = partial(f, fold_number, C)
             score_files = p.map(func, range(31))
             for score in score_files:
