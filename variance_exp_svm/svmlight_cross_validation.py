@@ -82,9 +82,9 @@ def f(fold, C, subset):
     return score_file
 
 
-def update_scores(results, scores, subset, C):
+def update_scores(results, scores, C):
     for index in results:
-        scores[C][subset][index].append(results[index])
+        scores[C][index].append(results[index])
     return scores
 
 
