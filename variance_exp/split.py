@@ -24,8 +24,9 @@ if __name__ == "__main__":
             if len(subsets_train_queries) > 30:
                 break
             subsets_train_queries.append(combination)
-        new_train = []
+
         for subset_num, subset in enumerate(subsets_train_queries):
+            new_train = []
             for query in subset:
                 new_train.extend(np.where(queries == query)[0])
 
