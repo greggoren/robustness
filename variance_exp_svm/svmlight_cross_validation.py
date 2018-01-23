@@ -75,6 +75,16 @@ def update_scores(results, scores, C):
     return scores
 
 
+def check_dict(scores):
+    counter = 0
+    for C in scores:
+        if counter == 10:
+            return False
+        if scores[C]:
+            counter += 1
+    return True
+
+
 if __name__ == "__main__":
 
     C_array = [float(i + 1) / 1000 for i in range(10)]
@@ -93,7 +103,7 @@ if __name__ == "__main__":
     for C in C_array:
         fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
-        if len(scores) > 10:
+        if not check_dict(scores):
             with open("variance_data" + str(part), 'wb') as data:
                 pickle.dump(scores, data)
             part += 1
