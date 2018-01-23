@@ -115,6 +115,6 @@ if __name__ == "__main__":
                 results = retrieve_scores(test, score)
                 scores = update_scores(results, scores, subset, C)
             fold_number += 1
-        print("it took:", time.time() - start)
-        with open("variance_data", 'wb') as data:
-            pickle.dump(scores, data)
+    print("it took:", time.time() - start)
+    with open("variance_data", 'wb') as data:
+        pickle.dump(scores, data)
