@@ -109,7 +109,7 @@ if __name__ == "__main__":
         for train, test in folds:
             p = Pool(10)
             func = partial(f, fold_number, C)
-            score_files = p.map(f, range(31))
+            score_files = p.map(func, range(31))
             for score in score_files:
                 subset = int(score.split("#")[1])
                 results = retrieve_scores(test, score)
