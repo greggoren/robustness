@@ -17,7 +17,7 @@ class eval:
             os.remove(params.score_file)
 
     def create_trec_eval_file(self, test_indices, queries, results, model,
-                              validation=None):  # TODO: need to sort file via unix command
+                              validation=None):
         if validation is not None:
             trec_file = "trec/trec_file_" + model + ".txt"
             if not os.path.exists(os.path.dirname(trec_file)):

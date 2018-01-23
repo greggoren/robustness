@@ -33,7 +33,11 @@ class model_handler_LambdaMart():
             add = "test"
         else:
             add = ""
-
+        try:
+            if not os.path.exists("models/" + str(fold) + "/"):
+                os.makedirs("models/" + str(fold) + "/")
+        except:
+            print("col")
         command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
                                                                                                                                      ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
