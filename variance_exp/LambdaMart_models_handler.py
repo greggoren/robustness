@@ -33,7 +33,12 @@ class model_handler_LambdaMart():
             add = "test"
         else:
             add = ""
-
+        try:
+            if not os.path.exists("models/" + str(
+                    fold)):
+                os.makedirs("models/" + str(fold))
+        except:
+            print("collision on models dir")
         command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrels ' + qrels + ' -metric2t NDCG@20' \
                                                                                                                        ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
@@ -50,7 +55,7 @@ class model_handler_LambdaMart():
             if not os.path.exists("scores/" + str(fold) + "/"):
                 os.makedirs("scores/" + str(fold) + "/")
         except:
-            print("collision")
+            print("collision on scores dir")
         features = test_file
         model_path = "models/" + str(fold) + "/model_" + str(trees) + "_" + str(
             leaves)
