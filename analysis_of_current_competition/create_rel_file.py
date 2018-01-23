@@ -65,9 +65,9 @@ def new_rel(rel):
     f.close()
 
 
-folders = ["C:\\study\\thesis - new\\competition\\epoch1", "C:\\study\\thesis - new\\competition\\epoch2",
-           "C:\\study\\thesis - new\\competition\\epoch3", "C:\\study\\thesis - new\\competition\\epoch4",
-           "C:\\study\\thesis - new\\competition\\epoch5"]
+folders = ["C:\\study\\thesis - new\\competition\\epoch6", "C:\\study\\thesis - new\\competition\\epoch7",
+           "C:\\study\\thesis - new\\competition\\epoch9", "C:\\study\\thesis - new\\competition\\epoch8",
+           "C:\\study\\thesis - new\\competition\\epoch10"]
 mapping_file = "C:\\study\\thesis - new\\competition\\mapping"
 
 

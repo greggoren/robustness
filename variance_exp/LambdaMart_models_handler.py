@@ -27,15 +27,15 @@ class model_handler_LambdaMart():
         self.query_to_fold_index.update(tmp)
 
     def create_model_LambdaMart(self, number_of_trees, number_of_leaves, train_file,
-                                query_relevance_file, fold, test=False):
+                                fold, test=False):
 
         if test:
             add = "test"
         else:
             add = ""
 
-        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
-                                                                                                                                     ' -tree ' + str(
+        command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -metric2t NDCG@20' \
+                                                                                        ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
             fold) + "/" + add + 'model_' + str(number_of_trees) + "_" + str(number_of_leaves)
         print("command = ", command)
@@ -80,7 +80,7 @@ class model_handler_LambdaMart():
 
     def fit_model_on_train_set_and_run(self, train_file, test_file, test_indices, queries, evaluator, fold):
         print("fitting model on trees=", self.trees_number, "leaves = ", self.leaf_number)
-        self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, params.qrels, fold)
+        self.create_model_LambdaMart(self.trees_number, self.leaf_number, train_file, fold)
         score_file = self.run_model(test_file, fold, self.trees_number, self.leaf_number)
         results = self.retrieve_scores(test_indices, score_file)
         trec_file = evaluator.create_trec_eval_file(test_indices, queries, results,
