@@ -6,6 +6,7 @@ import sys
 from multiprocessing import Pool
 import pickle
 import functools
+import time
 def get_results(score_file, test_indices):
     results = {}
     with open(score_file) as scores:
@@ -19,6 +20,7 @@ def update_scores(results, scores, subset):
         scores[subset][index].append(results[index])
     return scores
 if __name__ == "__main__":
+    start = time.time()
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
     scores = {subset: {i: [] for i in range(len(queries))} for subset in range(31)}
@@ -41,5 +43,6 @@ if __name__ == "__main__":
             results = get_results(score, test)
             scores = update_scores(results, scores, subset)
         fold_number += 1
+    print("it took:", time.time() - start)
     with open("variance_data", 'wb') as data:
         pickle.dump(scores, data)
