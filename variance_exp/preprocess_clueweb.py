@@ -82,10 +82,10 @@ class preprocess:
 
     def create_train_file(self, X, y, queries, fold, subset_num, test=False):
         add = ""
-        folder = "train" + str(fold) + "/"
+        folder = "train/" + str(fold) + "/"
         if test:
             add = "_test"
-            folder = "test" + str(fold) + "/"
+            folder = "test/" + str(fold) + "/"
         if not os.path.exists(folder):
             os.makedirs(folder)
         train_file = folder + "features" + str(subset_num) + add
