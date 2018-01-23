@@ -22,15 +22,18 @@ if __name__ == "__main__":
     evaluator.remove_score_file_from_last_run()
     folds = preprocess.create_folds(X, y, queries, 5)
     fold_number = 1
-    trees = int(sys.argv[1])
-    leaves = int(sys.argv[2])
-    model_handler = mh.model_handler_LambdaMart(leaves, trees)
-    for train, test in folds:
-        model_handler.set_queries_to_folds(queries, test, fold_number)
-        train_file = "features" + str(fold_number)
-        test_file = "features_test" + str(fold_number)
-        trec = model_handler.fit_model_on_train_set_and_run(train_file, test_file, test, queries, evaluator,
-                                                            fold_number)
-        fold_number += 1
-    final = evaluator.order_trec_file(trec)
-    evaluator.run_trec_eval_on_test_correlation(final, trees, leaves)
+    # trees = int(sys.argv[1])
+    # leaves = int(sys.argv[2])
+    trees = 100
+    leaves = [(i + 1) * 10 for i in range(45)]
+    for leaf in leaves:
+        model_handler = mh.model_handler_LambdaMart(leaf, trees)
+        for train, test in folds:
+            model_handler.set_queries_to_folds(queries, test, fold_number)
+            train_file = "features" + str(fold_number)
+            test_file = "features_test" + str(fold_number)
+            trec = model_handler.fit_model_on_train_set_and_run(train_file, test_file, test, queries, evaluator,
+                                                                fold_number)
+            fold_number += 1
+        final = evaluator.order_trec_file(trec)
+        evaluator.run_trec_eval_on_test_correlation(final, trees, leaves)
