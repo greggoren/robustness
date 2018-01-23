@@ -27,10 +27,8 @@ if __name__ == "__main__":
         new_train = []
         for subset in subsets_train_queries:
             for query in subset:
-                new_train.extend(np.where(queries == query))
-            print(new_train)
+                new_train.extend(list(np.where(queries == query)))
             new_train = np.array(new_train)
-            print(new_train)
             train_file = preprocess.create_train_file(X[new_train], y[new_train], queries[new_train], fold_number)
         test_file = preprocess.create_train_file(X[test], y[test], queries[test], fold_number, True)
         fold_number += 1
