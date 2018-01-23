@@ -28,6 +28,10 @@ def learn_svm(C, train_file, fold, subset):
         fold) + "/svm_model" + str(C) + str(subset)
     for output_line in run_command(learning_command):
         print(output_line)
+    try:
+        f = open("models/" + str(fold) + "/svm_model" + str(C) + str(subset))
+    finally:
+        f.close()
     return "models/" + str(fold) + "/svm_model" + str(C) + str(subset)
 
 
@@ -42,6 +46,10 @@ def run_svm(C, model_file, test_file, fold, subset):
         subset)
     for output_line in run_command(rank_command):
         print(output_line)
+    try:
+        f = open(score_path + "/" + str(C) + "#" + str(subset))
+    finally:
+        f.close()
     return score_path + "/" + str(C) + "#" + str(subset)
 
 

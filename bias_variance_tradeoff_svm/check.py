@@ -46,5 +46,5 @@ for svm in svms:
     Norm.append(norm(svms[svm]))
 
 print(len(C))
-
+print(norm(svms['models_light/svm_model0.0001']))
 print(pearsonr(C, Norm))
