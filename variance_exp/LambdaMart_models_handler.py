@@ -46,8 +46,11 @@ class model_handler_LambdaMart():
         jar_path = "/lv_local/home/sgregory/SEO_CODE/model_running/RankLib.jar"
         score_file = "scores/" + str(fold) + "/score" + str(trees) + "_" + str(
             leaves) + "#" + str(subset)
-        if not os.path.exists("scores/" + str(fold) + "/"):
-            os.makedirs("scores/" + str(fold) + "/")
+        try:
+            if not os.path.exists("scores/" + str(fold) + "/"):
+                os.makedirs("scores/" + str(fold) + "/")
+        except:
+            print("collision")
         features = test_file
         model_path = "models/" + str(fold) + "/model_" + str(trees) + "_" + str(
             leaves)
