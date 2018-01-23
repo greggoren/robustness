@@ -100,7 +100,7 @@ if __name__ == "__main__":
     start = time.time()
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
-    scores = {C: {subset: {i: [] for i in range(len(queries))} for subset in range(31)} for C in C_array}
+    scores = {C: {i: [] for i in range(len(queries))} for C in C_array}
     number_of_queries = len(set(queries))
 
     for C in C_array:
