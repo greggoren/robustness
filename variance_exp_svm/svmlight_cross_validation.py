@@ -113,7 +113,7 @@ if __name__ == "__main__":
             for score in score_files:
                 subset = int(score.split("#")[1])
                 results = retrieve_scores(test, score)
-                scores = update_scores(results, scores, subset, C)
+                scores = update_scores(results, scores, C)
             fold_number += 1
     print("it took:", time.time() - start)
     with open("variance_data", 'wb') as data:
