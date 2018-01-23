@@ -36,4 +36,4 @@ if __name__ == "__main__":
                                                                 fold_number)
             fold_number += 1
         final = evaluator.order_trec_file(trec)
-        evaluator.run_trec_eval_on_test_correlation(final, trees, leaves)
+        evaluator.run_trec_eval_on_test_correlation(final, trees, leaf)
