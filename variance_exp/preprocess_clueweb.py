@@ -81,6 +81,7 @@ class preprocess:
         return train_indices, test_indices
 
     def create_train_file(self, X, y, queries, fold, subset_num, test=False):
+        add = ""
         folder = "train" + str(fold) + "/"
         if test:
             add = "_test"
