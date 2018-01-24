@@ -18,7 +18,8 @@ for metric in svm_stats:
             percentages[metric][epoch]["d"] += 1
         percentages[metric][epoch]["svm"] = float(percentages[metric][epoch]["svm"]) / percentages[metric][epoch]["d"]
         percentages[metric][epoch]["lb"] = float(percentages[metric][epoch]["lb"]) / percentages[metric][epoch]["d"]
-    total[metric] = np.mean([percentages[metric][e]["lb"] for e in percentages[metric]])
+    total[metric]["lb"] = np.mean([percentages[metric][e]["lb"] for e in percentages[metric]])
+    total[metric]["svm"] = np.mean([percentages[metric][e]["svm"] for e in percentages[metric]])
 
 with open("summary.csv", 'w') as s:
     s.write("METRIC,LambdaMART,SVMRank\n")
