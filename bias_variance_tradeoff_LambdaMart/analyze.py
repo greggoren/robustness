@@ -307,7 +307,7 @@ class analyze:
                         continue
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
                     if query not in banned[epoch] and query not in banned[epoch - 1]:
-                        if current_list_svm.index(5) != last_list_index_svm[query].index(5):
+                        if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                             wc_change += 1
                             change_rate_svm_max += (
                                 float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
