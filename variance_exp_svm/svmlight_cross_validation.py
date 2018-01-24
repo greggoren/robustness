@@ -80,8 +80,10 @@ def check_dict(scores):
     for C in scores:
         if counter == 10:
             return False
-        if scores[C]:
-            counter += 1
+        for i in scores[C]:
+            if scores[C][i]:
+                counter += 1
+                break
     return True
 
 

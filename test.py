@@ -1,7 +1,8 @@
 import itertools
 import random
-a = range(40)
-for comb in itertools.combinations(a, 35):
-    if random.random() < 0.65:
-        continue
+
+a = range(10)
+for comb in itertools.combinations(a, 3):
+    # if random.random() < 0.8:
+    #     continue
     print(comb)
