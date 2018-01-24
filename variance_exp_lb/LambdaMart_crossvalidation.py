@@ -15,15 +15,14 @@ def get_results(score_file, test_indices):
     return results
 
 
-def update_scores(results, scores, subset):
+def update_scores(results, scores, subset, tree, leaves):
     for index in results:
-        scores[subset][index].append(results[index])
+        scores[(tree, leaves)][index].append((subset, results[index]))
     return scores
 if __name__ == "__main__":
     start = time.time()
     preprocess = p.preprocess()
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
-    scores = {subset: {i: [] for i in range(len(queries))} for subset in range(31)}
     number_of_queries = len(set(queries))
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
@@ -31,20 +30,22 @@ if __name__ == "__main__":
     folds = preprocess.create_folds(X, y, queries, 5)
     fold_number = 1
     trees = 250
-    leaves = [i + 1 for i in range(26)]
-    leaves.extend[i + 1
-    for i in range(26)]
-    model_handler = mh.model_handler_LambdaMart(trees, leaves)
-    for train, test in folds:
-        p = Pool(5)
-        model_handler.set_queries_to_folds(queries, test, fold_number)
-        f = functools.partial(model_handler.fit_model_on_train_set_for_variance, params.qrels, fold_number)
-        score_files = p.map(f, range(31))
-        for score in score_files:
-            subset = int(score.split("#")[1])
-            results = get_results(score, test)
-            scores = update_scores(results, scores, subset)
-        fold_number += 1
+    leaves = [(i + 1) * 10 for i in (7)]
+    leaves.extend([125, 115, 95, 85])
+    scores = {(trees, leaf): {i: [] for i in range(len(queries))} for leaf in leaves}
+
+    for leaf in leaves:
+        for train, test in folds:
+            model_handler = mh.model_handler_LambdaMart(trees, leaf)
+            with Pool(processes=8) as pool:
+                model_handler.set_queries_to_folds(queries, test, fold_number)
+                f = functools.partial(model_handler.fit_model_on_train_set_for_variance, params.qrels, fold_number)
+                score_files = pool.map(f, range(31))
+                for score in score_files:
+                    subset = int(score.split("#")[1])
+                    results = get_results(score, test)
+                    scores = update_scores(results, scores, subset, trees, leaf)
+            fold_number += 1
     print("it took:", time.time() - start)
-    with open("variance_data", 'wb') as data:
+    with open("variance_data1", 'wb') as data:
         pickle.dump(scores, data)
