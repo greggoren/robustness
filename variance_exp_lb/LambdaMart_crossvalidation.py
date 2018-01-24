@@ -28,7 +28,7 @@ if __name__ == "__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     fold_number = 1
-    trees = [(i + 1) * 10 for i in range(17, 26)]
+    trees = [(i + 1) * 10 for i in range(15, 25)]
     leaves = 50
     scores = {(trees, leaves): {i: [] for i in range(len(queries))} for tree in trees}
 
