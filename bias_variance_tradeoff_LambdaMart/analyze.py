@@ -263,7 +263,6 @@ class analyze:
         return change
 
     def calculate_average_kendall_tau(self, rankings, banned, weights, ranks):
-        metrics_for_stats = {"ktd": {}}
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
