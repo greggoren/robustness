@@ -37,6 +37,13 @@ def recover_model(model):
     return np.array(weights)
 
 
+def get_banned(banned_file):
+    banned_queries = {i: [] for i in [1, 2, 3, 4, 5]}
+    with open(banned_file) as banned:
+        for ban in banned:
+            splitted = ban.split()
+            banned_queries[int(splitted[0])].append(splitted[1])
+    return banned_queries
 def upload_models(models_dir):
     model_handlers = {}
     for root, dirs, files in os.walk(models_dir):
@@ -51,7 +58,9 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     # svms = upload_models("models_light")
+    banned = get_banned("../banned1")
     svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    analyze.create_table(competition_data, svms, [])
+    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
+    analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
