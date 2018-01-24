@@ -62,8 +62,8 @@ def retrieve_scores(test_indices, score_file):
 
 
 def f(fold, C, subset):
-    train_file = "../variance_exp/train/" + str(fold) + "/features" + str(subset)
-    test_file = "../variance_exp/test/" + str(fold) + "/features0_test"
+    train_file = "../variance_exp_lb/train/" + str(fold) + "/features" + str(subset)
+    test_file = "../variance_exp_lb/test/" + str(fold) + "/features0_test"
     model_file = learn_svm(C, train_file, fold, subset)
     score_file = run_svm(C, model_file, test_file, fold, subset)
     return score_file
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
             func = partial(f, fold_number, C)
             with Pool(processes=15) as pool:
-                score_files = pool.map(func, range(31))
+                score_files = pool.map(func, range(1, 31))
                 # score_files = p.map(func, range(31))
                 for score in score_files:
                     subset = int(score.split("#")[1])
