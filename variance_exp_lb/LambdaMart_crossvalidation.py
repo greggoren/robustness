@@ -30,7 +30,7 @@ if __name__ == "__main__":
     folds = preprocess.create_folds(X, y, queries, 5)
     fold_number = 1
     trees = 250
-    leaves = [(i + 1) * 10 for i in (7)]
+    leaves = [(i + 1) * 10 for i in range(7)]
     leaves.extend([125, 115, 95, 85])
     scores = {(trees, leaf): {i: [] for i in range(len(queries))} for leaf in leaves}
 
