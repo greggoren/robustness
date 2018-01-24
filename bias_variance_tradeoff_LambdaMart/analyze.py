@@ -89,7 +89,7 @@ class analyze:
             ndcg_by_epochs = []
             map_by_epochs = []
             mrr_by_epochs = []
-            for i in range(1, 6):
+            for i in range(1, 9):
                 name = model.split("model_")[1]
 
                 score_file = name + "_" + str(i)
