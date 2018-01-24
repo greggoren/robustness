@@ -7,6 +7,8 @@ percentages = {m: {} for m in svm_stats}
 total = {m: {"lb": 0, "svm": 0} for m in svm_stats}
 for metric in svm_stats:
     for epoch in svm_stats[metric]:
+        if epoch == 1:
+            continue
         percentages[metric][epoch] = {"lb": 0, "svm": 0, "d": 0}
         for query in svm_stats[metric][epoch]:
             if svm_stats[metric][epoch][query] > lb_stats[metric][epoch][query]:
