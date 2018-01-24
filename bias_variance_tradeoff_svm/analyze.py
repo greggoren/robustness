@@ -412,7 +412,7 @@ class analyze:
                 change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
                 change_rate_winner_svm_epochs, change_rate_svm_epochs)
             with open("svm_robustness_stats", "wb") as f:
-                pickle(metrics_for_stats, f)
+                pickle.dump(metrics_for_stats, f)
         return kendall, change_rate, rbo_min_models
 
     def get_all_scores(self,svms,competition_data):
