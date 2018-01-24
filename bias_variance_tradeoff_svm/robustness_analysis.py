@@ -23,4 +23,4 @@ for metric in svm_stats:
 with open("summary.csv", 'w') as s:
     s.write("METRIC,LambdaMART,SVMRank\n")
     for metric in total:
-        s.write(metric.toupper() + "," + str(total[metric]["lb"]) + "," + str(total[metric]["svm"]) + "\n")
+        s.write(metric.upper() + "," + str(total[metric]["lb"]) + "," + str(total[metric]["svm"]) + "\n")
