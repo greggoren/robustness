@@ -66,7 +66,7 @@ class analyze:
                 name = "svm" + svm.split("svm_model")[1]
 
                 score_file = name+str(i)
-                qrels = "../rel2/srel0" + str(i)
+                qrels = "../rel3/rel0" + str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
