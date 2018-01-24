@@ -336,8 +336,8 @@ class analyze:
                                                            weights[epoch][query], "max")
                         sum_max_w_kt += max_kt
                         mean_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                                   ranks[svm][epoch][query],
-                                                                   weights[epoch][query], "mean")
+                                                            ranks[svm][epoch][query],
+                                                            weights[epoch][query], "mean")
                         sum_mean_w_kt + mean_kt
                         winner_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                      ranks[svm][epoch][query],
