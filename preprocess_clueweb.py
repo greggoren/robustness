@@ -3,6 +3,7 @@ import itertools
 from sklearn.datasets import load_svmlight_file
 from sklearn.model_selection import GroupKFold
 import math
+from random import shuffle
 from sklearn.model_selection import train_test_split
 
 class preprocess:
@@ -75,10 +76,13 @@ class preprocess:
         test_indices=[]
         train_indices=[]
         unique_groups = set(groups)
+        added = []
+        shuffle(unique_groups)
         for group in unique_groups:
             relevant_indices = np.where(groups==group)[0]
-            if group<=150:
+            if len(added) <= 150:
                 train_indices.extend(relevant_indices)
+                added.append(group)
             else:
                 test_indices.extend(relevant_indices)
         return train_indices,test_indices

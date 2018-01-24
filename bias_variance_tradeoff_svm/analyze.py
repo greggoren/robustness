@@ -2,7 +2,7 @@ import subprocess
 import numpy as np
 import pickle
 from scipy.stats import kendalltau
-from kendall_tau import weighted_kendall_tau
+from kendall_tau import kendall_distance, weighted_kendall_distance
 import math
 from statsmodels.genmod.families.links import sqrt
 from sklearn.metrics.pairwise import cosine_similarity
@@ -188,9 +188,8 @@ class analyze:
         metrics = self.calculate_metrics(scores)
 
         table_file = open("table_value.tex", 'w')
-        table_file.write("\\begin{longtable}{*{7}{c}}\n")
         table_file.write(
-            "Ranker & C & Avg KT & Max KT & Avg RBO & Max RBO & WC & Min WC & NDCD & MAP & MRR \\\\\\\\ \n")
+            "Ranker & C & KTD & WC & RBO & WC mean & WC max  & WC winner & KTD mean & KTD max & KTD winner & NDCG & MAP & MRR\\\\\\\\ \n")
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
         kendall_for_pearson = []
@@ -207,10 +206,12 @@ class analyze:
         mrr_for_pearson = []
         wc_for_pearson = []
         wc_winner_for_pearson = []
+        rmetrics = []
         for key in keys:
             model = key.split("svm_model")[1]
             C_for_pearson.append(float(model))
             average_kt = str(np.mean(kendall[key][0]))
+            rmetrics.append(average_kt)
             kendall_for_pearson.append(float(average_kt))
             average_rbo = str(np.mean(rbo_min_models[key][0]))
             rbo_for_pearson.append(float(average_rbo))
@@ -218,8 +219,13 @@ class analyze:
             wc_max_for_pearson.append(change_max)
             change_mean = np.mean(change_rate[key][2])
             change = np.mean(change_rate[key][4])
+            rmetrics.append(change)
+            rmetrics.append(average_rbo)
+            rmetrics.append(change_mean)
+            rmetrics.append(change_max)
             wc_for_pearson.append(change)
             winner_change_winner = np.mean(change_rate[key][3])
+            rmetrics.append(winner_change_winner)
             wc_winner_for_pearson.append(winner_change_winner)
             wc_mean_for_pearson.append(change_mean)
             change_weighted = np.mean(change_rate[key][1])
@@ -231,11 +237,20 @@ class analyze:
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
             max_w_kt = np.mean(kendall[key][2])
+            winner_kt = np.mean(kendall[key][4])
             kendall_max_for_pearson.append(max_w_kt)
             mean_w_kt = np.mean(kendall[key][3])
             kendall_mean_for_pearson.append(mean_w_kt)
-        table_file.write("\\end{longtable}")
+            rmetrics.append(mean_w_kt)
+            rmetrics.append(max_w_kt)
+            rmetrics.append(winner_kt)
+            rmetrics.append(nd)
+            rmetrics.append(map)
+            rmetrics.append(mrr)
+            line = "SVMRank & - & " + " & ".join([str(a) for a in metrics])
+            table_file.write(line)
 
+        table_file.close()
         f = open("spearman_correlation.tex", 'w')
         f.write("\\begin{tabular}{c|c|c|c} \n")
         f.write("Metric & #Tress & #Leaves \\\\ \n")
@@ -278,7 +293,6 @@ class analyze:
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
-        meta_rbo = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
             kt_svm = []
@@ -294,6 +308,7 @@ class analyze:
             rbo_min_orig = []
             max_w_kt_svm = []
             mean_w_kt_svm = []
+            winner_w_kt_svm = []
             epochs = sorted(list(rankings_list_svm.keys()))
             for epoch in epochs:
 
@@ -302,6 +317,7 @@ class analyze:
                 sum_rbo_min_orig = 0
                 sum_svm_original = 0
                 sum_max_w_kt = 0
+                sum_winner_w_kt = 0
                 sum_mean_w_kt = 0
                 n_q=0
                 change_rate_svm_mean = 0
@@ -329,14 +345,14 @@ class analyze:
                         change_rate_svm_weighted += (
                             float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
                                         weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
-                    sum_max_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
-                                                         weights[epoch][query], "max")
-                    sum_mean_w_kt += weighted_kendall_tau(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
-                                                          weights[epoch][query], "mean")
-
+                    sum_max_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
+                                                              weights[epoch][query], "max")
+                    sum_mean_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
+                                                               weights[epoch][query], "mean")
+                    sum_winner_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query],
+                                                                 weights[epoch][query], "winner")
                     n_q += 1
-                    kt = kendalltau(last_list_index_svm[query], current_list_svm)[0]
-                    kt_orig = kendalltau(original_list_index_svm[query], current_list_svm)[0]
+                    kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
                     rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
                                           {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
                     rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
@@ -345,13 +361,12 @@ class analyze:
                     sum_rbo_min_orig += rbo_orig
                     if not np.isnan(kt):
                         sum_svm += kt
-                    if not np.isnan(kt_orig):
-                        sum_svm_original += kt_orig
                     last_list_index_svm[query] = current_list_svm
                 if n_q==0:
                     continue
                 max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
                 mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
+                winner_w_kt_svm.append(float(sum_winner_w_kt) / n_q)
                 change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
                 change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
                 change_rate_svm_epochs.append(float(wc_change) / n_q)
@@ -361,7 +376,7 @@ class analyze:
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
                 rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
-            kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm)
+            kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm, winner_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
                 change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
@@ -372,7 +387,6 @@ class analyze:
     def get_all_scores(self,svms,competition_data):
         scores = {}
         for svm in svms:
-
             scores[svm] = {}
             epochs = sorted(list(competition_data.keys()))
             print(epochs)
