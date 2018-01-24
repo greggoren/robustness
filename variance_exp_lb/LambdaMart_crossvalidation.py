@@ -30,8 +30,10 @@ if __name__ == "__main__":
     evaluator.remove_score_file_from_last_run()
     folds = preprocess.create_folds(X, y, queries, 5)
     fold_number = 1
-    trees = int(sys.argv[1])
-    leaves = int(sys.argv[2])
+    trees = 250
+    leaves = [i + 1 for i in range(26)]
+    leaves.extend[i + 1
+    for i in range(26)]
     model_handler = mh.model_handler_LambdaMart(trees, leaves)
     for train, test in folds:
         p = Pool(5)

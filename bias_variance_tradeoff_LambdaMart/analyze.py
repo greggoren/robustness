@@ -330,6 +330,8 @@ class analyze:
                             change_rate_svm_weighted += (
                                 float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
                                             weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
+                        else:
+                            wc = 0
                         max_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                            ranks[svm][epoch][query],
                                                            weights[epoch][query], "max")
