@@ -2,7 +2,7 @@ import os
 from bias_variance_tradeoff_svm import analyze as a
 import prep as p
 import numpy as np
-
+import pickle
 
 def create_mhs(dir):
     mhs = []
@@ -50,11 +50,8 @@ def upload_models(models_dir):
 if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
-    svms = upload_models("models_light")
-    for svm in svms:
-        w = svms[svm]
-        if len(w) != 26:
-            print(w)
+    # svms = upload_models("models_light")
+    svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     analyze.create_table(competition_data, svms, [])
     # analyze.score_experiment(competition_data, svms)
