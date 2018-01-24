@@ -306,43 +306,40 @@ class analyze:
                         original_list_index_svm[query] = current_list_svm
                         continue
                     # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
-                        # if query not in banned[epoch] and query not in banned[epoch - 1]:
-                    if current_list_svm.index(5) != last_list_index_svm[query].index(5):
-
-                        wc_change += 1
-                        change_rate_svm_max += (
-                            float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
-                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_svm_mean += (
-                            float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
+                    if query not in banned[epoch] and query not in banned[epoch - 1]:
+                        if current_list_svm.index(5) != last_list_index_svm[query].index(5):
+                            wc_change += 1
+                            change_rate_svm_max += (
+                                float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
                                                 weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                        change_rate_winner_svm += (
-                            float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
-                        change_rate_svm_weighted += (
-                            float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
-                                        weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
-                    sum_max_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                              ranks[svm][epoch][query],
-                                                              weights[epoch][query], "max")
-                    sum_mean_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                               ranks[svm][epoch][query],
-                                                               weights[epoch][query], "mean")
-                    sum_winner_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                                 ranks[svm][epoch][query],
-                                                                 weights[epoch][query], "winner")
-                    n_q += 1
-                    kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
-                    rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
-                                          {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
-                    rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
-                                     {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
-                    sum_rbo_min += rbo
-                    sum_rbo_min_orig += rbo_orig
-                    if not np.isnan(kt):
-                        sum_svm += kt
+                            change_rate_svm_mean += (
+                                float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
+                                                    weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
+                            change_rate_winner_svm += (
+                                float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
+                            change_rate_svm_weighted += (
+                                float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
+                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
+                        sum_max_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                  ranks[svm][epoch][query],
+                                                                  weights[epoch][query], "max")
+                        sum_mean_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                   ranks[svm][epoch][query],
+                                                                   weights[epoch][query], "mean")
+                        sum_winner_w_kt += weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                     ranks[svm][epoch][query],
+                                                                     weights[epoch][query], "winner")
+                        n_q += 1
+                        kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
+                        rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
+                                              {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
+                        rbo = r.rbo_dict({x: j for x, j in enumerate(last_list_index_svm[query])},
+                                         {x: j for x, j in enumerate(current_list_svm)}, 0.7)["min"]
+                        sum_rbo_min += rbo
+                        sum_rbo_min_orig += rbo_orig
+                        if not np.isnan(kt):
+                            sum_svm += kt
 
-                    else:
-                        print("here")
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q == 0:
