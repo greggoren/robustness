@@ -30,7 +30,7 @@ if __name__ == "__main__":
     fold_number = 1
     trees = [(i + 1) * 10 for i in range(15, 25)]
     leaves = 50
-    scores = {(trees, leaves): {i: [] for i in range(len(queries))} for tree in trees}
+    scores = {(tree, leaves): {i: [] for i in range(len(queries))} for tree in trees}
 
     for tree in trees:
         folds = preprocess.create_folds(X, y, queries, 5)
