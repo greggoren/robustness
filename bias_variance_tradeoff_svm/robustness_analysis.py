@@ -20,7 +20,7 @@ for metric in svm_stats:
         percentages[metric][epoch]["lb"] = float(percentages[metric][epoch]["lb"]) / percentages[metric][epoch]["d"]
     total[metric] = np.mean([percentages[metric][e]["lb"] for e in percentages[metric]])
 
-with open("summary.csv") as s:
+with open("summary.csv", 'w') as s:
     s.write("METRIC,LambdaMART,SVMRank\n")
     for metric in total:
         s.write(metric.toupper() + "," + str(total[metric]["lb"]) + "," + str(total[metric]["svm"]) + "\n")
