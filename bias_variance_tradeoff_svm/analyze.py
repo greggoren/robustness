@@ -247,7 +247,7 @@ class analyze:
             rmetrics.append(nd)
             rmetrics.append(map)
             rmetrics.append(mrr)
-            line = "SVMRank & - & " + " & ".join([str(a) for a in metrics])
+            line = "SVMRank & - & " + " & ".join([str(a) for a in rmetrics])
             table_file.write(line)
 
         table_file.close()
