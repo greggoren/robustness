@@ -36,7 +36,7 @@ if __name__ == "__main__":
         folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
             model_handler = mh.model_handler_LambdaMart(tree, leaves)
-            with Pool(processes=10) as pool:
+            with Pool(processes=7) as pool:
                 model_handler.set_queries_to_folds(queries, test, fold_number)
                 f = functools.partial(model_handler.fit_model_on_train_set_for_variance, params.qrels, fold_number)
                 score_files = pool.map(f, range(1, 31))
