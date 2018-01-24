@@ -89,8 +89,7 @@ def check_dict(scores):
 
 if __name__ == "__main__":
 
-    # C_array = [float(i + 1) / 1000 for i in range(10)]
-    C_array = []
+    C_array = [float(i + 1) / 1000 for i in range(10)]
     C_array.extend([float(i + 1) / 100 for i in range(10)])
     C_array.extend([float(i + 1) / 10 for i in range(10)])
     C_array.extend([float(i + 1) for i in range(5)])
