@@ -17,6 +17,6 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     # models = upload_models("models")
-    models = ["../testmodel250_50"]
+    models = ["../test_model_250_50"]
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     analyze.create_table(competition_data, models, [])
