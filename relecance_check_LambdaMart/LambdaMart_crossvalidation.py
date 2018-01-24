@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # trees = int(sys.argv[1])
     # leaves = int(sys.argv[2])
     trees = 250
-    leaves = [125, 135]
+    leaves = [125, 135, 95, 85, 115]
     for leaf in leaves:
         fold_number = 1
         model_handler = mh.model_handler_LambdaMart(leaf, trees)
