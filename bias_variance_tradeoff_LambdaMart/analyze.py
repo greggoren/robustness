@@ -301,8 +301,8 @@ class analyze:
             winner_w_kt_svm = []
             epochs = sorted(list(rankings_list_svm.keys()))
             metrics_for_stats = {"ktd": {e: {} for e in epochs}, "wc": {e: {} for e in epochs},
-                                 "rbo": {e: {} for e in epochs}, "wc_winner": {e: {} for e in epochs},
-                                 "wc_max": {e: {} for e in epochs}, "wc_mean": {e: {} for e in epochs},
+                                 "rbo": {e: {} for e in epochs}, "wc_diff": {e: {} for e in epochs},
+                                 "wc_sum": {e: {} for e in epochs}, "wc_rel": {e: {} for e in epochs},
                                  "ktd_mean": {e: {} for e in epochs}, "ktd_max": {e: {} for e in epochs},
                                  "ktd_winner": {e: {} for e in epochs}}
             for epoch in epochs:
@@ -343,6 +343,7 @@ class analyze:
                             sum_change_rate_diff += wc_diff
                             sum_change_rate_rel += wc_rel
                             sum_change_rate_sum += wc_sum
+                            wc_change += wc
                         else:
                             wc = 0
                         max_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],

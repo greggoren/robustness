@@ -20,8 +20,11 @@ class single_model_handler_LambdaMart():
     def create_model_LambdaMart(self, number_of_trees, train_file,
                                 query_relevance_file, number_of_leaves):
         models_path = "/lv_local/home/sgregory/robustness/bias_variance_tradeoff_LambdaMart/models/"
-        if not os.path.exists(models_path):
-            os.makedirs(models_path)
+        try:
+            if not os.path.exists(models_path):
+                os.makedirs(models_path)
+        except:
+            print("collision")
         command = self.java_path + ' -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
                                                                                                                                      ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + models_path + 'model_' + str(
