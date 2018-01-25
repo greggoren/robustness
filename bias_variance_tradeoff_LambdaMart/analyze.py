@@ -209,7 +209,7 @@ class analyze:
             rmetrics.append(nd)
             rmetrics.append(map)
             rmetrics.append(mrr)
-            line = "LambdaMART & " + " & ".join(["$" + str(a) + "$" for a in rmetrics])
+            line = "LambdaMART & " + " & ".join(["$" + str(round(a, 3)) + "$" for a in rmetrics])
             table_file.write(line)
             #
             # f = open("spearman_correlation.tex", 'w')

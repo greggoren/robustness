@@ -302,7 +302,7 @@ class analyze:
             rmetrics.append(nd)
             rmetrics.append(map)
             rmetrics.append(mrr)
-            line = "SVMRank \t " + " \t ".join(["$" + str(a) + "$" for a in rmetrics])
+            line = "SVMRank & " + " & ".join(["$" + str(round(a, 3)) + "$" for a in rmetrics])
             table_file.write(line)
         table_file.close()
         # f = open("spearman_correlation.tex", 'w')
