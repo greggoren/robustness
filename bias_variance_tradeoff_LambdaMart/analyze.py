@@ -93,7 +93,7 @@ class analyze:
                 name = model.split("model_")[1]
 
                 score_file = name + "_" + str(i)
-                qrels = "../rel3/rel0" + str(i)
+                qrels = "../rel2/rel0" + str(i)
 
                 command = "../trec_eval -m ndcg "+qrels+" "+score_file
                 for line in run_command(command):
@@ -129,7 +129,7 @@ class analyze:
             float(x.split("model_")[1].split("_")[0]), float(x.split("model_")[1].split("_")[1])))  # TODO: fix split
         table_file = open("table_value_LmbdaMart.tex", 'w')
         table_file.write(
-            "KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
+            "Ranker & sKTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
         trees_for_pearson = []
         leaves_for_pearson = []
         kendall_for_pearson = []
