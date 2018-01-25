@@ -455,7 +455,7 @@ class analyze:
                         sum_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                            ranks[svm][epoch][query],
                                                            weights[epoch][query], "sum")
-                        sum_sum_kt + sum_kt
+                        sum_sum_kt += sum_kt
                         sum_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                         ranks[svm][epoch][query],
                                                                         weights[epoch][query],
@@ -499,9 +499,9 @@ class analyze:
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
-                    else:
-                        if query == "164" or query == "010":
-                            banned[2] = list(set(banned[2]) - set([query]))
+                    # else:
+                    #     if query == "164" or query == "010":
+                    #         banned[2] = list(set(banned[2]) - set([query]))
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q == 0:
