@@ -317,8 +317,8 @@ class analyze:
     def get_normalized_weighted_winner_change_score(self, former_winner, new_winner, weights, doc_fwinner, doc_nwinner,
                                                     metric):
         value = float(1) / (
-        1 + self.normalzaied_metric_enforcer(weights[former_winner], weights[new_winner], doc_fwinner, doc_nwinner,
-                                             metric))
+            1 + self.normalzaied_metric_enforcer(metric, weights[former_winner], weights[new_winner], doc_fwinner,
+                                                 doc_nwinner))
         return value
 
     def calculate_average_kendall_tau(self, rankings, banned, weights, ranks, cd):
