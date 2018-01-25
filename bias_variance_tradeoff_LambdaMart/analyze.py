@@ -397,20 +397,20 @@ class analyze:
                             wc_diff_n = self.get_normalized_weighted_winner_change_score(
                                 ranks[svm][epoch - 1][query][0],
                                 ranks[svm][epoch][query][0],
-                                weights[epoch][query], cd[epoch - 1][query][ranks[epoch - 1][query][0]],
-                                cd[epoch - 1][query][ranks[epoch][query][0]], "diff")
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "diff")
 
                             wc_sum_n = self.get_normalized_weighted_winner_change_score(
                                 ranks[svm][epoch - 1][query][0],
                                 ranks[svm][epoch][query][0],
-                                weights[epoch][query], cd[epoch - 1][query][ranks[epoch - 1][query][0]],
-                                cd[epoch - 1][query][ranks[epoch][query][0]], "sum")
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "sum")
 
                             wc_rel_n = self.get_normalized_weighted_winner_change_score(
                                 ranks[svm][epoch - 1][query][0],
                                 ranks[svm][epoch][query][0],
-                                weights[epoch][query], cd[epoch - 1][query][ranks[epoch - 1][query][0]],
-                                cd[epoch - 1][query][ranks[epoch][query][0]], "rel")
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "rel")
 
                             sum_change_rate_diff_n += wc_diff_n
                             sum_change_rate_sum_n += wc_sum_n
