@@ -1,11 +1,8 @@
 import subprocess
 import numpy as np
 import pickle
-from scipy.stats import kendalltau
-from kendall_tau import kendall_distance, weighted_kendall_distance
+from kendall_tau import kendall_distance, weighted_kendall_distance, normalized_weighted_kendall_distance
 import math
-from statsmodels.genmod.families.links import sqrt
-from sklearn.metrics.pairwise import cosine_similarity
 import RBO as r
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
@@ -114,6 +111,40 @@ class analyze:
                     # change[epoch][query][doc] = 1 - self.cosine_similarity(v1, v2)
         return change
 
+    def normalzaied_metric_enforcer(self, metric, w1, w2, d1, d2):
+        if metric == "diff":
+            v1 = np.linalg.norm(w1) / np.linalg.norm(d1)
+            v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
+            return abs(v2 - v1)
+        if metric == "rel":
+            return np.linalg.norm(w2 - w1) / np.linalg.norm(d2 - d1)
+        if metric == "sum":
+            v1 = np.linalg.norm(w2) / np.linalg.norm(d2)
+            v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
+            return v1 + v2
+
+    def determine_normzalize(self, w1, w2, metric):
+        if metric == "diff":
+            v1 = np.linalg.norm(w1)
+            v2 = np.linalg.norm(w2)
+            return abs(v2 - v1)
+        if metric == "rel":
+            return np.linalg.norm(w2 - w1)
+        if metric == "sum":
+            v1 = np.linalg.norm(w1)
+            v2 = np.linalg.norm(w2)
+            return v1 + v2
+
+    def get_weighted_winner_change_score(self, former_winner, new_winner, weights, metric):
+        value = float(1) / (1 + self.determine_normzalize(weights[former_winner], weights[new_winner], metric))
+        return value
+
+    def get_normalized_weighted_winner_change_score(self, former_winner, new_winner, weights, doc_fwinner, doc_nwinner,
+                                                    metric):
+        value = float(1) / (
+            1 + self.normalzaied_metric_enforcer(metric, weights[former_winner], weights[new_winner], doc_fwinner,
+                                                 doc_nwinner))
+        return value
 
     def score_experiment(self, cd, models):
         scores = self.get_all_scores(models, cd)
@@ -194,144 +225,177 @@ class analyze:
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
         kendall_for_pearson = []
-        kendall_max_for_pearson = []
-        kendall_mean_for_pearson = []
         rbo_for_pearson = []
-        wc_max_for_pearson = []
-        wc_mean_for_pearson = []
-        wc_pearson = []
-        wc_weighted_for_pearson = []
-        C_for_pearson = []
+        wc_sum_for_pearson = []
+        wc_sum_n_for_pearson = []
+        wc_diff_for_pearson = []
+        wc_diff_n_for_pearson = []
+        wc_rel_for_pearson = []
+        wc_rel_n_for_pearson = []
         ndcg_for_pearson = []
         map_for_pearson = []
         mrr_for_pearson = []
+        kendall_sum_for_pearson = []
+        kendall_sum_n_for_pearson = []
+        kendall_diff_for_pearson = []
+        kendall_diff_n_for_pearson = []
+        kendall_rel_for_pearson = []
+        kendall_rel_n_for_pearson = []
         wc_for_pearson = []
-        wc_winner_for_pearson = []
         rmetrics = []
+        C_for_pearson = []
+
         for key in keys:
             model = key.split("svm_model")[1]
             C_for_pearson.append(float(model))
             average_kt = str(np.mean(kendall[key][0]))
-            rmetrics.append(average_kt)
             kendall_for_pearson.append(float(average_kt))
+            rel_kt = np.mean(kendall[key][5])
+            kendall_rel_for_pearson.append(rel_kt)
+            rel_kt_n = np.mean(kendall[key][6])
+            kendall_rel_n_for_pearson.append(rel_kt_n)
+            sum_kt = np.mean(kendall[key][1])
+            kendall_sum_for_pearson.append(sum_kt)
+            sum_kt_n = np.mean(kendall[key][2])
+            kendall_sum_n_for_pearson.append(sum_kt_n)
+            diff_kt = np.mean(kendall[key][3])
+            kendall_diff_for_pearson.append(diff_kt)
+            diff_kt_n = np.mean(kendall[key][4])
+            kendall_diff_n_for_pearson.append(diff_kt_n)
+            change_sum = np.mean(change_rate[key][0])
+            wc_sum_for_pearson.append(change_sum)
+            change_sum_n = np.mean(change_rate[key][1])
+            wc_sum_n_for_pearson.append(change_sum_n)
+            change_dif = np.mean(change_rate[key][2])
+            wc_diff_for_pearson.append(change_dif)
+            change_dif_n = np.mean(change_rate[key][3])
+            wc_diff_n_for_pearson.append(change_dif_n)
+            change = np.mean(change_rate[key][6])
+            wc_for_pearson.append(change)
+            change_rel = np.mean(change_rate[key][4])
+            wc_rel_for_pearson.append(change_rel)
+            change_rel_n = np.mean(change_rate[key][5])
+            wc_rel_n_for_pearson.append(change_rel_n)
             average_rbo = str(np.mean(rbo_min_models[key][0]))
             rbo_for_pearson.append(float(average_rbo))
-            change_max = np.mean(change_rate[key][0])
-            wc_max_for_pearson.append(change_max)
-            change_mean = np.mean(change_rate[key][2])
-            change = np.mean(change_rate[key][4])
-            rmetrics.append(change)
-            rmetrics.append(average_rbo)
-            rmetrics.append(change_mean)
-            rmetrics.append(change_max)
-            wc_for_pearson.append(change)
-            winner_change_winner = np.mean(change_rate[key][3])
-            rmetrics.append(winner_change_winner)
-            wc_winner_for_pearson.append(winner_change_winner)
-            wc_mean_for_pearson.append(change_mean)
-            change_weighted = np.mean(change_rate[key][1])
-            wc_weighted_for_pearson.append(change_weighted)
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
             ndcg_for_pearson.append(float(nd))
             map = str(round(np.mean([float(a) for a in metrics[key][1]]), 3))
             map_for_pearson.append(float(map))
             mrr = str(round(np.mean([float(a) for a in metrics[key][2]]), 3))
             mrr_for_pearson.append(float(mrr))
-            max_w_kt = np.mean(kendall[key][2])
-            winner_kt = np.mean(kendall[key][4])
-            kendall_max_for_pearson.append(max_w_kt)
-            mean_w_kt = np.mean(kendall[key][3])
-            kendall_mean_for_pearson.append(mean_w_kt)
-            rmetrics.append(mean_w_kt)
-            rmetrics.append(max_w_kt)
-            rmetrics.append(winner_kt)
+            rmetrics.append(average_kt)
+            rmetrics.append(change)
+            rmetrics.append(average_rbo)
+            rmetrics.append(change_dif)
+            rmetrics.append(change_rel)
+            rmetrics.append(change_sum)
+            rmetrics.append(diff_kt)
+            rmetrics.append(rel_kt)
+            rmetrics.append(sum_kt)
+            rmetrics.append(change_dif_n)
+            rmetrics.append(change_rel_n)
+            rmetrics.append(change_sum_n)
+            rmetrics.append(diff_kt_n)
+            rmetrics.append(rel_kt_n)
+            rmetrics.append(sum_kt_n)
             rmetrics.append(nd)
             rmetrics.append(map)
             rmetrics.append(mrr)
-            line = "SVMRank & - & " + " & ".join([str(a) for a in rmetrics])
+            line = "SVMRank \t " + " \t ".join([str(a) for a in rmetrics])
             table_file.write(line)
-
         table_file.close()
-        f = open("spearman_correlation.tex", 'w')
-        f.write("\\begin{tabular}{c|c|c|c} \n")
-        f.write("Metric & #Tress & #Leaves \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
-        f.write(
-            "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, kendall_max_for_pearson)
-        f.write("Kendall-$\\tau$ max normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
-            round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, kendall_mean_for_pearson)
-        f.write("Kendall-$\\tau$ mean normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
-            round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
-        f.write(
-            "Winner Change mean& " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_max_for_pearson)
-        f.write(
-            "Winner Change max & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
-        f.write(
-            "Winner Change mean & " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_weighted_for_pearson)
-        f.write("Winner Change weighted & " + str(round(corr_trees[0], 3)) + " (" + str(
-            round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_for_pearson)
-        print(wc_for_pearson)
-        f.write(
-            "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_winner_for_pearson)
-        f.write("Winner Change winner & " + str(round(corr_trees[0], 3)) + " (" + str(
-            round(corr_trees[1], 3)) + ")  \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, rbo_for_pearson)
-        f.write("RBO & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
-        f.write("\\end{tabular}")
-        f.close()
+        # f = open("spearman_correlation.tex", 'w')
+        # f.write("\\begin{tabular}{c|c|c|c} \n")
+        # f.write("Metric & #Tress & #Leaves \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
+        # f.write(
+        #     "Kendall-$\\tau$ & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, kendall_max_for_pearson)
+        # f.write("Kendall-$\\tau$ max normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
+        #     round(corr_trees[1], 3)) + ")  \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, kendall_mean_for_pearson)
+        # f.write("Kendall-$\\tau$ mean normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
+        #     round(corr_trees[1], 3)) + ")  \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
+        # f.write(
+        #     "Winner Change mean& " + str(round(corr_trees[0], 3)) + " (" + str(
+        #         round(corr_trees[1], 3)) + ") &  \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_max_for_pearson)
+        # f.write(
+        #     "Winner Change max & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_mean_for_pearson)
+        # f.write(
+        #     "Winner Change mean & " + str(round(corr_trees[0], 3)) + " (" + str(
+        #         round(corr_trees[1], 3)) + ") &  \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_weighted_for_pearson)
+        # f.write("Winner Change weighted & " + str(round(corr_trees[0], 3)) + " (" + str(
+        #     round(corr_trees[1], 3)) + ") \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_for_pearson)
+        # print(wc_for_pearson)
+        # f.write(
+        #     "Winner Change & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, wc_winner_for_pearson)
+        # f.write("Winner Change winner & " + str(round(corr_trees[0], 3)) + " (" + str(
+        #     round(corr_trees[1], 3)) + ")  \\\\ \n")
+        # corr_trees = spearmanr(C_for_pearson, rbo_for_pearson)
+        # f.write("RBO & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        # f.write("\\end{tabular}")
+        # f.close()
 
-    def calculate_average_kendall_tau(self, rankings, weights, ranks, banned):
-
+    def calculate_average_kendall_tau(self, rankings, weights, ranks, banned, cd):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
         for svm in rankings:
             rankings_list_svm = rankings[svm]
             kt_svm = []
-            kt_svm_orig = []
             last_list_index_svm = {}
             original_list_index_svm = {}
-            change_rate_svm_epochs_max = []
-            change_rate_svm_epochs_mean = []
-            change_rate_svm_epochs_weighted = []
+            change_rate_sum = []
+            change_rate_sum_n = []
+            change_rate_rel = []
+            change_rate_rel_n = []
+            change_rate_diff = []
+            change_rate_diff_n = []
             change_rate_svm_epochs = []
-            change_rate_winner_svm_epochs = []
             rbo_min = []
             rbo_min_orig = []
-            max_w_kt_svm = []
-            mean_w_kt_svm = []
-            winner_w_kt_svm = []
+            sum_kt_svm = []
+            sum_kt_svm_n = []
+            diff_kt_svm = []
+            diff_kt_svm_n = []
+            rel_kt_svm = []
+            rel_kt_svm_n = []
             epochs = sorted(list(rankings_list_svm.keys()))
             metrics_for_stats = {"ktd": {e: {} for e in epochs}, "wc": {e: {} for e in epochs},
-                                 "rbo": {e: {} for e in epochs}, "wc_winner": {e: {} for e in epochs},
-                                 "wc_max": {e: {} for e in epochs}, "wc_mean": {e: {} for e in epochs},
-                                 "ktd_mean": {e: {} for e in epochs}, "ktd_max": {e: {} for e in epochs},
-                                 "ktd_winner": {e: {} for e in epochs}}
+                                 "rbo": {e: {} for e in epochs}, "wc_diff": {e: {} for e in epochs},
+                                 "wc_sum": {e: {} for e in epochs}, "wc_rel": {e: {} for e in epochs},
+                                 "ktd_rel": {e: {} for e in epochs}, "ktd_diff": {e: {} for e in epochs},
+                                 "ktd_sum": {e: {} for e in epochs}, "wc_n_diff": {e: {} for e in epochs},
+                                 "wc_n_sum": {e: {} for e in epochs}, "wc_n_rel": {e: {} for e in epochs},
+                                 "ktd_n_diff": {e: {} for e in epochs}, "ktd_n_sum": {e: {} for e in epochs},
+                                 "ktd_n_rel": {e: {} for e in epochs}}
+
             for epoch in epochs:
 
                 sum_svm = 0
                 sum_rbo_min = 0
                 sum_rbo_min_orig = 0
-                sum_svm_original = 0
-                sum_max_w_kt = 0
-                sum_winner_w_kt = 0
-                sum_mean_w_kt = 0
+                sum_diff_kt = 0
+                sum_diff_kt_n = 0
+                sum_rel_kt = 0
+                sum_rel_kt_n = 0
+                sum_sum_kt = 0
+                sum_sum_kt_n = 0
                 n_q = 0
-                change_rate_svm_mean = 0
                 wc_change = 0
-                change_rate_winner_svm = 0
-                change_rate_svm_max = 0
-                change_rate_svm_weighted = 0
+                sum_change_rate_diff = 0
+                sum_change_rate_diff_n = 0
+                sum_change_rate_rel = 0
+                sum_change_rate_rel_n = 0
+                sum_change_rate_sum = 0
+                sum_change_rate_sum_n = 0
                 for query in rankings_list_svm[epoch]:
 
                     current_list_svm = rankings_list_svm[epoch][query]
@@ -339,39 +403,81 @@ class analyze:
                         last_list_index_svm[query] = current_list_svm
                         original_list_index_svm[query] = current_list_svm
                         continue
-                    # if current_list_svm.index(len(current_list_svm)) != last_list_index_svm[query].index(
                     if query not in banned[epoch] and query not in banned[epoch - 1]:
                         if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                             wc = 1
+                            wc_sum = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                           ranks[svm][epoch][query][0],
+                                                                           weights[epoch][query], "sum")
+                            wc_rel = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                           ranks[svm][epoch][query][0],
+                                                                           weights[epoch][query], "rel")
+                            wc_diff = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                            ranks[svm][epoch][query][0],
+                                                                            weights[epoch][query], "diff")
+                            wc_diff_n = self.get_normalized_weighted_winner_change_score(
+                                ranks[svm][epoch - 1][query][0],
+                                ranks[svm][epoch][query][0],
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "diff")
+
+                            wc_sum_n = self.get_normalized_weighted_winner_change_score(
+                                ranks[svm][epoch - 1][query][0],
+                                ranks[svm][epoch][query][0],
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "sum")
+
+                            wc_rel_n = self.get_normalized_weighted_winner_change_score(
+                                ranks[svm][epoch - 1][query][0],
+                                ranks[svm][epoch][query][0],
+                                weights[epoch][query], cd[epoch - 1][query][ranks[svm][epoch - 1][query][0]],
+                                cd[epoch - 1][query][ranks[svm][epoch][query][0]], "rel")
+
+                            sum_change_rate_diff_n += wc_diff_n
+                            sum_change_rate_sum_n += wc_sum_n
+                            sum_change_rate_rel_n += wc_rel_n
+                            sum_change_rate_diff += wc_diff
+                            sum_change_rate_rel += wc_rel
+                            sum_change_rate_sum += wc_sum
                             wc_change += wc
-                            wc_max = (
-                                float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
-                                                weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                            change_rate_svm_max += wc_max
-                            wc_mean = (
-                                float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
-                                                    weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                            change_rate_svm_mean += wc_mean
-                            wc_win = (
-                                float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
-                            change_rate_winner_svm += wc_win
-                            change_rate_svm_weighted += (
-                                float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
-                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
                         else:
                             wc = 0
-                        max_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                           ranks[svm][epoch][query],
-                                                           weights[epoch][query], "max")
-                        sum_max_w_kt += max_kt
-                        mean_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                        diff_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                             ranks[svm][epoch][query],
-                                                            weights[epoch][query], "mean")
-                        sum_mean_w_kt + mean_kt
-                        winner_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
-                                                              ranks[svm][epoch][query],
-                                                              weights[epoch][query], "winner")
-                        sum_winner_w_kt += winner_kt
+                                                            weights[epoch][query], "diff")
+                        sum_diff_kt += diff_kt
+                        diff_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                         ranks[svm][epoch][query],
+                                                                         weights[epoch][query], cd[epoch - 1][query][
+                                                                             ranks[svm][epoch - 1][query][0]],
+                                                                         cd[epoch - 1][query][
+                                                                             ranks[svm][epoch][query][0]],
+                                                                         "diff")
+                        sum_diff_kt_n += diff_kt_n
+                        sum_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                           ranks[svm][epoch][query],
+                                                           weights[epoch][query], "sum")
+                        sum_sum_kt + sum_kt
+                        sum_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                        ranks[svm][epoch][query],
+                                                                        weights[epoch][query], cd[epoch - 1][query][
+                                                                            ranks[svm][epoch - 1][query][0]],
+                                                                        cd[epoch - 1][query][
+                                                                            ranks[svm][epoch][query][0]],
+                                                                        "sum")
+                        sum_sum_kt_n += sum_kt_n
+                        rel_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                           ranks[svm][epoch][query],
+                                                           weights[epoch][query], "rel")
+                        sum_rel_kt += rel_kt
+                        rel_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
+                                                                        ranks[svm][epoch][query],
+                                                                        weights[epoch][query], cd[epoch - 1][query][
+                                                                            ranks[svm][epoch - 1][query][0]],
+                                                                        cd[epoch - 1][query][
+                                                                            ranks[svm][epoch][query][0]],
+                                                                        "rel")
+                        sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
                         rbo_orig = r.rbo_dict({x: j for x, j in enumerate(original_list_index_svm[query])},
@@ -383,12 +489,18 @@ class analyze:
                         if not np.isnan(kt):
                             sum_svm += kt
                         metrics_for_stats["ktd"][epoch][query] = kt
-                        metrics_for_stats["ktd_mean"][epoch][query] = mean_kt
-                        metrics_for_stats["ktd_max"][epoch][query] = max_kt
-                        metrics_for_stats["ktd_winner"][epoch][query] = winner_kt
-                        metrics_for_stats["wc_winner"][epoch][query] = wc_win
-                        metrics_for_stats["wc_mean"][epoch][query] = wc_mean
-                        metrics_for_stats["wc_max"][epoch][query] = wc_max
+                        metrics_for_stats["ktd_diff"][epoch][query] = diff_kt
+                        metrics_for_stats["ktd_n_diff"][epoch][query] = diff_kt_n
+                        metrics_for_stats["ktd_sum"][epoch][query] = sum_kt
+                        metrics_for_stats["ktd_n_sum"][epoch][query] = sum_kt_n
+                        metrics_for_stats["ktd_rel"][epoch][query] = rel_kt
+                        metrics_for_stats["ktd_n_rel"][epoch][query] = rel_kt_n
+                        metrics_for_stats["wc_sum"][epoch][query] = wc_sum
+                        metrics_for_stats["wc_n_sum"][epoch][query] = wc_sum_n
+                        metrics_for_stats["wc_diff"][epoch][query] = wc_diff
+                        metrics_for_stats["wc_n_diff"][epoch][query] = wc_diff_n
+                        metrics_for_stats["wc_rel"][epoch][query] = wc_rel
+                        metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
                     last_list_index_svm[query] = current_list_svm
@@ -396,24 +508,28 @@ class analyze:
                 if n_q == 0:
                     continue
 
-                max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
-                mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
-                winner_w_kt_svm.append(float(sum_winner_w_kt) / n_q)
-                change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
-                change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
+                sum_kt_svm.append(float(sum_sum_kt) / n_q)
+                sum_kt_svm_n.append(float(sum_sum_kt_n) / n_q)
+                diff_kt_svm.append(float(sum_diff_kt) / n_q)
+                diff_kt_svm_n.append(float(sum_diff_kt_n) / n_q)
+                rel_kt_svm.append(float(sum_rel_kt) / n_q)
+                rel_kt_svm_n.append(float(sum_rel_kt_n) / n_q)
+                change_rate_sum.append(float(sum_change_rate_sum) / n_q)
+                change_rate_sum_n.append(float(sum_change_rate_sum_n) / n_q)
                 change_rate_svm_epochs.append(float(wc_change) / n_q)
-                change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
-                change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
+                change_rate_rel.append(float(sum_change_rate_rel) / n_q)
+                change_rate_rel_n.append(float(sum_change_rate_rel_n) / n_q)
+                change_rate_diff.append(float(sum_change_rate_diff) / n_q)
+                change_rate_diff_n.append(float(sum_change_rate_diff_n) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
-                kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
                 rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
-            kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm, winner_w_kt_svm)
+            kendall[svm] = (kt_svm, sum_kt_svm, sum_kt_svm_n, diff_kt_svm, diff_kt_svm_n, rel_kt_svm, rel_kt_svm_n)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
-                change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
-                change_rate_winner_svm_epochs, change_rate_svm_epochs)
-            with open("svm_robustness_stats", "wb") as f:
+                change_rate_sum, change_rate_sum_n, change_rate_diff, change_rate_diff_n, change_rate_rel,
+                change_rate_rel_n, change_rate_svm_epochs)
+            with open("lb_robustness_stats", "wb") as f:
                 pickle.dump(metrics_for_stats, f)
         return kendall, change_rate, rbo_min_models
 
