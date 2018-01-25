@@ -472,6 +472,8 @@ class analyze:
                                                                         weights[epoch][query],
                                                                         cd[epoch - 1][query],
                                                                         "rel")
+                        if rel_kt_n == ""
+                            print("shit", epoch, query)
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
