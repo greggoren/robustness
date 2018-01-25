@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # trees = int(sys.argv[1])
     # leaves = int(sys.argv[2])
 
-    leaves = [[(1 + i) * 5 for i in range(30)]]
+    leaves = [(1 + i) * 5 for i in range(30)]
     trees = 250
     for leaf in leaves:
         fold_number = 1
