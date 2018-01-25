@@ -427,10 +427,8 @@ class analyze:
                         sum_diff_kt += diff_kt
                         diff_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                          ranks[svm][epoch][query],
-                                                                         weights[epoch][query], cd[epoch - 1][query][
-                                                                             ranks[svm][epoch - 1][query][0]],
-                                                                         cd[epoch - 1][query][
-                                                                             ranks[svm][epoch][query][0]],
+                                                                         weights[epoch][query],
+                                                                         cd[epoch - 1][query],
                                                                          "diff")
                         sum_diff_kt_n += diff_kt_n
                         sum_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
@@ -439,10 +437,8 @@ class analyze:
                         sum_sum_kt += sum_kt
                         sum_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                         ranks[svm][epoch][query],
-                                                                        weights[epoch][query], cd[epoch - 1][query][
-                                                                            ranks[svm][epoch - 1][query][0]],
-                                                                        cd[epoch - 1][query][
-                                                                            ranks[svm][epoch][query][0]],
+                                                                        weights[epoch][query],
+                                                                        cd[epoch - 1][query],
                                                                         "sum")
                         sum_sum_kt_n += sum_kt_n
                         rel_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
@@ -451,10 +447,8 @@ class analyze:
                         sum_rel_kt += rel_kt
                         rel_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                         ranks[svm][epoch][query],
-                                                                        weights[epoch][query], cd[epoch - 1][query][
-                                                                            ranks[svm][epoch - 1][query][0]],
-                                                                        cd[epoch - 1][query][
-                                                                            ranks[svm][epoch][query][0]],
+                                                                        weights[epoch][query],
+                                                                        cd[epoch - 1][query],
                                                                         "rel")
                         if rel_kt_n == "i":
                             print("the bastards:", epoch, query)

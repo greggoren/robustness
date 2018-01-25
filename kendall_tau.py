@@ -28,17 +28,17 @@ def weighted_kendall_distance(ranked1, ranked2, weights, metric):
     return float(discordant)
 
 
-def normalized_weighted_kendall_distance(ranked1, ranked2, weights, doc1, doc2, metric):
+def normalized_weighted_kendall_distance(ranked1, ranked2, weights, cd, metric):
     discordant = 0
     all_pairs = list(itertools.combinations(ranked1, 2))
     for pair in all_pairs:
         winner1, loser1 = determine_order(pair, ranked1)
         winner2, loser2 = determine_order(pair, ranked2)
         if winner1 != winner2:
-            if normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], doc1, doc2) == "":
+            if normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], cd[loser2], cd[winner2]) == "":
                 return "i"
             discordant += float(1) / (
-            normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], doc1, doc2) + 1)
+                normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], cd[loser2], cd[winner2]) + 1)
     return float(discordant)
 
 
