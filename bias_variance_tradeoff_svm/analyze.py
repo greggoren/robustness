@@ -472,8 +472,7 @@ class analyze:
                                                                         weights[epoch][query],
                                                                         cd[epoch - 1][query],
                                                                         "rel")
-                        if rel_kt_n == "":
-                            print("shit", epoch, query)
+
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
@@ -501,8 +500,8 @@ class analyze:
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
                     else:
-                        if query == "164":
-                            banned[2] = []
+                        if query == "164" or query == "010":
+                            banned[2] = list(set(banned[2]) - set([query]))
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q == 0:
