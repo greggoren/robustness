@@ -183,7 +183,7 @@ class analyze:
             wc_rel_for_pearson.append(change_rel)
             change_rel_n = np.mean(change_rate[key][5])
             wc_rel_n_for_pearson.append(change_rel_n)
-            average_rbo = str(np.mean(rbo_min_models[key][0]))
+            average_rbo = np.mean(rbo_min_models[key][0])
             rbo_for_pearson.append(float(average_rbo))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
             ndcg_for_pearson.append(float(nd))
@@ -479,6 +479,9 @@ class analyze:
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
+                    else:
+                        if query == "164":
+                            banned[2] = []
                     last_list_index_svm[query] = current_list_svm
 
                 if n_q == 0:
