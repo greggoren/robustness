@@ -24,7 +24,7 @@ def weighted_kendall_distance(ranked1, ranked2, weights, metric):
         winner1, loser1 = determine_order(pair, ranked1)
         winner2, loser2 = determine_order(pair, ranked2)
         if winner1 != winner2:
-            discordant += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
+            discordant += float(1) / (metric_enforcer(metric, weights[loser2], weights[winner2]) + 1)
     return float(discordant)
 
 
@@ -36,7 +36,7 @@ def normalized_weighted_kendall_distance(ranked1, ranked2, weights, cd, metric):
         winner2, loser2 = determine_order(pair, ranked2)
         if winner1 != winner2:
             discordant += float(1) / (
-                normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], cd[loser2], cd[winner2]) + 1)
+                normalzaied_metric_enforcer(metric, weights[loser2], weights[winner2], cd[loser2], cd[winner2]) + 1)
     return float(discordant)
 
 
