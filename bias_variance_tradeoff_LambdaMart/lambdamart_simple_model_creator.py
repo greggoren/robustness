@@ -8,7 +8,7 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     # trees = [(i + 1) * 10 for i in range(15, 46)]
     trees = 250
-    leaves = [(i + 1) * 10 for i in range(10)]
+    leaves = [(1 + i) * 5 for i in range(10)]
     single_model_handler = mh.single_model_handler_LambdaMart(leaves, trees)
     qrels = params.qrels
     train_file = params.data_set_file
