@@ -104,8 +104,7 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    change[epoch][query][doc] = cd[epoch][query][doc] - cd[epoch - 1][query][doc]
                     # v1 = cd[epoch][query][doc] / np.linalg.norm(cd[epoch][query][doc])
                     # v2 = cd[epoch - 1][query][doc] / np.linalg.norm(cd[epoch - 1][query][doc])
                     # change[epoch][query][doc] = 1 - self.cosine_similarity(v1, v2)
