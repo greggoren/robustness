@@ -16,5 +16,4 @@ if __name__ == "__main__":
     with Pool(processes=3) as pool:
         # single_model_handler.create_model_LambdaMart(trees, )
         pool.map(f, leaves)
-
     print("learning is finished")
