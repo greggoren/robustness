@@ -76,6 +76,8 @@ def normalzaied_metric_enforcer(metric, w1, w2, d1, d2):
         return abs(v2 - v1)
     if metric == "rel":
         if np.linalg.norm(d2 - d1) == 0:
+            print(d1)
+            print(d2)
             return ""
 
         return np.linalg.norm(w2 - w1) / (np.linalg.norm(d2 - d1))
