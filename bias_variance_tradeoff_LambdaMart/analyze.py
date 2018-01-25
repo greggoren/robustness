@@ -129,7 +129,7 @@ class analyze:
             float(x.split("model_")[1].split("_")[0]), float(x.split("model_")[1].split("_")[1])))  # TODO: fix split
         table_file = open("table_value_LmbdaMart.tex", 'w')
         table_file.write(
-            "Ranker & KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \\\\\\\\ \n")
+            "KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
         trees_for_pearson = []
         leaves_for_pearson = []
         kendall_for_pearson = []
@@ -206,9 +206,9 @@ class analyze:
             rmetrics.append(diff_kt_n)
             rmetrics.append(rel_kt_n)
             rmetrics.append(sum_kt_n)
-            rmetrics.append(nd)
-            rmetrics.append(map)
-            rmetrics.append(mrr)
+            # rmetrics.append(nd)
+            # rmetrics.append(map)
+            # rmetrics.append(mrr)
             line = "LambdaMART & " + " & ".join(["$" + str(round(a, 3)) + "$" for a in rmetrics])
             table_file.write(line)
             #
@@ -456,6 +456,9 @@ class analyze:
                                                                         cd[epoch - 1][query][
                                                                             ranks[svm][epoch][query][0]],
                                                                         "rel")
+                        if rel_kt_n == "i":
+                            print("the bastards:", epoch, query)
+                            continue
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
