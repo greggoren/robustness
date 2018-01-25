@@ -292,7 +292,7 @@ class analyze:
             v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
             return abs(v2 - v1)
         if metric == "rel":
-            return np.linalg.norm(w2 - w1) / np.linalg.norm(d2 - d2)
+            return np.linalg.norm(w2 - w1) / np.linalg.norm(d2 - d1)
         if metric == "sum":
             v1 = np.linalg.norm(w2) / np.linalg.norm(d2)
             v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
