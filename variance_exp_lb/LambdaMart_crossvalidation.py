@@ -28,7 +28,7 @@ if __name__ == "__main__":
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
     fold_number = 1
-    trees = [(i + 1) * 10 for i in range(15, 25)]
+    trees = [(i + 1) * 10 for i in range(25, 35)]
     leaves = 50
     scores = {(tree, leaves): {i: [] for i in range(len(queries))} for tree in trees}
 
@@ -46,5 +46,5 @@ if __name__ == "__main__":
                     scores = update_scores(results, scores, subset, tree, leaves)
             fold_number += 1
     print("it took:", time.time() - start)
-    with open("variance_data1", 'wb') as data:
+    with open("variance_data2", 'wb') as data:
         pickle.dump(scores, data)
