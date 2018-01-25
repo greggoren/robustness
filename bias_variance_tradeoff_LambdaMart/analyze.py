@@ -155,7 +155,7 @@ class analyze:
             trees, leaves = tuple((key.split("model_")[1].split("_")[0], key.split("model_")[1].split("_")[1]))
             trees_for_pearson.append(int(trees))
             leaves_for_pearson.append(int(leaves))
-            average_kt = str(np.mean(kendall[key][0]))
+            average_kt = np.mean(kendall[key][0])
             kendall_for_pearson.append(float(average_kt))
             rel_kt = np.mean(kendall[key][5])
             kendall_rel_for_pearson.append(rel_kt)
