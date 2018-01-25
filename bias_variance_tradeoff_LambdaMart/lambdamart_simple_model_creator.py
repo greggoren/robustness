@@ -13,7 +13,7 @@ if __name__ == "__main__":
     qrels = params.qrels
     train_file = params.data_set_file
     f = partial(single_model_handler.create_model_LambdaMart, trees, train_file, qrels)
-    with Pool(processes=30) as pool:
+    with Pool(processes=15) as pool:
         # single_model_handler.create_model_LambdaMart(trees, )
         pool.map(f, leaves)
     print("learning is finished")
