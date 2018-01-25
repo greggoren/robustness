@@ -1,5 +1,5 @@
 import itertools
-
+import numpy as np
 
 def determine_order(pair, ranked_list):
     tmp = list(pair)
@@ -19,15 +19,26 @@ def kendall_distance(ranked1, ranked2):
 
 def weighted_kendall_distance(ranked1, ranked2, weights, metric):
     discordant = 0
-    denominator = 0
     all_pairs = list(itertools.combinations(ranked1, 2))
     for pair in all_pairs:
         winner1, loser1 = determine_order(pair, ranked1)
         winner2, loser2 = determine_order(pair, ranked2)
         if winner1 != winner2:
             discordant += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
-        denominator += float(1) / (metric_enforcer(metric, weights[loser1], weights[winner1]) + 1)
-    return float(discordant) / denominator
+    return float(discordant)
+
+
+def normalized_weighted_kendall_distance(ranked1, ranked2, weights, doc1, doc2, metric):
+    discordant = 0
+    all_pairs = list(itertools.combinations(ranked1, 2))
+    for pair in all_pairs:
+        winner1, loser1 = determine_order(pair, ranked1)
+        winner2, loser2 = determine_order(pair, ranked2)
+        if winner1 != winner2:
+            discordant += float(1) / (
+            normalzaied_metric_enforcer(metric, weights[loser1], weights[winner1], doc1, doc2) + 1)
+    return float(discordant)
+
 
 def kendall_tau(ranked1, ranked2):
     concordant = 0
@@ -44,14 +55,29 @@ def kendall_tau(ranked1, ranked2):
 
 
 def metric_enforcer(metric, w1, w2):
-    if metric == "max":
-        return max(w1, w2)
-    if metric == "mean":
-        return float(w1 + w2) / 2
-    if metric == "winner":
-        return (1 + w2)
-        # if metric == "weighted":
-        #     return (float(1)/4)*w1+(float(3)/4)*w2
+    if metric == "diff":
+        v1 = np.linalg.norm(w1)
+        v2 = np.linalg.norm(w2)
+        return abs(v2 - v1)
+    if metric == "rel":
+        return np.linalg.norm(w2 - w1)
+    if metric == "sum":
+        v1 = np.linalg.norm(w1)
+        v2 = np.linalg.norm(w2)
+        return v1 + v2
+
+
+def normalzaied_metric_enforcer(metric, w1, w2, d1, d2):
+    if metric == "diff":
+        v1 = np.linalg.norm(w1) / np.linalg.norm(d1)
+        v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
+        return abs(v2 - v1)
+    if metric == "rel":
+        return np.linalg.norm(w2 - w1) / np.linalg.norm(d2 - d2)
+    if metric == "sum":
+        v1 = np.linalg.norm(w2) / np.linalg.norm(d2)
+        v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
+        return v1 + v2
 
 
 def weighted_kendall_tau(ranked1, ranked2, weights, metric):
