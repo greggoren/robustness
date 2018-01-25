@@ -27,12 +27,13 @@ if __name__ == "__main__":
     evaluator = e.eval()
     evaluator.create_index_to_doc_name_dict()
     evaluator.remove_score_file_from_last_run()
-    fold_number = 1
+
     trees = [(i + 1) * 10 for i in range(25, 35)]
     leaves = 50
     scores = {(tree, leaves): {i: [] for i in range(len(queries))} for tree in trees}
 
     for tree in trees:
+        fold_number = 1
         folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
             model_handler = mh.model_handler_LambdaMart(tree, leaves)
