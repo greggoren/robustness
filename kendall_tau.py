@@ -75,7 +75,7 @@ def normalzaied_metric_enforcer(metric, w1, w2, d1, d2):
     if metric == "rel":
         return np.linalg.norm(w2 - w1) / (np.linalg.norm(d2 - d1) + 1)
     if metric == "sum":
-        v1 = np.linalg.norm(w2) / np.linalg.norm(d2)
+        v1 = np.linalg.norm(w1) / np.linalg.norm(d1)
         v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
         return v1 + v2
 
