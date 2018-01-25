@@ -220,7 +220,7 @@ class analyze:
 
         table_file = open("table_value.tex", 'w')
         table_file.write(
-            "KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
+            " Ranker KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm \n")
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
         kendall_for_pearson = []
