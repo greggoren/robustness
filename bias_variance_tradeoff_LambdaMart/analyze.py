@@ -376,7 +376,8 @@ class analyze:
                 sum_change_rate_sum_n = 0
                 for query in rankings_list_svm[epoch]:
 
-
+                    if epoch == 2 and query == "164":
+                        continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query, False):
                         last_list_index_svm[query] = current_list_svm
