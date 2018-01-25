@@ -248,7 +248,7 @@ class analyze:
         for key in keys:
             model = key.split("svm_model")[1]
             C_for_pearson.append(float(model))
-            average_kt = str(np.mean(kendall[key][0]))
+            average_kt = np.mean(kendall[key][0])
             kendall_for_pearson.append(float(average_kt))
             rel_kt = np.mean(kendall[key][5])
             kendall_rel_for_pearson.append(rel_kt)
@@ -276,7 +276,7 @@ class analyze:
             wc_rel_for_pearson.append(change_rel)
             change_rel_n = np.mean(change_rate[key][5])
             wc_rel_n_for_pearson.append(change_rel_n)
-            average_rbo = str(np.mean(rbo_min_models[key][0]))
+            average_rbo = np.mean(rbo_min_models[key][0])
             rbo_for_pearson.append(float(average_rbo))
             nd = str(round(np.mean([float(a) for a in metrics[key][0]]), 3))
             ndcg_for_pearson.append(float(nd))
@@ -527,7 +527,7 @@ class analyze:
             change_rate[svm] = (
                 change_rate_sum, change_rate_sum_n, change_rate_diff, change_rate_diff_n, change_rate_rel,
                 change_rate_rel_n, change_rate_svm_epochs)
-            with open("lb_robustness_stats", "wb") as f:
+            with open("svm_robustness_stats", "wb") as f:
                 pickle.dump(metrics_for_stats, f)
         return kendall, change_rate, rbo_min_models
 
