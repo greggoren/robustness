@@ -255,12 +255,29 @@ class analyze:
             for query in cd[epoch]:
                 change[epoch][query] = {}
                 for doc in cd[epoch][query]:
-                    change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
-                        cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    # change[epoch][query][doc] = float(abs(np.linalg.norm(cd[epoch][query][doc]) - np.linalg.norm(
+                    #     cd[epoch - 1][query][doc]))) / np.linalg.norm(cd[epoch - 1][query][doc])
+                    change[epoch][query][doc] = cd[epoch][query][doc] - cd[epoch - 1][query][doc]
                     # v1 = cd[epoch][query][doc] / np.linalg.norm(cd[epoch][query][doc])
                     # v2 = cd[epoch - 1][query][doc] / np.linalg.norm(cd[epoch - 1][query][doc])
                     # change[epoch][query][doc] = 1 - self.cosine_similarity(v1, v2)
         return change
+
+    def determine_normzalize(self, w1, w2, metric):
+        if metric == "diff":
+            v1 = np.linalg.norm(w1)
+            v2 = np.linalg.norm(w2)
+            return abs(v2 - v1)
+        if metric == "rel":
+            return np.linalg.norm(w2 - w1)
+        if metric == "sum":
+            v1 = np.linalg.norm(w1)
+            v2 = np.linalg.norm(w2)
+            return v1 + v2
+
+    def get_weighted_winner_change_score(self, former_winner, new_winner, weights, metric):
+        value = float(1) / (1 + self.determine_normzalize(weights[former_winner], weights[new_winner], metric))
+        return value
 
     def calculate_average_kendall_tau(self, rankings, banned, weights, ranks):
         kendall = {}
@@ -272,9 +289,9 @@ class analyze:
             kt_svm_orig = []
             last_list_index_svm = {}
             original_list_index_svm = {}
-            change_rate_svm_epochs_max = []
-            change_rate_svm_epochs_mean = []
-            change_rate_svm_epochs_weighted = []
+            change_rate_sum = []
+            change_rate_rel = []
+            change_rate_diff = []
             change_rate_svm_epochs = []
             change_rate_winner_svm_epochs = []
             rbo_min = []
@@ -298,11 +315,10 @@ class analyze:
                 sum_winner_w_kt = 0
                 sum_mean_w_kt = 0
                 n_q = 0
-                change_rate_svm_mean = 0
                 wc_change = 0
-                change_rate_winner_svm = 0
-                change_rate_svm_max = 0
-                change_rate_svm_weighted = 0
+                sum_change_rate_diff = 0
+                sum_change_rate_rel = 0
+                sum_change_rate_sum = 0
                 for query in rankings_list_svm[epoch]:
 
 
@@ -315,21 +331,18 @@ class analyze:
                     if query not in banned[epoch] and query not in banned[epoch - 1]:
                         if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                             wc = 1
-                            wc_change += wc
-                            wc_max = (
-                                float(1) / max([weights[epoch][query][ranks[svm][epoch][query][0]],
-                                                weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                            change_rate_svm_max += wc_max
-                            wc_mean = (
-                                float(1) / np.mean([weights[epoch][query][ranks[svm][epoch][query][0]],
-                                                    weights[epoch][query][ranks[svm][epoch - 1][query][0]]]))
-                            change_rate_svm_mean += wc_mean
-                            wc_win = (
-                                float(1) / (weights[epoch][query][ranks[svm][epoch][query][0]] + 1))
-                            change_rate_winner_svm += wc_win
-                            change_rate_svm_weighted += (
-                                float(1) / (float(3) / 4 * weights[epoch][query][ranks[svm][epoch][query][0]] +
-                                            weights[epoch][query][ranks[svm][epoch - 1][query][0]] * float(1) / 4))
+                            wc_sum = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                           ranks[svm][epoch][query][0],
+                                                                           weights[epoch][query], "sum")
+                            wc_rel = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                           ranks[svm][epoch][query][0],
+                                                                           weights[epoch][query], "rel")
+                            wc_diff = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
+                                                                            ranks[svm][epoch][query][0],
+                                                                            weights[epoch][query], "diff")
+                            sum_change_rate_diff += wc_diff
+                            sum_change_rate_rel += wc_rel
+                            sum_change_rate_sum += wc_sum
                         else:
                             wc = 0
                         max_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
@@ -358,9 +371,9 @@ class analyze:
                         metrics_for_stats["ktd_mean"][epoch][query] = mean_kt
                         metrics_for_stats["ktd_max"][epoch][query] = max_kt
                         metrics_for_stats["ktd_winner"][epoch][query] = winner_kt
-                        metrics_for_stats["wc_winner"][epoch][query] = wc_win
-                        metrics_for_stats["wc_mean"][epoch][query] = wc_mean
-                        metrics_for_stats["wc_max"][epoch][query] = wc_max
+                        metrics_for_stats["wc_sum"][epoch][query] = wc_sum
+                        metrics_for_stats["wc_diff"][epoch][query] = wc_diff
+                        metrics_for_stats["wc_rel"][epoch][query] = wc_rel
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
                     last_list_index_svm[query] = current_list_svm
@@ -371,11 +384,11 @@ class analyze:
                 max_w_kt_svm.append(float(sum_max_w_kt) / n_q)
                 mean_w_kt_svm.append(float(sum_mean_w_kt) / n_q)
                 winner_w_kt_svm.append(float(sum_winner_w_kt) / n_q)
-                change_rate_winner_svm_epochs.append(float(change_rate_winner_svm) / n_q)
-                change_rate_svm_epochs_max.append(float(change_rate_svm_max) / n_q)
+                change_rate_winner_svm_epochs.append(float(change_rate_diff) / n_q)
+                change_rate_sum.append(float(sum_change_rate_sum) / n_q)
                 change_rate_svm_epochs.append(float(wc_change) / n_q)
-                change_rate_svm_epochs_mean.append(float(change_rate_svm_mean) / n_q)
-                change_rate_svm_epochs_weighted.append(float(change_rate_svm_weighted) / n_q)
+                change_rate_rel.append(float(sum_change_rate_rel) / n_q)
+                change_rate_diff.append(float(sum_change_rate_diff) / n_q)
                 kt_svm.append(float(sum_svm) / n_q)
                 kt_svm_orig.append(float(sum_svm_original) / n_q)
                 rbo_min.append(float(sum_rbo_min) / n_q)
@@ -383,8 +396,7 @@ class analyze:
             kendall[svm] = (kt_svm, kt_svm_orig, max_w_kt_svm, mean_w_kt_svm, winner_w_kt_svm)
             rbo_min_models[svm] = (rbo_min, rbo_min_orig)
             change_rate[svm] = (
-                change_rate_svm_epochs_max, change_rate_svm_epochs_weighted, change_rate_svm_epochs_mean,
-                change_rate_winner_svm_epochs, change_rate_svm_epochs)
+                change_rate_sum, change_rate_diff, change_rate_rel, change_rate_svm_epochs)
             with open("lb_robustness_stats", "wb") as f:
                 pickle.dump(metrics_for_stats, f)
         return kendall, change_rate, rbo_min_models
