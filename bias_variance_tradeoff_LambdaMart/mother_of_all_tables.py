@@ -27,6 +27,7 @@ if __name__ == "__main__":
     # models = upload_models("models")
     # banned = get_banned("../banned1")
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8]}
+    banned[2].append("164")
     models = ["../model_250_50"]
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_LambdaMART")

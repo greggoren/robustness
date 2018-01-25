@@ -376,14 +376,13 @@ class analyze:
                 sum_change_rate_sum_n = 0
                 for query in rankings_list_svm[epoch]:
 
-                    if epoch == 2 and query == "164":
-                        continue
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query, False):
                         last_list_index_svm[query] = current_list_svm
                         original_list_index_svm[query] = current_list_svm
                         continue
                     if query not in banned[epoch] and query not in banned[epoch - 1]:
+
                         if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                             wc = 1
                             wc_sum = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
