@@ -537,9 +537,7 @@ class analyze:
                                                                         weights[epoch][query],
                                                                         cd[epoch - 1][query],
                                                                         "rel")
-                        if rel_kt_n == "i":
-                            print("the bastards:", epoch, query)
-                            continue
+
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
@@ -566,29 +564,11 @@ class analyze:
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
-                    # # else:
-                    #     if query == "164":
-                    #         banned[2] = []
+                        print("in calc")
+                    else:
+                        print("not")
                     last_list_index_svm[query] = current_list_svm
 
-
-
-                    # sum_kt_svm.append(float(sum_sum_kt) / n_q)
-                    # sum_kt_svm_n.append(float(sum_sum_kt_n) / n_q)
-                    # diff_kt_svm.append(float(sum_diff_kt) / n_q)
-                    # diff_kt_svm_n.append(float(sum_diff_kt_n) / n_q)
-                    # rel_kt_svm.append(float(sum_rel_kt) / n_q)
-                    # rel_kt_svm_n.append(float(sum_rel_kt_n) / n_q)
-                    # change_rate_sum.append(float(sum_change_rate_sum) / n_q)
-                    # change_rate_sum_n.append(float(sum_change_rate_sum_n) / n_q)
-                    # change_rate_svm_epochs.append(float(wc_change) / n_q)
-                    # change_rate_rel.append(float(sum_change_rate_rel) / n_q)
-                    # change_rate_rel_n.append(float(sum_change_rate_rel_n) / n_q)
-                    # change_rate_diff.append(float(sum_change_rate_diff) / n_q)
-                    # change_rate_diff_n.append(float(sum_change_rate_diff_n) / n_q)
-                    # kt_svm.append(float(sum_svm) / n_q)
-                    # rbo_min.append(float(sum_rbo_min) / n_q)
-                    # rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
             averaged_metrics = self.average_metrics_for_queries(metrics_for_stats, list(set(queries)))
             sum_kt_svm = [averaged_metrics["ktd_sum"][q] for q in averaged_metrics["ktd_sum"]]
             sum_kt_svm_n = [averaged_metrics["ktd_n_sum"][q] for q in averaged_metrics["ktd_n_sum"]]
@@ -627,8 +607,7 @@ class analyze:
                 averaged_epochs[metric][query] = np.mean(
                     [metrics[metric][e][query] for e in metrics[metric] if
                      query in list(metrics[metric][e].keys()) and e != 1])
-        print(metrics['wc'])
-        print(averaged_epochs['wc'])
+        print(queries)
         return averaged_epochs
 
 
