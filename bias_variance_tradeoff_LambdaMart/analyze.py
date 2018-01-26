@@ -144,6 +144,7 @@ class analyze:
                         break
                     if not per_query_stats["mrr"].get(i, False):
                         per_query_stats["mrr"][i] = {}
+                    print(line)
                     mrr_score = float(line.split()[2].rstrip())
                     query = line.split()[1]
                     per_query_stats["mrr"][i][query] = mrr_score
