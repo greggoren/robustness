@@ -55,35 +55,68 @@ class analyze:
 
     def calculate_metrics(self,models):
         metrics = {}
-        for svm in models:
-            ndcg_by_epochs = []
-            map_by_epochs = []
-            mrr_by_epochs = []
-            for i in range(1, 6):
-                name = "svm" + svm.split("svm_model")[1]
 
-                score_file = name+str(i)
+        for model in models:
+            per_query_stats = {"ndcg": {}, "map": {}, "mrr": {}}
+            queries = []
+            metrics[model] = {}
+            # per_query_stats[model]={}
+            for i in range(1, 9):
+                name = model.split("svm_model")[1]
+
+                score_file = name + "_" + str(i)
                 qrels = "../rel3/rel0" + str(i)
 
-                command = "../trec_eval -m ndcg "+qrels+" "+score_file
+                command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
-                    print(line)
-                    ndcg_score = line.split()[2].rstrip()
-                    ndcg_by_epochs.append(ndcg_score)
-                    break
-                command1 = "../trec_eval -m map " + qrels + " " + score_file
+                    if line == "":
+                        break
+                    if not per_query_stats["ndcg"].get(i, False):
+                        per_query_stats["ndcg"][i] = {}
+                    ndcg_score = float(line.split()[2].rstrip())
+                    query = line.split()[1]
+                    queries.append(query)
+                    queries = list(set(queries))
+                    per_query_stats["ndcg"][i][query] = ndcg_score
+                    # print(line)
+                    # ndcg_score = line.split()[2].rstrip()
+                    # ndcg_by_epochs.append(ndcg_score)
+                command1 = "../trec_eval -q -m map " + qrels + " " + score_file
                 for line in run_command(command1):
-                    print(line)
-                    map_score = line.split()[2].rstrip()
-                    map_by_epochs.append(map_score)
-                    break
-                command2 = "../trec_eval -m recip_rank " + qrels + " " + score_file
+                    if line == "":
+                        break
+                    if not per_query_stats["map"].get(i, False):
+                        per_query_stats["map"][i] = {}
+                    map_score = float(line.split()[2].rstrip())
+                    query = line.split()[1]
+                    per_query_stats["map"][i][query] = map_score
+                    # print(line)
+                    # map_score = line.split()[2].rstrip()
+                    # map_by_epochs.append(map_score)
+                    # break
+                command2 = "../trec_eval - q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
-                    print(line)
-                    mrr_score = line.split()[2].rstrip()
-                    mrr_by_epochs.append(mrr_score)
-                    break
-            metrics[svm] = (ndcg_by_epochs,map_by_epochs,mrr_by_epochs)
+                    if line == "":
+                        break
+                    if not per_query_stats["mrr"].get(i, False):
+                        per_query_stats["mrr"][i] = {}
+                    mrr_score = float(line.split()[2].rstrip())
+                    query = line.split()[1]
+                    per_query_stats["mrr"][i][query] = mrr_score
+                    # print(line)
+                    # mrr_score = line.split()[2].rstrip()
+                    # mrr_by_epochs.append(mrr_score)
+                    # break
+            # metrics[model] = (ndcg_by_epochs, map_by_epochs, mrr_by_epochs)
+
+            averaged_rel_stats = self.average_metrics_for_queries_rel(per_query_stats, queries)
+            f = open("query_rel_stats", 'wb')
+            pickle.dump(averaged_rel_stats, f)
+            f.close()
+            ndcg_by_queries = [averaged_rel_stats["ndcg"][q] for q in averaged_rel_stats["ndcg"]]
+            map_by_queries = [averaged_rel_stats["map"][q] for q in averaged_rel_stats["map"]]
+            mrr_by_queries = [averaged_rel_stats["mrr"][q] for q in averaged_rel_stats["mrr"]]
+            metrics[model] = (ndcg_by_queries, map_by_queries, mrr_by_queries)
         return metrics
 
     def cosine_similarity(self, v1, v2):
@@ -358,11 +391,14 @@ class analyze:
         f.write("\\end{tabular}")
         f.close()
 
-    def calculate_average_kendall_tau(self, rankings, weights, ranks, banned, cd):
+    def calculate_average_kendall_tau(self, rankings, banned, weights, ranks, cd):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
+        metrics = {}
+
         for svm in rankings:
+            queries = []
             rankings_list_svm = rankings[svm]
             kt_svm = []
             last_list_index_svm = {}
@@ -412,13 +448,15 @@ class analyze:
                 sum_change_rate_sum = 0
                 sum_change_rate_sum_n = 0
                 for query in rankings_list_svm[epoch]:
-
+                    queries.append(query)
+                    queries = list(set(queries))
                     current_list_svm = rankings_list_svm[epoch][query]
                     if not last_list_index_svm.get(query, False):
                         last_list_index_svm[query] = current_list_svm
                         original_list_index_svm[query] = current_list_svm
                         continue
                     if query not in banned[epoch] and query not in banned[epoch - 1]:
+
                         if ranks[svm][epoch][query][0] != ranks[svm][epoch - 1][query][0]:
                             wc = 1
                             wc_sum = self.get_weighted_winner_change_score(ranks[svm][epoch - 1][query][0],
@@ -457,6 +495,7 @@ class analyze:
                             wc_change += wc
                         else:
                             wc = 0
+                            wc_diff, wc_diff_n, wc_rel, wc_rel_n, wc_sum, wc_sum_n = 0, 0, 0, 0, 0, 0
                         diff_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                             ranks[svm][epoch][query],
                                                             weights[epoch][query], "diff")
@@ -474,8 +513,7 @@ class analyze:
                         sum_kt_n = normalized_weighted_kendall_distance(ranks[svm][epoch - 1][query],
                                                                         ranks[svm][epoch][query],
                                                                         weights[epoch][query],
-                                                                        cd[epoch - 1][query]
-                                                                        ,
+                                                                        cd[epoch - 1][query],
                                                                         "sum")
                         sum_sum_kt_n += sum_kt_n
                         rel_kt = weighted_kendall_distance(ranks[svm][epoch - 1][query],
@@ -487,7 +525,9 @@ class analyze:
                                                                         weights[epoch][query],
                                                                         cd[epoch - 1][query],
                                                                         "rel")
-
+                        if rel_kt_n == "i":
+                            print("the bastards:", epoch, query)
+                            continue
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
@@ -514,37 +554,57 @@ class analyze:
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
-                    # else:
-                    #     if query == "164" or query == "010":
-                    #         banned[2] = list(set(banned[2]) - set([query]))
+                    # # else:
+                    #     if query == "164":
+                    #         banned[2] = []
                     last_list_index_svm[query] = current_list_svm
-
+                averaged_metrics = self.average_metrics_for_queries(metrics, list(set(queries)))
                 if n_q == 0:
                     continue
 
-                sum_kt_svm.append(float(sum_sum_kt) / n_q)
-                sum_kt_svm_n.append(float(sum_sum_kt_n) / n_q)
-                diff_kt_svm.append(float(sum_diff_kt) / n_q)
-                diff_kt_svm_n.append(float(sum_diff_kt_n) / n_q)
-                rel_kt_svm.append(float(sum_rel_kt) / n_q)
-                rel_kt_svm_n.append(float(sum_rel_kt_n) / n_q)
-                change_rate_sum.append(float(sum_change_rate_sum) / n_q)
-                change_rate_sum_n.append(float(sum_change_rate_sum_n) / n_q)
-                change_rate_svm_epochs.append(float(wc_change) / n_q)
-                change_rate_rel.append(float(sum_change_rate_rel) / n_q)
-                change_rate_rel_n.append(float(sum_change_rate_rel_n) / n_q)
-                change_rate_diff.append(float(sum_change_rate_diff) / n_q)
-                change_rate_diff_n.append(float(sum_change_rate_diff_n) / n_q)
-                kt_svm.append(float(sum_svm) / n_q)
-                rbo_min.append(float(sum_rbo_min) / n_q)
-                rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
+                    # sum_kt_svm.append(float(sum_sum_kt) / n_q)
+                    # sum_kt_svm_n.append(float(sum_sum_kt_n) / n_q)
+                    # diff_kt_svm.append(float(sum_diff_kt) / n_q)
+                    # diff_kt_svm_n.append(float(sum_diff_kt_n) / n_q)
+                    # rel_kt_svm.append(float(sum_rel_kt) / n_q)
+                    # rel_kt_svm_n.append(float(sum_rel_kt_n) / n_q)
+                    # change_rate_sum.append(float(sum_change_rate_sum) / n_q)
+                    # change_rate_sum_n.append(float(sum_change_rate_sum_n) / n_q)
+                    # change_rate_svm_epochs.append(float(wc_change) / n_q)
+                    # change_rate_rel.append(float(sum_change_rate_rel) / n_q)
+                    # change_rate_rel_n.append(float(sum_change_rate_rel_n) / n_q)
+                    # change_rate_diff.append(float(sum_change_rate_diff) / n_q)
+                    # change_rate_diff_n.append(float(sum_change_rate_diff_n) / n_q)
+                    # kt_svm.append(float(sum_svm) / n_q)
+                    # rbo_min.append(float(sum_rbo_min) / n_q)
+                    # rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
+
+            sum_kt_svm = [averaged_metrics["ktd_sum"][q] for q in averaged_metrics["ktd_sum"]]
+            sum_kt_svm_n = [averaged_metrics["ktd_n_sum"][q] for q in averaged_metrics["ktd_n_sum"]]
+            diff_kt_svm = [averaged_metrics["ktd_diff"][q] for q in averaged_metrics["ktd_diff"]]
+            diff_kt_svm_n = [averaged_metrics["ktd_n_diff"][q] for q in averaged_metrics["ktd_n_diff"]]
+            rel_kt_svm = [averaged_metrics["ktd_rel"][q] for q in averaged_metrics["ktd_rel"]]
+            rel_kt_svm_n = [averaged_metrics["ktd_n_rel"][q] for q in averaged_metrics["ktd_n_rel"]]
+            change_rate_sum = [averaged_metrics["wc_sum"][q] for q in averaged_metrics["wc_sum"]]
+            change_rate_sum_n = [averaged_metrics["wc_n_sum"][q] for q in averaged_metrics["wc_n_sum"]]
+            change_rate_svm_epochs = [averaged_metrics["wc"][q] for q in averaged_metrics["wc"]]
+            change_rate_rel = [averaged_metrics["wc_rel"][q] for q in averaged_metrics["wc_rel"]]
+            change_rate_rel_n = [averaged_metrics["wc_n_rel"][q] for q in averaged_metrics["wc_n_rel"]]
+            change_rate_diff = [averaged_metrics["wc_diff"][q] for q in averaged_metrics["wc_diff"]]
+            change_rate_diff_n = [averaged_metrics["wc_n_diff"][q] for q in averaged_metrics["wc_n_diff"]]
+            kt_svm = [averaged_metrics["ktd"][q] for q in averaged_metrics["ktd"]]
+            rbo_min = [averaged_metrics["rbo"][q] for q in averaged_metrics["rbo"]]
             kendall[svm] = (kt_svm, sum_kt_svm, sum_kt_svm_n, diff_kt_svm, diff_kt_svm_n, rel_kt_svm, rel_kt_svm_n)
-            rbo_min_models[svm] = (rbo_min, rbo_min_orig)
+            rbo_min_models[svm] = (rbo_min,)
             change_rate[svm] = (
                 change_rate_sum, change_rate_sum_n, change_rate_diff, change_rate_diff_n, change_rate_rel,
                 change_rate_rel_n, change_rate_svm_epochs)
+            t_test = open("svm_averaged_metrics", 'wb')
+            pickle.dump(averaged_metrics, t_test)
+            t_test.close()
             with open("svm_robustness_stats", "wb") as f:
                 pickle.dump(metrics_for_stats, f)
+
         return kendall, change_rate, rbo_min_models
 
     def get_all_scores(self,svms,competition_data):
