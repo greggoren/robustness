@@ -67,8 +67,8 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
     # svms = upload_models("models_light", C_array)
-    # banned = get_banned("../banned1")
-    banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    banned = get_banned("../banned1")
+    # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
     # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
