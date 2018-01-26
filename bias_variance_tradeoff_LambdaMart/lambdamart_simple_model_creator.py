@@ -12,7 +12,7 @@ if __name__ == "__main__":
     single_model_handler = mh.single_model_handler_LambdaMart(0, trees)
     qrels = params.qrels
     train_file = params.data_set_file
-    f = partial(single_model_handler.create_model_LambdaMart, leaves, train_file, qrels)
+    f = partial(single_model_handler.create_model_LambdaMart, train_file, qrels)
     with Pool(processes=6) as pool:
         # single_model_handler.create_model_LambdaMart(trees, )
         pool.map(f, zip(trees, trees))
