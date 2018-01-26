@@ -18,7 +18,6 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
 C_array = [(i + 1) / 1000 for i in range(5)]
 C_array.extend([(i + 1) / 100 for i in range(5)])
 C_array.extend([(i + 1) / 10000 for i in range(5)])
-C_array.extend([600, 700, 800, 900])
 C_array.extend([(i + 1) / 10 for i in range(5)])
 C_array.extend([(i + 1) / 1 for i in range(5)])
 C_array.extend([(i + 1) * 10 for i in range(5)])
