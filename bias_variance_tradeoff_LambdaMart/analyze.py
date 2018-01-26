@@ -637,7 +637,7 @@ class analyze:
 
     def average_metrics_for_queries(self, metrics, queries):
         print(queries)
-        print(metrics)
+        print(metrics['wc'])
         averaged_epochs = {m: {} for m in metrics}
         for metric in metrics:
             for query in queries:
