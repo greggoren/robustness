@@ -643,7 +643,7 @@ class analyze:
             for query in queries:
                 averaged_epochs[metric][query] = np.mean(
                     [metrics[metric][e][query] for e in metrics[metric] if
-                     metrics[metric][e].get(query, False) and e != 1])
+                     query in list(metrics[metric][e].keys()) and e != 1])
         print(averaged_epochs['wc'])
         return averaged_epochs
 
