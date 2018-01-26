@@ -71,6 +71,8 @@ class analyze:
                 for line in run_command(command):
                     if len(line.split()) <= 1:
                         break
+                    if line.split()[1] == "all":
+                        break
                     if not per_query_stats["ndcg"].get(i, False):
                         per_query_stats["ndcg"][i] = {}
                     ndcg_score = float(line.split()[2].rstrip())
@@ -85,6 +87,8 @@ class analyze:
                 for line in run_command(command1):
                     if len(line.split()) <= 1:
                         break
+                    if line.split()[1] == "all":
+                        break
                     if not per_query_stats["map"].get(i, False):
                         per_query_stats["map"][i] = {}
                     map_score = float(line.split()[2].rstrip())
@@ -97,6 +101,8 @@ class analyze:
                 command2 = "../trec_eval - q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     if len(line.split()) <= 1:
+                        break
+                    if line.split()[1] == "all":
                         break
                     if not per_query_stats["mrr"].get(i, False):
                         per_query_stats["mrr"][i] = {}
