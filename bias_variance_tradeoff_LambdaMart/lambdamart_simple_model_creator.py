@@ -6,7 +6,7 @@ from functools import partial
 from multiprocessing import Pool
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    trees = [(i + 1) * 10 for i in range(15, 45)]
+    trees = [(i + 1) * 10 for i in range(14, 45)]
     # trees = [500, 550, 600, 650, 700]
     leaves = [(1 + i) * 5 for i in range(30)]
     single_model_handler = mh.single_model_handler_LambdaMart(0, trees)
