@@ -549,9 +549,7 @@ class analyze:
                                                                         weights[epoch][query],
                                                                         cd[epoch - 1][query],
                                                                         "rel")
-                        if rel_kt_n == "i":
-                            print("the bastards:", epoch, query)
-                            continue
+
                         sum_rel_kt_n += rel_kt_n
                         n_q += 1
                         kt = kendall_distance(ranks[svm][epoch - 1][query], ranks[svm][epoch][query])
@@ -582,7 +580,7 @@ class analyze:
                     #     if query == "164":
                     #         banned[2] = []
                     last_list_index_svm[query] = current_list_svm
-                averaged_metrics = self.average_metrics_for_queries(metrics, list(set(queries)))
+
                 if n_q == 0:
                     continue
 
@@ -602,7 +600,7 @@ class analyze:
                     # kt_svm.append(float(sum_svm) / n_q)
                     # rbo_min.append(float(sum_rbo_min) / n_q)
                     # rbo_min_orig.append(float(sum_rbo_min_orig) / n_q)
-
+            averaged_metrics = self.average_metrics_for_queries(metrics_for_stats, list(set(queries)))
             sum_kt_svm = [averaged_metrics["ktd_sum"][q] for q in averaged_metrics["ktd_sum"]]
             sum_kt_svm_n = [averaged_metrics["ktd_n_sum"][q] for q in averaged_metrics["ktd_n_sum"]]
             diff_kt_svm = [averaged_metrics["ktd_diff"][q] for q in averaged_metrics["ktd_diff"]]
