@@ -107,7 +107,7 @@ class analyze:
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
-                    if line == "":
+                    if len(line.split()) <= 1:
                         break
                     if not per_query_stats["ndcg"].get(i, False):
                         per_query_stats["ndcg"][i] = {}
@@ -121,7 +121,7 @@ class analyze:
                     # ndcg_by_epochs.append(ndcg_score)
                 command1 = "../trec_eval -q -m map " + qrels + " " + score_file
                 for line in run_command(command1):
-                    if line == "":
+                    if len(line.split()) <= 1:
                         break
                     if not per_query_stats["map"].get(i, False):
                         per_query_stats["map"][i] = {}
@@ -134,7 +134,7 @@ class analyze:
                     # break
                 command2 = "../trec_eval - q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
-                    if line == "":
+                    if len(line.split()) <= 1:
                         break
                     if not per_query_stats["mrr"].get(i, False):
                         per_query_stats["mrr"][i] = {}
