@@ -253,7 +253,7 @@ class analyze:
 
         table_file = open("table_value.tex", 'w')
         table_file.write(
-            " Ranker \KTshort & \WC & \RBO & \WCdiff & \WCrel  & \WCsum & \KTDdiff & \KTDrel & \KTDsum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm \n")
+            " Ranker \KTshort & \WC & \RBO & \WCdiff & \WCresp  & \WCsum & \KTDdiff & \KTDresp & \KTDsum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm \n")
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: float(x.split("svm_model")[1]))
         kendall_for_pearson = []
@@ -355,7 +355,7 @@ class analyze:
                 round(corr_trees[1], 3)) + ") &  \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, wc_rel_for_pearson)
         f.write(
-            "\WCrel & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+            "\WCresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, wc_sum_for_pearson)
         f.write(
             "\WCsum & " + str(round(corr_trees[0], 3)) + " (" + str(
@@ -366,7 +366,7 @@ class analyze:
         corr_trees = spearmanr(C_for_pearson, kendall_rel_for_pearson)
         print(wc_for_pearson)
         f.write(
-            "\KTDrel & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+            "\KTDresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, kendall_sum_for_pearson)
         f.write("\KTDsum & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
