@@ -24,7 +24,7 @@ def get_banned(banned_file):
 if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
-    models = upload_models("trees")
+    models = upload_models("models")
     # banned = get_banned("../banned1")
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8]}
     # banned[2].append("164")
