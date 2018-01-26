@@ -15,5 +15,5 @@ if __name__ == "__main__":
     f = partial(single_model_handler.create_model_LambdaMart, train_file, qrels)
     with Pool(processes=6) as pool:
         # single_model_handler.create_model_LambdaMart(trees, )
-        pool.map(f, zip(trees, trees))
+        pool.map(f, zip(leaves, trees))
     print("learning is finished")
