@@ -26,27 +26,29 @@ def learn_svm(C, train_file):
 
 
 if __name__ == "__main__":
-    C_array = [0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009]
+    # C_array = [0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009]
     train_file = params.data_set_file
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
-
-    C_array = [float(i) / 100 for i in range(1, 10)]
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
-
-    C_array = [float(i) / 10 for i in range(1, 10)]
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
-
-    C_array = [float(i) for i in range(1, 10)]
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
-
-    C_array = [float(i * 100) for i in range(1, 10)]
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
-
-    C_array = [float(i * 1000) for i in range(1, 10)]
+    # for C in C_array:
+    #     model_file = learn_svm(C, train_file)
+    #
+    # C_array = [float(i) / 100 for i in range(1, 10)]
+    # for C in C_array:
+    #     model_file = learn_svm(C, train_file)
+    #
+    # C_array = [float(i) / 10 for i in range(1, 10)]
+    # for C in C_array:
+    #     model_file = learn_svm(C, train_file)
+    #
+    # C_array = [float(i) for i in range(1, 10)]
+    # for C in C_array:
+    #     model_file = learn_svm(C, train_file)
+    #
+    # C_array = [float(i * 100) for i in range(1, 10)]
+    # for C in C_array:
+    #     model_file = learn_svm(C, train_file)
+    #
+    # C_array = [float(i * 1000) for i in range(1, 10)]
+    C_array = []
+    C_array.extend([float(i + 1) * 10 for i in range(5)])
     for C in C_array:
         model_file = learn_svm(C, train_file)
