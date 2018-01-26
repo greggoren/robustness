@@ -48,26 +48,37 @@ def get_banned(banned_file):
 
 def upload_models(models_dir, C_array):
     model_handlers = {}
+    models = []
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             model = float(file.split("svm_model")[1])
-            if model >= 0.1:
-                model_file = root + "/" + file
-                w = recover_model(model_file)
-                model_handlers[model_file] = w
+            models.append(model)
+            model_file = root + "/" + file
+            w = recover_model(model_file)
+            model_handlers[model_file] = w
+    test = set(C_array) - set(models)
+    if test:
+        print(test)
+    else:
+        print("success")
     return model_handlers
 
 
 if __name__ == "__main__":
+    C_array = [(i + 1) / 1000 for i in range(5)]
+    C_array.extend([(i + 1) / 100 for i in range(5)])
+    C_array.extend([(i + 1) / 10 for i in range(5)])
+    C_array.extend([(i + 1) / 1 for i in range(5)])
+    C_array.extend([(i + 1) * 10 for i in range(5)])
+    C_array.extend([(i + 1) * 100 for i in range(5)])
     preprocess = p.preprocess()
     analyze = a.analyze()
-    C_array = []
-    # svms = upload_models("models_light", C_array)
+    svms = upload_models("models_light", C_array)
     # banned = get_banned("../banned1")
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
-    svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
+    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
-    analyze.create_table(competition_data, svms, banned)
+    # analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
