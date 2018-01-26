@@ -599,7 +599,7 @@ class analyze:
         averaged_epochs = {m: {} for m in metrics}
         for metric in metrics:
             for query in queries:
-                if query == "002_1":
+                if query == "032_0" or query == "004_0":
                     continue
                 averaged_epochs[metric][query] = np.mean(
                     [metrics[metric][e][query] for e in metrics[metric] if
