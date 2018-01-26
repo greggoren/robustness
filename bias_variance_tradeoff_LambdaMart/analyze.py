@@ -345,7 +345,7 @@ class analyze:
             v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
             return abs(v2 - v1)
         if metric == "rel":
-            return np.linalg.norm(w2 - w1) / np.linalg.norm(d2 - d1)
+            return np.linalg.norm(w2 - w1) / (np.linalg.norm(d2 - d1) + 0.1)
         if metric == "sum":
             v1 = np.linalg.norm(w1) / np.linalg.norm(d1)
             v2 = np.linalg.norm(w2) / np.linalg.norm(d2)
@@ -517,22 +517,22 @@ class analyze:
                         sum_rbo_min_orig += rbo_orig
                         if not np.isnan(kt):
                             sum_svm += kt
-                        metrics_for_stats["ktd"][epoch][query] = kt
-                        metrics_for_stats["ktd_diff"][epoch][query] = diff_kt
-                        metrics_for_stats["ktd_n_diff"][epoch][query] = diff_kt_n
-                        metrics_for_stats["ktd_sum"][epoch][query] = sum_kt
-                        metrics_for_stats["ktd_n_sum"][epoch][query] = sum_kt_n
-                        metrics_for_stats["ktd_rel"][epoch][query] = rel_kt
-                        metrics_for_stats["ktd_n_rel"][epoch][query] = rel_kt_n
-                        metrics_for_stats["wc_sum"][epoch][query] = wc_sum
-                        metrics_for_stats["wc_n_sum"][epoch][query] = wc_sum_n
-                        metrics_for_stats["wc_diff"][epoch][query] = wc_diff
-                        metrics_for_stats["wc_n_diff"][epoch][query] = wc_diff_n
-                        metrics_for_stats["wc_rel"][epoch][query] = wc_rel
-                        metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
-                        metrics_for_stats["wc"][epoch][query] = wc
-                        metrics_for_stats["rbo"][epoch][query] = rbo
-                    # else:
+                    # metrics_for_stats["ktd"][epoch][query] = kt
+                    #     metrics_for_stats["ktd_diff"][epoch][query] = diff_kt
+                    #     metrics_for_stats["ktd_n_diff"][epoch][query] = diff_kt_n
+                    #     metrics_for_stats["ktd_sum"][epoch][query] = sum_kt
+                    #     metrics_for_stats["ktd_n_sum"][epoch][query] = sum_kt_n
+                    #     metrics_for_stats["ktd_rel"][epoch][query] = rel_kt
+                    #     metrics_for_stats["ktd_n_rel"][epoch][query] = rel_kt_n
+                    #     metrics_for_stats["wc_sum"][epoch][query] = wc_sum
+                    #     metrics_for_stats["wc_n_sum"][epoch][query] = wc_sum_n
+                    #     metrics_for_stats["wc_diff"][epoch][query] = wc_diff
+                    #     metrics_for_stats["wc_n_diff"][epoch][query] = wc_diff_n
+                    #     metrics_for_stats["wc_rel"][epoch][query] = wc_rel
+                    #     metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
+                    #     metrics_for_stats["wc"][epoch][query] = wc
+                    #     metrics_for_stats["rbo"][epoch][query] = rbo
+                    # # else:
                     #     if query == "164":
                     #         banned[2] = []
                     last_list_index_svm[query] = current_list_svm
