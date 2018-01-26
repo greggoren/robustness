@@ -61,7 +61,7 @@ class analyze:
             queries = []
             metrics[model] = {}
             # per_query_stats[model]={}
-            for i in range(1, 9):
+            for i in range(1, 6):
                 name = model.split("svm_model")[1]
 
                 score_file = name + "_" + str(i)
