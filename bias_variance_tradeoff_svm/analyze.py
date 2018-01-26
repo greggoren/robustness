@@ -404,7 +404,7 @@ class analyze:
         f.write("\\end{tabular}")
         f.close()
 
-    def calculate_average_kendall_tau(self, rankings, banned, weights, ranks, cd):
+    def calculate_average_kendall_tau(self, rankings, weights, ranks, banned, cd):
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
@@ -564,9 +564,6 @@ class analyze:
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
                         metrics_for_stats["rbo"][epoch][query] = rbo
-                        print("in calc")
-                    else:
-                        print("not")
                     last_list_index_svm[query] = current_list_svm
 
             averaged_metrics = self.average_metrics_for_queries(metrics_for_stats, list(set(queries)))
