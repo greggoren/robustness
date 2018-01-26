@@ -644,7 +644,7 @@ class analyze:
                 averaged_epochs[metric][query] = np.mean(
                     [metrics[metric][e][query] for e in metrics[metric] if
                      metrics[metric][e].get(query, False) and e != 1])
-        print(averaged_epochs)
+        print(averaged_epochs['wc'])
         return averaged_epochs
 
     def get_all_scores(self,svms,competition_data):
