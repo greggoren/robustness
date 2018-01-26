@@ -136,7 +136,7 @@ class analyze:
                     # map_score = line.split()[2].rstrip()
                     # map_by_epochs.append(map_score)
                     # break
-                command2 = "../trec_eval - q -m recip_rank " + qrels + " " + score_file
+                command2 = "../trec_eval -q -m recip_rank " + qrels + " " + score_file
                 for line in run_command(command2):
                     if len(line.split()) <= 1:
                         break
@@ -144,7 +144,6 @@ class analyze:
                         break
                     if not per_query_stats["mrr"].get(i, False):
                         per_query_stats["mrr"][i] = {}
-                    print(line)
                     mrr_score = float(line.split()[2].rstrip())
                     query = line.split()[1]
                     per_query_stats["mrr"][i][query] = mrr_score
