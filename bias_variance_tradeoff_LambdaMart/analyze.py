@@ -221,6 +221,7 @@ class analyze:
                 "KTD & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                     round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
             corr_trees = spearmanr(trees_for_pearson, wc_for_pearson)
+
             corr_leaves = spearmanr(leaves_for_pearson, wc_for_pearson)
             f.write("WC & " + str(round(corr_trees[0], 3)) + " (" + str(
                 round(corr_trees[1], 3)) + ") & " + str(round(corr_leaves[0], 3)) + " (" + str(
@@ -318,7 +319,8 @@ class analyze:
                         corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
             f.write("\\end{tabular}")
             f.close()
-
+            with open("corr", 'wb') as c:
+                pickle.dump((trees_for_pearson, wc_for_pearson), c)
 
     def create_change_percentage(self, cd):
         change = {}
