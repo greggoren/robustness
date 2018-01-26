@@ -79,7 +79,7 @@ def f(train_file, test_file, fold_number, C):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    C_array = [0.1, 1.0, 10, 100, 0.01]
+    C_array = [0.1, 1.0, 0.01]
     # C_array = [float(i + 1) / 1000 for i in range(10)]
     # C_array.extend([float(i + 1) / 100 for i in range(10)])
     # C_array.extend([float(i + 1) / 10 for i in range(10)])
