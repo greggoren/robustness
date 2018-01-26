@@ -66,7 +66,7 @@ if __name__ == "__main__":
     C_array.extend([float(i + 1) * 10 for i in range(5)])
     preprocess = p.preprocess()
     analyze = a.analyze()
-    svms = upload_models("models_light")
+    svms = upload_models("models_light", C_array)
     # banned = get_banned("../banned1")
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")

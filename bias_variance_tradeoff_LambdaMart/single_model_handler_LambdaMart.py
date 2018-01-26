@@ -17,8 +17,9 @@ class single_model_handler_LambdaMart():
         print(out)
         return out
 
-    def create_model_LambdaMart(self, number_of_leaves, train_file,
-                                query_relevance_file, number_of_trees):
+    def create_model_LambdaMart(self, train_file,
+                                query_relevance_file, args):
+        number_of_leaves, number_of_trees = args
         models_path = "/lv_local/home/sgregory/robustness/bias_variance_tradeoff_LambdaMart/models/"
         try:
             if not os.path.exists(models_path):
