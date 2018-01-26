@@ -10,7 +10,7 @@ lb_rel_last = pickle.load(open("lb_query_rel_stats_last", 'rb'))
 svm_rel_last = pickle.load(open("query_rel_stats", 'rb'))
 lb_metrics_last = pickle.load(open("lb_averaged_metrics_last", 'rb'))
 svm_metrics_last = pickle.load(open("svm_averaged_metrics", 'rb'))
-
+#
 f = open("current_ttest", 'w')
 
 for metric in lb_metrics_current:
