@@ -7,14 +7,14 @@ from multiprocessing import Pool
 if __name__ == "__main__":
     preprocess = p.preprocess()
     # trees = [(i + 1) * 10 for i in range(15, 46)]
-    trees = 150
+    trees = [500, 550, 600, 650, 700]
     # leaves = [(1 + i) * 5 for i in range(15, 30)]
-    leaves = [50]
+    leaves = 50
     single_model_handler = mh.single_model_handler_LambdaMart(0, trees)
     qrels = params.qrels
     train_file = params.data_set_file
-    f = partial(single_model_handler.create_model_LambdaMart, trees, train_file, qrels)
+    f = partial(single_model_handler.create_model_LambdaMart, leaves, train_file, qrels)
     with Pool(processes=1) as pool:
         # single_model_handler.create_model_LambdaMart(trees, )
-        pool.map(f, leaves)
+        pool.map(f, trees)
     print("learning is finished")
