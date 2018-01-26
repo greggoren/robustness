@@ -74,7 +74,7 @@ if __name__ == "__main__":
     C_array.extend([(i + 1) / 1 for i in range(5)])
     C_array.extend([(i + 1) * 10 for i in range(5)])
     C_array.extend([(i + 1) * 100 for i in range(5)])
-    # C_array.extend([900, 800, 600, 700])
+    C_array.extend([900, 800, 600, 700])
     svms = upload_models("models_light", C_array)
     preprocess = p.preprocess()
     analyze = a.analyze()

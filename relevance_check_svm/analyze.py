@@ -15,22 +15,27 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
     plt.clf()
 
 
+C_array = [(i + 1) / 1000 for i in range(5)]
+C_array.extend([(i + 1) / 100 for i in range(5)])
+C_array.extend([(i + 1) / 10000 for i in range(5)])
+C_array.extend([600, 700, 800, 900])
+C_array.extend([(i + 1) / 10 for i in range(5)])
+C_array.extend([(i + 1) / 1 for i in range(5)])
+C_array.extend([(i + 1) * 10 for i in range(5)])
+C_array.extend([(i + 1) * 100 for i in range(5)])
 C = {}
 with open("C_relevance_for_correlation_svm") as C_stats:
     for stat in C_stats:
         if stat.__contains__("MODEL"):
             continue
 
-        model = stat.split("\t")[0]
+        model = stat.split()[0]
+        if float(model) not in C_array:
+            continue
         if not C.get(float(model), False):
             C[float(model)] = {}
-        C[float(model)][stat.split("\t")[1]] = float(stat.split("\t")[2].split('\'')[1].rstrip())
-C_array = [(i + 1) / 1000 for i in range(5)]
-C_array.extend([(i + 1) / 100 for i in range(5)])
-C_array.extend([(i + 1) / 10 for i in range(5)])
-C_array.extend([(i + 1) / 1 for i in range(5)])
-C_array.extend([(i + 1) * 10 for i in range(5)])
-C_array.extend([(i + 1) * 100 for i in range(5)])
+        C[float(model)][stat.split()[1]] = float(stat.split()[2].split('\'')[1].rstrip())
+
 
 models = set(C.keys())
 print(set(C_array) - models)
