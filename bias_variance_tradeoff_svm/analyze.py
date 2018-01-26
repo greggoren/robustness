@@ -125,6 +125,13 @@ class analyze:
             metrics[model] = (ndcg_by_queries, map_by_queries, mrr_by_queries)
         return metrics
 
+    def average_metrics_for_queries_rel(self, metrics, queries):
+        averaged_epochs = {m: {} for m in metrics}
+        for metric in metrics:
+            for query in queries:
+                averaged_epochs[metric][query] = np.mean([metrics[metric][e][query] for e in metrics[metric]])
+        return averaged_epochs
+
     def cosine_similarity(self, v1, v2):
         sumxx, sumxy, sumyy = 0, 0, 0
         for i in range(len(v1)):
@@ -612,6 +619,18 @@ class analyze:
                 pickle.dump(metrics_for_stats, f)
 
         return kendall, change_rate, rbo_min_models
+
+    def average_metrics_for_queries(self, metrics, queries):
+        averaged_epochs = {m: {} for m in metrics}
+        for metric in metrics:
+            for query in queries:
+                if query == "002_1":
+                    continue
+                averaged_epochs[metric][query] = np.mean(
+                    [metrics[metric][e][query] for e in metrics[metric] if
+                     query in list(metrics[metric][e].keys()) and e != 1])
+        return averaged_epochs
+
 
     def get_all_scores(self,svms,competition_data):
         scores = {}
