@@ -157,19 +157,6 @@ class analyze:
             metrics[model] = (ndcg_by_queries, map_by_queries, mrr_by_queries)
         return metrics
 
-    """\newcommand{\KTshort}{KT\xspace}
-    \newcommand{\RBO}{RBO\xspace}
-    \newcommand{\WC}{WC\xspace}
-    \newcommand{\KTsum}{KT-sum\xspace}
-    \newcommand{\KTdiff}{KT-diff\xspace}
-    \newcommand{\KTresp}{KT-rel\xspace}
-    \newcommand{\WCsum}{WC-sum\xspace}
-    \newcommand{\WCdiff}{WC-diff\xspace}
-    \newcommand{\WCresp}{WC-rel\xspace}
-    \newcommand{\map}{MAP\xspace}
-    \newcommand{\ndcg}{NDCG\xspace}
-    \newcommand{\mrr}{MRR\xspace}"""
-
     def create_table(self, competition_data, models, banned_queries):
         weights = self.create_change_percentage(competition_data)
         scores = self.create_lambdaMart_scores(competition_data, models)
