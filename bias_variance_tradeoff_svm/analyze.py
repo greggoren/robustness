@@ -64,7 +64,7 @@ class analyze:
             for i in range(1, 6):
                 name = "svm" + model.split("_model")[1]
 
-                score_file = name + "_" + str(i)
+                score_file = name + str(i)
                 qrels = "../rel2/srel0" + str(i)
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
