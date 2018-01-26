@@ -52,10 +52,11 @@ def upload_models(models_dir, C_array):
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             model = float(file.split("svm_model")[1])
-            models.append(model)
-            model_file = root + "/" + file
-            w = recover_model(model_file)
-            model_handlers[model_file] = w
+            if model in C_array:
+                models.append(model)
+                model_file = root + "/" + file
+                w = recover_model(model_file)
+                model_handlers[model_file] = w
     test = set(C_array) - set(models)
     if test:
         print(test)
@@ -78,7 +79,7 @@ if __name__ == "__main__":
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
-    # analyze.create_table(competition_data, svms, banned)
+    analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)

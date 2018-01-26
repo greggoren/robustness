@@ -25,6 +25,15 @@ with open("C_relevance_for_correlation_svm") as C_stats:
         if not C.get(float(model), False):
             C[float(model)] = {}
         C[float(model)][stat.split("\t")[1]] = float(stat.split("\t")[2].split('\'')[1].rstrip())
+C_array = [(i + 1) / 1000 for i in range(5)]
+C_array.extend([(i + 1) / 100 for i in range(5)])
+C_array.extend([(i + 1) / 10 for i in range(5)])
+C_array.extend([(i + 1) / 1 for i in range(5)])
+C_array.extend([(i + 1) * 10 for i in range(5)])
+C_array.extend([(i + 1) * 100 for i in range(5)])
+
+models = set(C.keys())
+print(set(C_array) - models)
 
 C_keys = sorted(list(C.keys()))
 C_map = []
