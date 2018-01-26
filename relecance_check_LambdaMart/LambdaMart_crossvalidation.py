@@ -24,11 +24,12 @@ if __name__ == "__main__":
     # trees = int(sys.argv[1])
     # leaves = int(sys.argv[2])
 
+    trees = [(i + 1) * 10 for i in range(14, 45)]
     leaves = [(1 + i) * 5 for i in range(30)]
-    trees = 250
-    for leaf in leaves:
+    models = zip(leaves, trees)
+    for leaf, tree in models:
         fold_number = 1
-        model_handler = mh.model_handler_LambdaMart(leaf, trees)
+        model_handler = mh.model_handler_LambdaMart(leaf, tree)
         folds = preprocess.create_folds(X, y, queries, 5)
         for train, test in folds:
             model_handler.set_queries_to_folds(queries, test, fold_number)
@@ -38,4 +39,4 @@ if __name__ == "__main__":
                                                                 fold_number)
             fold_number += 1
         final = evaluator.order_trec_file(trec)
-        evaluator.run_trec_eval_on_test_correlation(final, trees, leaf)
+        evaluator.run_trec_eval_on_test_correlation(final, tree, leaf)
