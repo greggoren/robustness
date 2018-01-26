@@ -129,7 +129,7 @@ class analyze:
             float(x.split("model_")[1].split("_")[0]), float(x.split("model_")[1].split("_")[1])))  # TODO: fix split
         table_file = open("table_value_LmbdaMart.tex", 'w')
         table_file.write(
-            "Ranker & sKTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
+            "Ranker & KTD & WC & RBO & WC diff & WC rel  & WC sum & KTD diff & KTD rel & KTD sum & WC diff norm & WC rel norm  & WC sum norm & KTD diff norm & KTD rel norm & KTD sum norm & NDCG & MAP & MRR  \n")
         trees_for_pearson = []
         leaves_for_pearson = []
         kendall_for_pearson = []
@@ -216,7 +216,6 @@ class analyze:
             f.write("\\begin{tabular}{c|c|c|c} \n")
             f.write("Metric & #Tress & #Leaves \\\\ \n")
             corr_trees = spearmanr(trees_for_pearson, kendall_for_pearson)
-            print(corr_trees)
             corr_leaves = spearmanr(leaves_for_pearson, kendall_for_pearson)
             f.write(
                 "KTD & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
@@ -234,7 +233,7 @@ class analyze:
             corr_trees = spearmanr(trees_for_pearson, wc_diff_for_pearson)
             corr_leaves = spearmanr(leaves_for_pearson, wc_diff_for_pearson)
             f.write(
-                "WC diff& " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
+                "WC diff & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                     round(corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
 
             corr_trees = spearmanr(trees_for_pearson, wc_rel_for_pearson)
