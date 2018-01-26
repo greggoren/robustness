@@ -581,6 +581,7 @@ class analyze:
                         metrics_for_stats["wc_rel"][epoch][query] = wc_rel
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
+                        print(epoch, query, wc)
                         metrics_for_stats["rbo"][epoch][query] = rbo
                     # # else:
                     #     if query == "164":
@@ -616,7 +617,6 @@ class analyze:
             change_rate_sum = [averaged_metrics["wc_sum"][q] for q in averaged_metrics["wc_sum"]]
             change_rate_sum_n = [averaged_metrics["wc_n_sum"][q] for q in averaged_metrics["wc_n_sum"]]
             change_rate_svm_epochs = [averaged_metrics["wc"][q] for q in averaged_metrics["wc"]]
-            print(change_rate_svm_epochs)
             change_rate_rel = [averaged_metrics["wc_rel"][q] for q in averaged_metrics["wc_rel"]]
             change_rate_rel_n = [averaged_metrics["wc_n_rel"][q] for q in averaged_metrics["wc_n_rel"]]
             change_rate_diff = [averaged_metrics["wc_diff"][q] for q in averaged_metrics["wc_diff"]]
