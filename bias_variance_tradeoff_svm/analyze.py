@@ -408,7 +408,6 @@ class analyze:
         kendall = {}
         change_rate = {}
         rbo_min_models = {}
-        metrics = {}
 
         for svm in rankings:
             queries = []
@@ -572,8 +571,7 @@ class analyze:
                     #         banned[2] = []
                     last_list_index_svm[query] = current_list_svm
 
-                if n_q == 0:
-                    continue
+
 
                     # sum_kt_svm.append(float(sum_sum_kt) / n_q)
                     # sum_kt_svm_n.append(float(sum_sum_kt_n) / n_q)
