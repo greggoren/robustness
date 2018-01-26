@@ -581,7 +581,6 @@ class analyze:
                         metrics_for_stats["wc_rel"][epoch][query] = wc_rel
                         metrics_for_stats["wc_n_rel"][epoch][query] = wc_rel_n
                         metrics_for_stats["wc"][epoch][query] = wc
-                        print(epoch, query, wc)
                         metrics_for_stats["rbo"][epoch][query] = rbo
                     # # else:
                     #     if query == "164":
@@ -637,11 +636,15 @@ class analyze:
         return kendall, change_rate, rbo_min_models
 
     def average_metrics_for_queries(self, metrics, queries):
+        print(queries)
+        print(metrics)
         averaged_epochs = {m: {} for m in metrics}
         for metric in metrics:
             for query in queries:
                 averaged_epochs[metric][query] = np.mean(
-                    [metrics[metric][e][query] for e in metrics[metric] if metrics[metric][e].get(query, False)])
+                    [metrics[metric][e][query] for e in metrics[metric] if
+                     metrics[metric][e].get(query, False) and e != 1])
+        print(averaged_epochs)
         return averaged_epochs
 
     def get_all_scores(self,svms,competition_data):
