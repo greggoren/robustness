@@ -44,13 +44,17 @@ def get_banned(banned_file):
             splitted = ban.split()
             banned_queries[int(splitted[0])].append(splitted[1])
     return banned_queries
-def upload_models(models_dir):
+
+
+def upload_models(models_dir, C_array):
     model_handlers = {}
     for root, dirs, files in os.walk(models_dir):
         for file in files:
-            model_file = root + "/" + file
-            w = recover_model(model_file)
-            model_handlers[model_file] = w
+            model = float(file.split("svm_model")[0])
+            if model in C_array:
+                model_file = root + "/" + file
+                w = recover_model(model_file)
+                model_handlers[model_file] = w
     return model_handlers
 
 
