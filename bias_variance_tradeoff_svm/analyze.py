@@ -406,8 +406,8 @@ class analyze:
         a = open("wc", 'wb')
         pickle.dump((C_for_pearson, wc_for_pearson), a)
         a.close()
-        a = open("map", 'wb')
-        pickle.dump((C_for_pearson, map_for_pearson), a)
+        a = open("kt", 'wb')
+        pickle.dump((C_for_pearson, kendall_for_pearson), a)
         a.close()
     def calculate_average_kendall_tau(self, rankings, weights, ranks, banned, cd):
         kendall = {}
