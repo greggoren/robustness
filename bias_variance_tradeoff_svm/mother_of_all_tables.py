@@ -66,7 +66,7 @@ def upload_models(models_dir, C_array):
 
 
 if __name__ == "__main__":
-    C_array = [0.0001, 0.001, 0.01, 0.1]
+    C_array = []
     C_array.extend([(i + 1) * 40 for i in range(25)])
     C_array.extend([(i + 1) * 45 for i in range(25)])
     # C_array.extend([900, 800, 600, 700])
@@ -74,12 +74,11 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
 
-    banned = get_banned("../banned1")
-    print(banned)
-    # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    # banned = get_banned("../banned1")
+    banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
