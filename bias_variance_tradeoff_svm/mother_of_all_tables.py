@@ -68,6 +68,7 @@ def upload_models(models_dir, C_array):
 if __name__ == "__main__":
     C_array = [0.0001, 0.001, 0.01, 0.1]
     C_array.extend([(i + 1) * 40 for i in range(25)])
+    C_array.extend([(i + 1) * 45 for i in range(25)])
     # C_array.extend([900, 800, 600, 700])
     svms = upload_models("models_light", C_array)
     preprocess = p.preprocess()
