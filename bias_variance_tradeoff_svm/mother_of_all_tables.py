@@ -52,7 +52,7 @@ def upload_models(models_dir, C_array):
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             t = file.split("svm_model")[1]
-            if len(t.split(".")) > 0 and int(t.split(".")[0]) > 0:
+            if len(t.split(".")) > 0 and int(t.split(".")[0]) > 0 and int(t.split(".")[1]) > 0:
                 model = float(file.split("svm_model")[1])
                 models.append(model)
                 model_file = root + "/" + file
