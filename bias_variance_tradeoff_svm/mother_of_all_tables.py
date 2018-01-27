@@ -52,7 +52,7 @@ def upload_models(models_dir, C_array):
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             model = float(file.split("svm_model")[1])
-            if model > 0.7:
+            if model in C_array:
                 models.append(model)
                 model_file = root + "/" + file
                 w = recover_model(model_file)
@@ -66,14 +66,8 @@ def upload_models(models_dir, C_array):
 
 
 if __name__ == "__main__":
-
-    C_array = [(i + 1) / 1000 for i in range(5)]
-    C_array.extend([(i + 1) / 10000 for i in range(5)])
-    C_array.extend([(i + 1) / 100 for i in range(5)])
-    C_array.extend([(i + 1) / 10 for i in range(5)])
-    C_array.extend([(i + 1) / 1 for i in range(5)])
-    C_array.extend([(i + 1) * 10 for i in range(5)])
-    C_array.extend([(i + 1) * 100 for i in range(5)])
+    C_array = [0.0001, 0.001, 0.01, 0.1]
+    C_array.extend([(i + 1) * 40 for i in range(25)])
     # C_array.extend([900, 800, 600, 700])
     svms = upload_models("models_light", C_array)
     preprocess = p.preprocess()
