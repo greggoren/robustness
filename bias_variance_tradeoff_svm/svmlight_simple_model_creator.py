@@ -4,7 +4,7 @@ import os
 import subprocess
 from functools import partial
 from multiprocessing import Pool
-
+import random
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -54,9 +54,18 @@ def upload_models(models_dir):
             models.append(model)
     return models
 
+
+def init():
+    models = []
+    while len(set(models)) < 60:
+        models.append(random.uniform(0, 10000))
+    return list(set(models))
+
+
 if __name__ == "__main__":
     # C_array = [0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009]
     train_file = params.data_set_file
+    random.seed(9001)
     # for C in C_array:
     #     model_file = learn_svm(C, train_file)
     #
@@ -78,8 +87,7 @@ if __name__ == "__main__":
     #
     # C_array = [float(i * 1000) for i in range(1, 10)]
     # C_array = [0.0001, 0.001, 0.01, 0.1]
-    C_array = []
-    C_array.extend([(i + 1) * 40 for i in range(35)])
+    C_array = init()
     existing = upload_models("models_light")
     C_array = list(set(C_array) - set(existing))
     f = partial(learn_svm, train_file)
