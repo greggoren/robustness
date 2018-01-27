@@ -56,9 +56,7 @@ def upload_models(models_dir):
 
 
 def init():
-    models = []
-    while len(set(models)) < 60:
-        models.append(random.uniform(0, 10000))
+    models = np.random.uniform(0, 10000, 60)
     return list(set(models))
 
 
