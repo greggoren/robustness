@@ -77,8 +77,9 @@ if __name__ == "__main__":
     #     model_file = learn_svm(C, train_file)
     #
     # C_array = [float(i * 1000) for i in range(1, 10)]
-    C_array = [0.0001, 0.001, 0.01, 0.1]
-    C_array.extend([(i + 1) * 40 for i in range(25)])
+    # C_array = [0.0001, 0.001, 0.01, 0.1]
+    C_array = []
+    C_array.extend([(i + 1) * 45 for i in range(25)])
     existing = upload_models("models_light")
     C_array = list(set(C_array) - set(existing))
     f = partial(learn_svm, train_file)
