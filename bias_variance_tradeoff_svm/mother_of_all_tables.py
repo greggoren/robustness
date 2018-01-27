@@ -52,7 +52,7 @@ def upload_models(models_dir, C_array):
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             t = file.split("svm_model")[1]
-            if len(t.split(".")) > 1 and int(t.split(".")[0]) > 0 and int(t.split(".")[1]) > 0 and float(t) > 200:
+            if len(t.split(".")) > 1 and int(t.split(".")[0]) > 0 and int(t.split(".")[1]) > 0:
                 model = float(file.split("svm_model")[1])
                 models.append(model)
                 model_file = root + "/" + file
@@ -76,11 +76,11 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
 
-    # banned = get_banned("../banned1")
-    banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    banned = get_banned("../banned1")
+    # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
+    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
