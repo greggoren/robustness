@@ -69,7 +69,6 @@ class analyze:
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
-                    print(line)
                     if len(line.split()) <= 1:
                         break
                     if line.split()[1] == "all":

@@ -80,6 +80,7 @@ if __name__ == "__main__":
     analyze = a.analyze()
 
     banned = get_banned("../banned2")
+    print(banned)
     # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
