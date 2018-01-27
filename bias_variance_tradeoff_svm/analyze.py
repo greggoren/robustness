@@ -356,8 +356,8 @@ class analyze:
         corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
         f.write(
             "\KTshort & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
-        corr_trees = spearmanr(C_for_pearson, wc_for_pearson)
-        f.write("\WC normalized & " + str(round(corr_trees[0], 3)) + " (" + str(
+        corr_trees = spearmanr(C_for_pearson[5:], wc_for_pearson[5:])
+        f.write("\WC & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, rbo_for_pearson)
         f.write("\RBO & " + str(round(corr_trees[0], 3)) + " (" + str(
