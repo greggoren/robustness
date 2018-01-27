@@ -52,7 +52,7 @@ def upload_models(models_dir, C_array):
     for root, dirs, files in os.walk(models_dir):
         for file in files:
             model = float(file.split("svm_model")[1])
-            if True:
+            if model > 0.7:
                 models.append(model)
                 model_file = root + "/" + file
                 w = recover_model(model_file)
