@@ -15,13 +15,13 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
 
 # C,mean,max = pickle.load(open("mean_max_c_w_kt",'rb'))
 # trees,mean,max = pickle.load(open("mean_max_trees_w_kt",'rb'))
-trees, wc = pickle.load(open("corr", 'rb'))
+C, wc = pickle.load(open("wc", 'rb'))
 
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of C","max_36_45","C","Weighted KT",C[36:45],max[36:45])
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of C","mean_36_45","C","Weighted KT",C[36:46],mean[36:46])
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #trees","mean_tress","#trees","Weighted KT",trees,mean)
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of #trees","max_tress","#trees","Weighted KT",trees,max)
-create_scatter_plot("WC as f(#trees)", "wc", "#trees",
-                    "WC", trees, wc)
+create_scatter_plot("WC as f(C)", "wc_scat", "C",
+                    "WC", C, wc)
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #leaves", "mean_leaves", "#leaves",
 #                     "Weighted KT", leaves, mean)
