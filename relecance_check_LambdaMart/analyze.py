@@ -71,7 +71,7 @@ f.write("\\end{tabular}")
 f.close()
 
 leaves = {}
-with open("leaves_relevance_for_correlation_LambdaMart") as leaves_stats:
+with open("models_relevance_for_correlation_LambdaMart1") as leaves_stats:
     for stat in leaves_stats:
         if stat.__contains__("MODEL"):
             continue

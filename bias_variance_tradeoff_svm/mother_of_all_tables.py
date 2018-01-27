@@ -66,19 +66,25 @@ def upload_models(models_dir, C_array):
 
 
 if __name__ == "__main__":
-    C_array = [1, 1500, 2500, 5000, 6000, 7000, 8000, 10000, 3500, 4500, 5500, 6500, 7500, 8500]
-    C_array.extend([(i + 1) * 40 for i in range(25)])
-    C_array.extend([(i + 1) * 45 for i in range(25)])
+    # C_array = [1, 1500, 2500, 5000, 6000, 7000, 8000, 10000, 3500, 4500, 5500, 6500, 7500, 8500]
+    C_array = [1000, 2000, 3000, 4000, 5000]
+    C_array.extend([(i + 1) / 1000 for i in range(5)])
+    C_array.extend([(i + 1) / 100 for i in range(5)])
+    C_array.extend([(i + 1) / 10 for i in range(5)])
+    C_array.extend([(i + 1) / 1 for i in range(5)])
+    C_array.extend([(i + 1) for i in range(5)])
+    C_array.extend([(i + 1) * 10 for i in range(5)])
+    C_array.extend([(i + 1) * 100 for i in range(5)])
     # C_array.extend([900, 800, 600, 700])
     svms = upload_models("models_light", C_array)
     preprocess = p.preprocess()
     analyze = a.analyze()
 
-    # banned = get_banned("../banned2")
-    banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    banned = get_banned("../banned1")
+    # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
+    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
