@@ -22,9 +22,9 @@ C, wc = pickle.load(open("wc", 'rb'))
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of C","mean_36_45","C","Weighted KT",C[36:46],mean[36:46])
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #trees","mean_tress","#trees","Weighted KT",trees,mean)
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of #trees","max_tress","#trees","Weighted KT",trees,max)
-create_scatter_plot("WC as f(C) Competition - 1 ", "wc_scat_1", "C",
+create_scatter_plot("WC as f(C) Competition - Last ", "wc_scat_last", "C",
                     "WC", C, wc)
-create_scatter_plot("KT as f(C) Competition - 1", "kt_scat_1", "C",
+create_scatter_plot("KT as f(C) Competition - Last", "kt_scat_last", "C",
                     "KT", C, kt)
 
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #leaves", "mean_leaves", "#leaves",
