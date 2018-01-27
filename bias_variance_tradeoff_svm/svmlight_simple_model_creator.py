@@ -23,7 +23,37 @@ def learn_svm(C, train_file):
     return model_file
 
 
+def recover_model(model):
+    indexes_covered = []
+    weights = []
+    with open(model) as model_file:
+        for line in model_file:
+            if line.__contains__(":"):
+                wheights = line.split()
+                wheights_length = len(wheights)
 
+                for index in range(1, wheights_length - 1):
+
+                    feature_id = int(wheights[index].split(":")[0])
+                    if index < feature_id:
+                        for repair in range(index, feature_id):
+                            if repair in indexes_covered:
+                                continue
+                            weights.append(0)
+                            indexes_covered.append(repair)
+                    weights.append(float(wheights[index].split(":")[1]))
+                    indexes_covered.append(feature_id)
+    return np.array(weights)
+
+
+def upload_models(models_dir, C_array):
+    model_handlers = {}
+    models = []
+    for root, dirs, files in os.walk(models_dir):
+        for file in files:
+            model = float(file.split("svm_model")[1])
+            models.append(model)
+    return models
 
 if __name__ == "__main__":
     # C_array = [0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009]
@@ -48,7 +78,9 @@ if __name__ == "__main__":
     #     model_file = learn_svm(C, train_file)
     #
     # C_array = [float(i * 1000) for i in range(1, 10)]
-    C_array = [40, 10, 0.001, 50, 20, 0.005, 0.004, 0.003, 0.002, 30]
-    C_array.extend([float(i + 1) * 10 for i in range(5)])
+    C_array = [0.0001, 0.001, 0.01, 0.1]
+    C_array.extend([(i + 1) * 40] for i in range(25))
+    existing = upload_models("models_light")
+    C_array = list(set(existing) - set(C_array))
     for C in C_array:
         model_file = learn_svm(C, train_file)
