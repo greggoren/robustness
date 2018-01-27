@@ -46,8 +46,7 @@ def recover_model(model):
     return np.array(weights)
 
 
-def upload_models(models_dir, C_array):
-    model_handlers = {}
+def upload_models(models_dir):
     models = []
     for root, dirs, files in os.walk(models_dir):
         for file in files:
