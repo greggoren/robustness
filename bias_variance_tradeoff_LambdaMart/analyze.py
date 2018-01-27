@@ -366,8 +366,10 @@ class analyze:
                     corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
         f.write("\\end{tabular}")
         f.close()
-        with open("corr", 'wb') as c:
-            pickle.dump((trees_for_pearson, wc_for_pearson), c)
+        a = open("wc", 'wb')
+        pickle.dump((trees_for_pearson, wc_for_pearson), a)
+        a.close()
+
 
     def create_change_percentage(self, cd):
         change = {}
