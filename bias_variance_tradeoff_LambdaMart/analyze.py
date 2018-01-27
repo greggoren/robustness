@@ -103,7 +103,7 @@ class analyze:
                 name = model.split("model_")[1]
 
                 score_file = name + "_" + str(i)
-                qrels = "../rel2/srel0" + str(i)
+                qrels = "../rel2/rel0" + str(i)
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
