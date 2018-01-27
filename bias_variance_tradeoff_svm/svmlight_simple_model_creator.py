@@ -82,5 +82,5 @@ if __name__ == "__main__":
     existing = upload_models("models_light")
     C_array = list(set(C_array) - set(existing))
     f = partial(learn_svm, train_file)
-    with Pool(processes=5) as pool:
+    with Pool(processes=10) as pool:
         pool.map(f, C_array)
