@@ -24,8 +24,8 @@ if __name__ == "__main__":
     # trees = int(sys.argv[1])
     # leaves = int(sys.argv[2])
 
-    trees = [(i + 1) * 10 for i in range(38, 45)]
-    leaves = [(1 + i) * 5 for i in range(24, 30)]
+    trees = [(i + 1) * 10 for i in range(39, 45)]
+    leaves = [(1 + i) * 5 for i in range(25, 30)]
     models = zip(leaves, trees)
     for leaf, tree in models:
         fold_number = 1
