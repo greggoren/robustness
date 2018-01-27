@@ -80,6 +80,6 @@ if __name__ == "__main__":
     C_array = [0.0001, 0.001, 0.01, 0.1]
     C_array.extend([(i + 1) * 40] for i in range(25))
     existing = upload_models("models_light")
-    C_array = list(set(existing) - set(C_array))
+    C_array = list(set(C_array) - set(existing))
     for C in C_array:
         model_file = learn_svm(C, train_file)
