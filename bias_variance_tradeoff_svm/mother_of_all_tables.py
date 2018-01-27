@@ -66,7 +66,7 @@ def upload_models(models_dir, C_array):
 
 
 if __name__ == "__main__":
-    C_array = [0.1, 1, 0.01, 0.001, 1500, 2500, 5000, 6000, 7000, 8000, 10000]
+    C_array = [1, 1500, 2500, 5000, 6000, 7000, 8000, 10000, 3500, 4500, 5500, 6500, 7500, 8500]
     C_array.extend([(i + 1) * 40 for i in range(25)])
     C_array.extend([(i + 1) * 45 for i in range(25)])
     # C_array.extend([900, 800, 600, 700])
