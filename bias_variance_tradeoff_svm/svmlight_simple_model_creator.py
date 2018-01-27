@@ -5,6 +5,7 @@ import subprocess
 from functools import partial
 from multiprocessing import Pool
 import random
+import pickle
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -86,6 +87,9 @@ if __name__ == "__main__":
     # C_array = [float(i * 1000) for i in range(1, 10)]
     # C_array = [0.0001, 0.001, 0.01, 0.1]
     C_array = init()
+    f = open("C_array", 'wb')
+    pickle.dump(C_array, f)
+    f.close()
     existing = upload_models("models_light")
     C_array = list(set(C_array) - set(existing))
     f = partial(learn_svm, train_file)

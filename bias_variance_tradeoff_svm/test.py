@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from sklearn.linear_model.tests.test_passive_aggressive import random_state
 
 
 def init():
