@@ -2,8 +2,8 @@ from bias_variance_tradeoff_svm import params
 import numpy as np
 import os
 import subprocess
-import svm_models_handler as mh
-
+from functools import partial
+from multiprocessing import Pool
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -13,7 +13,7 @@ def run_command(command):
     return iter(p.stdout.readline, b'')
 
 
-def learn_svm(C, train_file):
+def learn_svm(train_file, C):
     if not os.path.exists("./models_light/"):
         os.makedirs("./models_light/")
     model_file = "./models_light/svm_model" + str(C)
@@ -81,5 +81,6 @@ if __name__ == "__main__":
     C_array.extend([(i + 1) * 40 for i in range(25)])
     existing = upload_models("models_light")
     C_array = list(set(C_array) - set(existing))
-    for C in C_array:
-        model_file = learn_svm(C, train_file)
+    f = partial(learn_svm, train_file)
+    with Pool(processes=5) as pool:
+        pool.map(f, C_array)
