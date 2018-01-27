@@ -51,18 +51,14 @@ def upload_models(models_dir, C_array):
     models = []
     for root, dirs, files in os.walk(models_dir):
         for file in files:
-            model = float(file.split("svm_model")[1])
-            if model in C_array:
+            t = file.split("svm_model")[1]
+            if len(t.split(".")) > 0 and int(t.split(".")) > 0:
+                model = float(file.split("svm_model")[1])
                 models.append(model)
                 model_file = root + "/" + file
                 w = recover_model(model_file)
                 model_handlers[model_file] = w
-    test = set(C_array) - set(models)
-    if test:
-        print(test)
-    else:
-        print("success")
-    return model_handlers
+        return model_handlers
 
 
 if __name__ == "__main__":
