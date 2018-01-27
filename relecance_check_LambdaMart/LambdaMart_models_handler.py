@@ -38,8 +38,8 @@ class model_handler_LambdaMart():
                 os.makedirs("models/" + str(fold) + "/")
         except:
             print("col")
-        command = self.java_path + ' -Xms8G -Xmx10G -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
-                                                                                                                                                    ' -tree ' + str(
+        command = self.java_path + ' -Xms5G -Xmx5G -jar ' + self.jar_path + ' -train ' + train_file + ' -ranker 6 -qrel ' + query_relevance_file + ' -metric2t NDCG@20' \
+                                                                                                                                                   ' -tree ' + str(
             number_of_trees) + ' -leaf ' + str(number_of_leaves) + ' -save ' + "models/" + str(
             fold) + "/" + add + 'model_' + str(number_of_trees) + "_" + str(number_of_leaves)
         print("command = ", command)
