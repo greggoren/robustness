@@ -16,7 +16,7 @@ def run_command(command):
 
 
 def upload_models(models_dir):
-    model_handlers = {}
+
     models = []
     for root, dirs, files in os.walk(models_dir):
         print(root, files, dirs)
@@ -24,10 +24,10 @@ def upload_models(models_dir):
             model_file = root + "/" + file
             w = recover_model(model_file)
             if np.linalg.norm(w) < 15:
-                model_handlers[model_file] = w
-                models.append(model_file)
+                model = float(model_file.split("svm_model")[1])
+                models.append(model)
 
-    return model_handlers
+    return models
 
 
 def learn_svm(C, train_file, fold):
