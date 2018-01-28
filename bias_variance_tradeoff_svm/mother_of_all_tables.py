@@ -48,7 +48,7 @@ def get_banned(banned_file):
 
 
 def upload_models(models_dir, C_array):
-    random.seed(9005)
+    random.seed(9032)
     model_handlers = {}
     models = []
     for root, dirs, files in os.walk(models_dir):
