@@ -4,6 +4,7 @@ import prep as p
 import numpy as np
 import pickle
 import random
+
 from copy import deepcopy
 def create_mhs(dir):
     mhs = []
@@ -48,19 +49,16 @@ def get_banned(banned_file):
 
 
 def upload_models(models_dir, C_array):
-    random.seed(9032)
+    # random.seed(9032)
     model_handlers = {}
     models = []
     for root, dirs, files in os.walk(models_dir):
         for file in files:
-            t = file.split("svm_model")[1]
-            # if len(t.split(".")) > 1 and int(t.split(".")[0]) > 0 and int(t.split(".")[1]) > 0:
-            model = float(file.split("svm_model")[1])
-
             model_file = root + "/" + file
             w = recover_model(model_file)
-            model_handlers[model_file] = w
-            models.append(model_file)
+            if np.linalg.norm(w) < 15:
+                model_handlers[model_file] = w
+                models.append(model_file)
     # random.shuffle(models)
     # sampeled_models = models[:31]
     # res = deepcopy(model_handlers)
