@@ -19,6 +19,7 @@ def upload_models(models_dir):
     model_handlers = {}
     models = []
     for root, dirs, files in os.walk(models_dir):
+        print(root, files, dirs)
         for file in files:
             model_file = root + "/" + file
             w = recover_model(model_file)
