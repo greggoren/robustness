@@ -61,11 +61,11 @@ class analyze:
             queries = []
             metrics[model] = {}
             # per_query_stats[model]={}
-            for i in range(1, 9):
+            for i in range(1, 6):
                 name = "svm" + model.split("_model")[1]
 
                 score_file = name + str(i)
-                qrels = "../rels/srel0" + str(i)
+                qrels = "../rel2/srel0" + str(i)
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
