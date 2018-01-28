@@ -42,7 +42,7 @@ def get_banned(banned_file):
     with open(banned_file) as banned:
         for ban in banned:
             splitted = ban.split()
-            banned_queries[int(splitted[0])].append(splitted[1])
+            banned_queries[int(splitted[0]) - 5].append(splitted[1])
     return banned_queries
 
 
