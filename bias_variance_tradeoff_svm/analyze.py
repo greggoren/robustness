@@ -61,11 +61,11 @@ class analyze:
             queries = []
             metrics[model] = {}
             # per_query_stats[model]={}
-            for i in range(1, 6):
+            for i in range(1, 9):
                 name = "svm" + model.split("_model")[1]
 
                 score_file = name + str(i)
-                qrels = "../rel2/srel0" + str(i)
+                qrels = "../rel3/rel0" + str(i)
 
                 command = "../trec_eval -q -m ndcg " + qrels + " " + score_file
                 for line in run_command(command):
@@ -292,7 +292,7 @@ class analyze:
 
         for key in keys:
             model = key.split("svm_model")[1]
-            C_for_pearson.append(float(model))
+            C_for_pearson.append(np.linalg(svms[key]))
             average_kt = np.mean(kendall[key][0])
             kendall_for_pearson.append(float(average_kt))
             rel_kt = np.mean(kendall[key][5])
@@ -351,8 +351,8 @@ class analyze:
             table_file.write(line)
         table_file.close()
         f = open("pearson_correlation.tex", 'w')
-        f.write("\\begin{tabular}{c|c|c|c} \n")
-        f.write("Metric & #Tress & #Leaves \\\\ \n")
+        f.write("\\begin{tabular}{c|c} \n")
+        f.write("Metric & Correlation  \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, kendall_for_pearson)
         f.write(
             "\KTshort & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
@@ -468,6 +468,24 @@ class analyze:
         print(pearsonr(C_for_pearson, wc_for_pearson))
         a = open("wc", 'wb')
         pickle.dump((C_for_pearson, wc_for_pearson), a)
+        a.close()
+        a = open("kt", 'wb')
+        pickle.dump((C_for_pearson, kendall_for_pearson), a)
+        a.close()
+        a = open("kt_diff", 'wb')
+        pickle.dump((C_for_pearson, kendall_diff_for_pearson), a)
+        a.close()
+        a = open("kt_sum", 'wb')
+        pickle.dump((C_for_pearson, kendall_sum_for_pearson), a)
+        a.close()
+        a = open("kt_rel", 'wb')
+        pickle.dump((C_for_pearson, kendall_rel_for_pearson), a)
+        a.close()
+        a = open("wc_diff", 'wb')
+        pickle.dump((C_for_pearson, wc_diff_for_pearson), a)
+        a.close()
+        a = open("wc_sum", 'wb')
+        pickle.dump((C_for_pearson, wc_sum_for_pearson), a)
         a.close()
         a = open("kt", 'wb')
         pickle.dump((C_for_pearson, kendall_for_pearson), a)

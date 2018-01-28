@@ -43,7 +43,7 @@ def get_banned(banned_file):
     with open(banned_file) as banned:
         for ban in banned:
             splitted = ban.split()
-            banned_queries[int(splitted[0]) - 5].append(splitted[1])
+            banned_queries[int(splitted[0])].append(splitted[1])
     return banned_queries
 
 
@@ -61,36 +61,41 @@ def upload_models(models_dir, C_array):
                 w = recover_model(model_file)
                 model_handlers[model_file] = w
                 models.append(model_file)
-    random.shuffle(models)
-    sampeled_models = models[:31]
-    res = deepcopy(model_handlers)
-    for i in model_handlers:
-        if i in sampeled_models:
-            res.pop(i)
+    # random.shuffle(models)
+    # sampeled_models = models[:31]
+    # res = deepcopy(model_handlers)
+    # for i in model_handlers:
+    #     if i in sampeled_models:
+    #         res.pop(i)
 
-    return res
+    return model_handlers
 
 
 if __name__ == "__main__":
-    C_array = pickle.load(open("C_array", 'rb'))
+    # C_array = pickle.load(open("C_array", 'rb'))
     # C_array = [1000, 2000, 3000, 4000, 5000]
-    # C_array.extend([(i + 1) * 40 for i in range(25)])
+    # C_array=[]
+    # C_array.extend([(i + 1)/10000  for i in range(10)])
+    # C_array.extend([(i + 1)/1000 for i in range(10)])
     # C_array.extend([(i + 1) / 100 for i in range(5)])
     # C_array.extend([(i + 1) / 10 for i in range(5)])
-    # C_array.extend([(i + 1) / 1 for i in range(5)])
+    # C_array.extend([(i + 1)  for i in range(10)])
+    # C_array.extend([(i + 1)*100  for i in range(10)])
+    # C_array.extend([(i + 1) *1000 for i in range(10)])
     # C_array.extend([(i + 1) for i in range(5)])
     # C_array.extend([(i + 1) * 10 for i in range(5)])
     # C_array.extend([(i + 1) * 100 for i in range(5)])
     # C_array.extend([900, 800, 600, 700])
+    C_array = []
     svms = upload_models("models_light", C_array)
     preprocess = p.preprocess()
     analyze = a.analyze()
 
-    banned = get_banned("../banned2")
-    # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    # banned = get_banned("../banned2")
+    banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
