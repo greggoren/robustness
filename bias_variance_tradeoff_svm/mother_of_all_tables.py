@@ -48,6 +48,7 @@ def get_banned(banned_file):
 
 
 def upload_models(models_dir, C_array):
+    random.seed(9001)
     model_handlers = {}
     models = []
     for root, dirs, files in os.walk(models_dir):
@@ -90,6 +91,6 @@ if __name__ == "__main__":
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
     competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
+    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
