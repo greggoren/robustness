@@ -746,7 +746,6 @@ class analyze:
                 averaged_epochs[metric][query] = np.mean(
                     [metrics[metric][e][query] for e in metrics[metric] if
                      query in list(metrics[metric][e].keys()) and e != 1])
-        print(averaged_epochs['wc'])
         return averaged_epochs
 
 
@@ -755,7 +754,6 @@ class analyze:
         for svm in svms:
             scores[svm] = {}
             epochs = sorted(list(competition_data.keys()))
-            print(epochs)
             for epoch in epochs:
                 scores[svm][epoch] = {}
                 for query in competition_data[epoch]:

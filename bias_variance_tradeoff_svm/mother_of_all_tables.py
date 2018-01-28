@@ -96,5 +96,6 @@ if __name__ == "__main__":
     # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
     competition_data = preprocess.extract_features_by_epoch("../featuresASR_combined")
+    print(competition_data[3]["010"])
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
