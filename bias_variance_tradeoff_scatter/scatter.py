@@ -1,7 +1,10 @@
 import pickle
 import matplotlib.pyplot as plt
-
-
+from scipy.stats import pearsonr, kendalltau
+from scipy.stats.mstats import spearmanr
+from numpy import corrcoef
+from scipy.stats import linregress
+import pandas
 def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
     fig = plt.figure()
     fig.suptitle(title, fontsize=14, fontweight='bold')
@@ -15,7 +18,7 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
 
 # C,mean,max = pickle.load(open("mean_max_c_w_kt",'rb'))
 # trees,mean,max = pickle.load(open("mean_max_trees_w_kt",'rb'))
-C, kt = pickle.load(open("kt_norm2", 'rb'))
+# C, kt = pickle.load(open("kt_norm2", 'rb'))
 C, wc = pickle.load(open("wc_norm2", 'rb'))
 
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of C","max_36_45","C","Weighted KT",C[36:45],max[36:45])
@@ -24,8 +27,17 @@ C, wc = pickle.load(open("wc_norm2", 'rb'))
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of #trees","max_tress","#trees","Weighted KT",trees,max)
 create_scatter_plot("WC as f(Norm(W)) Competition - 2 ", "wc_scat2", "Norm(W)",
                     "WC", C, wc)
-create_scatter_plot("KT as f(Norm(W)) Competition - 2", "kt_scat2", "Norm(W)",
-                    "KT", C, kt)
+# create_scatter_plot("KT as f(Norm(W)) Competition - 2", "kt_scat2", "Norm(W)",
+#                     "KT", C, kt)
 
+
+print(len(C))
+print(len(wc))
+print(pearsonr(C, wc))
+print(spearmanr(C, wc, use_ties=False))
+print(kendalltau(wc, C))
+b = [C, wc]
+df = pandas.DataFrame.from_records(b)
+print(df.corr("pearson"))
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #leaves", "mean_leaves", "#leaves",
 #                     "Weighted KT", leaves, mean)

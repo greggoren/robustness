@@ -4,7 +4,7 @@ import pickle
 from kendall_tau import kendall_distance, weighted_kendall_distance, normalized_weighted_kendall_distance
 import math
 import RBO as r
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, kendalltau
 from scipy.stats import spearmanr
 def run_command(command):
     p = subprocess.Popen(command,
@@ -365,23 +365,23 @@ class analyze:
         corr_trees = pearsonr(C_for_pearson, wc_diff_for_pearson)
         f.write(
             "\WCdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+                round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, wc_rel_for_pearson)
         f.write(
             "\WCresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, wc_sum_for_pearson)
         f.write(
             "\WCsum & " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+                round(corr_trees[1], 3)) + ")   \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, kendall_diff_for_pearson)
-        f.write("\KTDdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
+        f.write("\KTdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, kendall_rel_for_pearson)
         print(wc_for_pearson)
         f.write(
-            "\KTDresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+            "\KTresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, kendall_sum_for_pearson)
-        f.write("\KTDsum & " + str(round(corr_trees[0], 3)) + " (" + str(
+        f.write("\KTsum & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = pearsonr(C_for_pearson, wc_diff_n_for_pearson)
         f.write("WC diff norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
@@ -404,8 +404,8 @@ class analyze:
         f.write("\\end{tabular}")
         f.close()
         f = open("spearman_correlation.tex", 'w')
-        f.write("\\begin{tabular}{c|c|c|c} \n")
-        f.write("Metric & #Tress & #Leaves \\\\ \n")
+        f.write("\\begin{tabular}{c|c} \n")
+        f.write("Metric & Correlation \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, kendall_for_pearson)
         f.write(
             "\KTshort & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
@@ -418,23 +418,23 @@ class analyze:
         corr_trees = spearmanr(C_for_pearson, wc_diff_for_pearson)
         f.write(
             "\WCdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+                round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, wc_rel_for_pearson)
         f.write(
             "\WCresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, wc_sum_for_pearson)
         f.write(
             "\WCsum & " + str(round(corr_trees[0], 3)) + " (" + str(
-                round(corr_trees[1], 3)) + ") &  \\\\ \n")
+                round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, kendall_diff_for_pearson)
-        f.write("\KTDdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
+        f.write("\KTdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, kendall_rel_for_pearson)
         print(wc_for_pearson)
         f.write(
-            "\KTDresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+            "\KTresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, kendall_sum_for_pearson)
-        f.write("\KTDsum & " + str(round(corr_trees[0], 3)) + " (" + str(
+        f.write("\KTsum & " + str(round(corr_trees[0], 3)) + " (" + str(
             round(corr_trees[1], 3)) + ")  \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, wc_diff_n_for_pearson)
         f.write("WC diff norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
@@ -453,6 +453,59 @@ class analyze:
         corr_trees = spearmanr(C_for_pearson, map_for_pearson)
         f.write("\map & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         corr_trees = spearmanr(C_for_pearson, mrr_for_pearson)
+        f.write("\mrr & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        f.write("\\end{tabular}")
+        f.close()
+        f = open("kendalltau_correlation.tex", 'w')
+        f.write("\\begin{tabular}{c|c} \n")
+        f.write("Metric & Correlation \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_for_pearson)
+        f.write(
+            "\KTshort & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ")   \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_for_pearson)
+        f.write("\WC & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, rbo_for_pearson)
+        f.write("\RBO & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_diff_for_pearson)
+        f.write(
+            "\WCdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
+                round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_rel_for_pearson)
+        f.write(
+            "\WCresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_sum_for_pearson)
+        f.write(
+            "\WCsum & " + str(round(corr_trees[0], 3)) + " (" + str(
+                round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_diff_for_pearson)
+        f.write("\KTdiff & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_rel_for_pearson)
+        print(wc_for_pearson)
+        f.write(
+            "\KTresp & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_sum_for_pearson)
+        f.write("\KTsum & " + str(round(corr_trees[0], 3)) + " (" + str(
+            round(corr_trees[1], 3)) + ")  \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_diff_n_for_pearson)
+        f.write("WC diff norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_rel_n_for_pearson)
+        f.write("WC rel norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, wc_sum_n_for_pearson)
+        f.write("WC sum norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_diff_n_for_pearson)
+        f.write("KTD diff norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_rel_n_for_pearson)
+        f.write("KTD rel norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, kendall_sum_n_for_pearson)
+        f.write("KTD sum norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, ndcg_for_pearson)
+        f.write("\\ndcg & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, map_for_pearson)
+        f.write("\map & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
+        corr_trees = kendalltau(C_for_pearson, mrr_for_pearson)
         f.write("\mrr & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") \\\\ \n")
         f.write("\\end{tabular}")
         f.close()
