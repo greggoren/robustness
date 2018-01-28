@@ -292,7 +292,7 @@ class analyze:
 
         for key in keys:
             model = key.split("svm_model")[1]
-            C_for_pearson.append(np.linalg(svms[key]))
+            C_for_pearson.append(np.linalg.norm(svms[key]))
             average_kt = np.mean(kendall[key][0])
             kendall_for_pearson.append(float(average_kt))
             rel_kt = np.mean(kendall[key][5])
