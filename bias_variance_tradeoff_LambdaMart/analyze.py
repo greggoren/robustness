@@ -370,7 +370,6 @@ class analyze:
         pickle.dump((trees_for_pearson, wc_for_pearson), a)
         a.close()
 
-
     def create_change_percentage(self, cd):
         change = {}
         for epoch in cd:
