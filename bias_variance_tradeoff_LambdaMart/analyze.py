@@ -170,7 +170,7 @@ class analyze:
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, banned_queries, weights,
                                                                                   ranks, competition_data)
         self.extract_score(scores)
-        metrics = self.calculate_metrics(scores)
+        # metrics = self.calculate_metrics(scores)
         keys = list(change_rate.keys())
         keys = sorted(keys, key=lambda x: (
             float(x.split("model_")[1].split("_")[0]), float(x.split("model_")[1].split("_")[1])))  # TODO: fix split
@@ -187,9 +187,9 @@ class analyze:
         wc_diff_n_for_pearson = []
         wc_rel_for_pearson = []
         wc_rel_n_for_pearson = []
-        ndcg_for_pearson = []
-        map_for_pearson = []
-        mrr_for_pearson = []
+        # ndcg_for_pearson = []
+        # map_for_pearson = []
+        # mrr_for_pearson = []
         kendall_sum_for_pearson = []
         kendall_sum_n_for_pearson = []
         kendall_diff_for_pearson = []
@@ -232,12 +232,12 @@ class analyze:
             wc_rel_n_for_pearson.append(change_rel_n)
             average_rbo = np.mean(rbo_min_models[key][0])
             rbo_for_pearson.append(float(average_rbo))
-            nd = np.mean([float(a) for a in metrics[key][0]])
-            ndcg_for_pearson.append(float(nd))
-            map = np.mean([float(a) for a in metrics[key][1]])
-            map_for_pearson.append(float(map))
-            mrr = np.mean([float(a) for a in metrics[key][2]])
-            mrr_for_pearson.append(float(mrr))
+            # nd = np.mean([float(a) for a in metrics[key][0]])
+            # ndcg_for_pearson.append(float(nd))
+            # map = np.mean([float(a) for a in metrics[key][1]])
+            # map_for_pearson.append(float(map))
+            # mrr = np.mean([float(a) for a in metrics[key][2]])
+            # mrr_for_pearson.append(float(mrr))
             rmetrics.append(average_kt)
             rmetrics.append(change)
             rmetrics.append(average_rbo)
@@ -253,9 +253,9 @@ class analyze:
             rmetrics.append(diff_kt_n)
             rmetrics.append(rel_kt_n)
             rmetrics.append(sum_kt_n)
-            rmetrics.append(nd)
-            rmetrics.append(map)
-            rmetrics.append(mrr)
+            # rmetrics.append(nd)
+            # rmetrics.append(map)
+            # rmetrics.append(mrr)
             line = "LambdaMART & " + " & ".join(["$" + str(round(a, 3)) + "$" for a in rmetrics])
             table_file.write(line)
         #
