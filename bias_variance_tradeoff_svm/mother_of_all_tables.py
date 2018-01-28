@@ -4,6 +4,7 @@ import prep as p
 import numpy as np
 import pickle
 import random
+from copy import deepcopy
 def create_mhs(dir):
     mhs = []
     for root, dirs, files in os.walk(dir):
@@ -61,11 +62,12 @@ def upload_models(models_dir, C_array):
                 models.append(model_file)
     random.shuffle(models)
     sampeled_models = models[:31]
+    res = deepcopy(model_handlers)
     for i in model_handlers:
         if i in sampeled_models:
-            model_handlers.pop(i)
+            res.pop(i)
 
-    return model_handlers
+    return res
 
 
 if __name__ == "__main__":
