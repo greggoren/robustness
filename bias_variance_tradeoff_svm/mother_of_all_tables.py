@@ -43,7 +43,7 @@ def get_banned(banned_file):
     with open(banned_file) as banned:
         for ban in banned:
             splitted = ban.split()
-            banned_queries[int(splitted[0])].append(splitted[1])
+            banned_queries[int(splitted[0]) - 5].append(splitted[1])
     return banned_queries
 
 
@@ -86,11 +86,11 @@ if __name__ == "__main__":
     preprocess = p.preprocess()
     analyze = a.analyze()
 
-    banned = get_banned("../banned1")
+    banned = get_banned("../banned2")
     # banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
     # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round1_SVM")
+    competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
