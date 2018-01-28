@@ -15,6 +15,20 @@ def run_command(command):
     return iter(p.stdout.readline, b'')
 
 
+def upload_models(models_dir):
+    model_handlers = {}
+    models = []
+    for root, dirs, files in os.walk(models_dir):
+        for file in files:
+            model_file = root + "/" + file
+            w = recover_model(model_file)
+            if np.linalg.norm(w) < 15:
+                model_handlers[model_file] = w
+                models.append(model_file)
+
+    return model_handlers
+
+
 def learn_svm(C, train_file, fold):
     if not os.path.exists("models/" + str(fold)):
         try:
@@ -79,13 +93,8 @@ def f(train_file, test_file, fold_number, C):
 
 if __name__ == "__main__":
     preprocess = p.preprocess()
-    C_array = [1000, 2000, 3000, 4000, 5000]
-    # C_array = [float(i + 1) / 1000 for i in range(10)]
-    # C_array.extend([float(i + 1) / 100 for i in range(10)])
-    # C_array.extend([float(i + 1) / 10 for i in range(10)])
-    # C_array.extend([float(i + 1) for i in range(10)])
-    # C_array.extend([float(i + 1) * 10 for i in range(10)])
-    # C_array.extend([float(i + 1) * 100 for i in range(10)])
+    C_array = upload_models("../bias_variance_tradeoff_svm/models_light")
+
     X, y, queries = preprocess.retrieve_data_from_file(params.data_set_file, params.normalized)
     number_of_queries = len(set(queries))
     evaluator = e.eval()
@@ -100,8 +109,6 @@ if __name__ == "__main__":
         test_file = "features_test" + str(fold_number)
         p = Pool(10)
         scores = p.map(partial(f, train_file, test_file, fold_number), C_array)
-        # model_file = learn_svm(C, train_file, fold_number)
-        # score_file = run_svm(C, model_file, test_file, fold_number)
         for score_file in scores:
             results = retrieve_scores(test, score_file)
             C = score_file.split("/")[2]
