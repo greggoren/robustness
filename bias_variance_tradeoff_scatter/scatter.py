@@ -15,16 +15,16 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
 
 # C,mean,max = pickle.load(open("mean_max_c_w_kt",'rb'))
 # trees,mean,max = pickle.load(open("mean_max_trees_w_kt",'rb'))
-C, kt = pickle.load(open("kt_norm_last", 'rb'))
-C, wc = pickle.load(open("wc_norm_last", 'rb'))
+C, kt = pickle.load(open("kt_norm1", 'rb'))
+C, wc = pickle.load(open("wc_norm1", 'rb'))
 
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of C","max_36_45","C","Weighted KT",C[36:45],max[36:45])
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of C","mean_36_45","C","Weighted KT",C[36:46],mean[36:46])
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #trees","mean_tress","#trees","Weighted KT",trees,mean)
 # create_scatter_plot("Weighted kendall tau (max aggregation) as function of #trees","max_tress","#trees","Weighted KT",trees,max)
-create_scatter_plot("WC as f(Norm(W)) Competition - last ", "wc_scat_last", "Norm(W)",
+create_scatter_plot("WC as f(Norm(W)) Competition - 1 ", "wc_scat1", "Norm(W)",
                     "WC", C, wc)
-create_scatter_plot("KT as f(Norm(W)) Competition - last", "kt_scat_last", "Norm(W)",
+create_scatter_plot("KT as f(Norm(W)) Competition - 1", "kt_scat1", "Norm(W)",
                     "KT", C, kt)
 
 # create_scatter_plot("Weighted kendall tau (mean aggregation) as function of #leaves", "mean_leaves", "#leaves",
