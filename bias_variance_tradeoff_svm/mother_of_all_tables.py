@@ -62,7 +62,7 @@ def upload_models(models_dir, C_array):
 
 
 if __name__ == "__main__":
-    # C_array = pickle.load(open("C_array", 'rb'))
+    C_array = pickle.load(open("C_array", 'rb'))
     # C_array = [1000, 2000, 3000, 4000, 5000]
     # C_array.extend([(i + 1) * 40 for i in range(25)])
     # C_array.extend([(i + 1) / 100 for i in range(5)])
