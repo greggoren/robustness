@@ -3,7 +3,7 @@ from bias_variance_tradeoff_svm import analyze as a
 import prep as p
 import numpy as np
 import pickle
-
+import random
 def create_mhs(dir):
     mhs = []
     for root, dirs, files in os.walk(dir):
@@ -54,11 +54,18 @@ def upload_models(models_dir, C_array):
             t = file.split("svm_model")[1]
             if len(t.split(".")) > 1 and int(t.split(".")[0]) > 0 and int(t.split(".")[1]) > 0:
                 model = float(file.split("svm_model")[1])
-                models.append(model)
+
                 model_file = root + "/" + file
                 w = recover_model(model_file)
                 model_handlers[model_file] = w
-        return model_handlers
+                models.append(model_file)
+    random.shuffle(models)
+    sampeled_models = models[:31]
+    for i in model_handlers:
+        if i in sampeled_models:
+            model_handlers.pop(i)
+
+    return model_handlers
 
 
 if __name__ == "__main__":
