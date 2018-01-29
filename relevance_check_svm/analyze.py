@@ -6,7 +6,7 @@ import pickle
 
 def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
     fig = plt.figure()
-    fig.suptitle(title, fontsize=14, fontweight='bold')
+    # fig.suptitle(title, fontsize=14, fontweight='bold')
     ax = fig.add_subplot(111)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -99,6 +99,9 @@ f.write("Metric & Correlation & P-value \\\\ \n")
 corr = pearsonr(np.array(C_keys), np.array(C_map))
 d = open("a", 'wb')
 pickle.dump((C_keys, C_map), d)
+d.close()
+d = open("b", 'wb')
+pickle.dump((C_keys, C_ndcg), d)
 d.close()
 f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 corr = pearsonr(C_keys, C_ndcg)
