@@ -455,12 +455,12 @@ class analyze:
             "KTD sum norm & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
                 round(
                     corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        # corr_trees = kendalltau(trees_for_pearson, ndcg_for_pearson)
-        # corr_leaves = kendalltau(leaves_for_pearson, ndcg_for_pearson)
-        # f.write(
-        #     "\\ndcg & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
-        #         round(
-        #             corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
+        corr_trees = kendalltau(trees_for_pearson, ndcg_for_pearson)
+        corr_leaves = kendalltau(leaves_for_pearson, ndcg_for_pearson)
+        f.write(
+            "\\ndcg & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
+                round(
+                    corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
         # corr_trees = kendalltau(trees_for_pearson, map_for_pearson)
         # corr_leaves = kendalltau(leaves_for_pearson, map_for_pearson)
         # f.write(
