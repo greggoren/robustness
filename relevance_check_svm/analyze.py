@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
-from scipy.stats import spearmanr
+from scipy.stats import spearmanr, kendalltau
 import numpy as np
 import pickle
 
@@ -118,6 +118,20 @@ f.write("NDCG@20 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) +
 corr = spearmanr(C_keys, C_p5)
 f.write("P@5 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 corr = spearmanr(C_keys, C_p10)
+f.write("P@10 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
+f.write("\\end{tabular}")
+f.close()
+
+f = open("kendall_tau_C_rel.tex", 'w')
+f.write("\\begin{tabular}{c|c|c}\n")
+f.write("Metric & Correlation & P-value \\\\ \n")
+corr = kendalltau(np.array(C_keys), np.array(C_map))
+f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
+corr = kendalltau(C_keys, C_ndcg)
+f.write("NDCG@20 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
+corr = kendalltau(C_keys, C_p5)
+f.write("P@5 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
+corr = kendalltau(C_keys, C_p10)
 f.write("P@10 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 f.write("\\end{tabular}")
 f.close()
