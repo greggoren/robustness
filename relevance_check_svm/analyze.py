@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 import numpy as np
-
+import pickle
 
 def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
     fig = plt.figure()
@@ -95,6 +95,9 @@ f = open("pearson_C_rel.tex", 'w')
 f.write("\\begin{tabular}{c|c|c}\n")
 f.write("Metric & Correlation & P-value \\\\ \n")
 corr = pearsonr(np.array(C_keys), np.array(C_map))
+d = open("a", 'wb')
+pickle.dump((C_keys, C_map))
+d.close()
 f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 corr = pearsonr(C_keys, C_ndcg)
 f.write("NDCG@20 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
