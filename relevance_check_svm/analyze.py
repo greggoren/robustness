@@ -122,7 +122,7 @@ f.write("P@10 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " 
 f.write("\\end{tabular}")
 f.close()
 
-f = open("c_norm_corr.tex", 'w`')
+f = open("c_norm_corr.tex", 'w')
 f.write("\\begin{tabular}{c|c}\n")
 f.write("Spearman & Pearson \\\\ \n")
 C_arr, norm = list(mapping.keys()), list(mapping.values())
