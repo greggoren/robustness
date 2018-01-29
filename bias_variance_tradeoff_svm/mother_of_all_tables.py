@@ -56,7 +56,8 @@ def upload_models(models_dir, C_array):
         for file in files:
             model_file = root + "/" + file
             w = recover_model(model_file)
-            if np.linalg.norm(w) < 15:
+            # if np.linalg.norm(w) < 15:
+            if True:
                 model_handlers[model_file] = w
                 models.append(model_file)
     # random.shuffle(models)
@@ -94,8 +95,8 @@ if __name__ == "__main__":
     banned = {i: [] for i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     # banned[2].append("164")
     # svms = {"svm_model0.1": pickle.load(open("../svm_model", 'rb'))}
-    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
     # competition_data = preprocess.extract_features_by_epoch("../featuresASR_round2_SVM")
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_combined1")
+    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_combined1")
     analyze.create_table(competition_data, svms, banned)
     # analyze.score_experiment(competition_data, svms)
