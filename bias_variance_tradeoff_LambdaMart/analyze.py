@@ -566,12 +566,12 @@ class analyze:
         #     "\\ndcg & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
         #         round(
         #             corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
-        # corr_trees = spearmanr(trees_for_pearson, map_for_pearson)
-        # corr_leaves = spearmanr(leaves_for_pearson, map_for_pearson)
-        # f.write(
-        #     "\map & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
-        #         round(
-        #             corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
+        corr_trees = spearmanr(trees_for_pearson, map_for_pearson)
+        corr_leaves = spearmanr(leaves_for_pearson, map_for_pearson)
+        f.write(
+            "\map & " + str(round(corr_trees[0], 3)) + " (" + str(round(corr_trees[1], 3)) + ") & " + str(
+                round(
+                    corr_leaves[0], 3)) + " (" + str(round(corr_leaves[1], 3)) + ")   \\\\ \n")
         # corr_trees = spearmanr(trees_for_pearson, mrr_for_pearson)
         # corr_leaves = spearmanr(leaves_for_pearson, mrr_for_pearson)
         # f.write(
