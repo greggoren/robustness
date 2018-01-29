@@ -87,7 +87,8 @@ if __name__ == "__main__":
     C_array = []
     svms = upload_models("models_light", C_array)
     keys = sorted(svms.keys(), key=lambda x: float(x.split("svm_model")[1]))[20:]
-    for svm in svms:
+    f = deepcopy(svms)
+    for svm in f:
         if svm not in keys:
             svms.pop(svm)
     preprocess = p.preprocess()
