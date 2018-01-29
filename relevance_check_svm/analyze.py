@@ -138,10 +138,12 @@ f.close()
 
 f = open("c_norm_corr.tex", 'w')
 f.write("\\begin{tabular}{c|c}\n")
-f.write("Spearman & Pearson \\\\ \n")
+f.write("Spearman & Pearson  \\\\ \n")
 C_arr, norm = list(mapping.keys()), list(mapping.values())
 corr_sp = spearmanr(C_arr, norm)
 corr_pr = pearsonr(C_arr, norm)
 f.write(str(corr_sp[0]) + " (" + str(corr_sp[1]) + ") & " + str(corr_pr[0]) + " (" + str(corr_pr[1]) + ") \\\\ \n")
 f.write("\end{tabular}")
 f.close()
+
+print(kendalltau(C_arr, norm))
