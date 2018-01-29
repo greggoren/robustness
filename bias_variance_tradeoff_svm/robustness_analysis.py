@@ -1,8 +1,8 @@
 import pickle
 import numpy as np
 
-lb_stats = pickle.load(open("lb_robustness_stats", 'rb'))
-svm_stats = pickle.load(open("svm_robustness_stats", 'rb'))
+lb_stats = pickle.load(open("per_query_stats_lb", 'rb'))
+svm_stats = pickle.load(open("per_query_stats_svm", 'rb'))
 percentages = {m: {} for m in svm_stats}
 total = {m: {"lb": 0, "svm": 0} for m in svm_stats}
 for metric in svm_stats:
