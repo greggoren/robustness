@@ -80,11 +80,12 @@ C_ndcg = []
 C_p5 = []
 C_p10 = []
 for key in C_keys1:
-    C_keys.append(mapping[key])
-    C_map.append(C[key]["map"])
-    C_ndcg.append(C[key]["ndcg_cut.20"])
-    C_p5.append(C[key]["P.5"])
-    C_p10.append(C[key]["P.10"])
+    if mapping[key] >= 5:
+        C_keys.append(mapping[key])
+        C_map.append(C[key]["map"])
+        C_ndcg.append(C[key]["ndcg_cut.20"])
+        C_p5.append(C[key]["P.5"])
+        C_p10.append(C[key]["P.10"])
 
 # create_scatter_plot("Map as a function of C", "C_map", "C", "Map", C_keys, C_map)
 # create_scatter_plot("NDCG@20 as a function of C", "C_ndcg", "C", "NDCG@20", C_keys, C_ndcg)
