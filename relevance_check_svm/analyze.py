@@ -80,7 +80,8 @@ C_ndcg = []
 C_p5 = []
 C_p10 = []
 for key in C_keys1:
-    if mapping[key] >= 5:
+    # if mapping[key] >= 5:
+    if True:
         C_keys.append(mapping[key])
         C_map.append(C[key]["map"])
         C_ndcg.append(C[key]["ndcg_cut.20"])
