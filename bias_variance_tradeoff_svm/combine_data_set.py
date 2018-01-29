@@ -1,5 +1,5 @@
-def read_data_sets_and_append(data_sets):
-    with open("featuresASR_combined", 'w') as combined:
+def read_data_sets_and_append(data_sets, i):
+    with open("featuresASR_combined" + i, 'w') as combined:
         for data_set in data_sets:
             f = open(data_set)
             for line in f:
@@ -13,6 +13,8 @@ def read_data_sets_and_append(data_sets):
             f.close()
 
 
-data_sets = ["../featuresASR_round1_SVM", "../featuresASR_round1_LambdaMART", "../featuresASR_round2_SVM",
-             "../featuresASR_round2_LambdaMART"]
-read_data_sets_and_append(data_sets)
+data_sets1 = ["../featuresASR_round1_SVM", "../featuresASR_round1_LambdaMART"]
+data_sets2 = ["../featuresASR_round2_SVM",
+              "../featuresASR_round2_LambdaMART"]
+read_data_sets_and_append(data_sets1, "1")
+read_data_sets_and_append(data_sets2, "2")
