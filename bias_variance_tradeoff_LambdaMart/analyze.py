@@ -152,7 +152,9 @@ class analyze:
                     # mrr_by_epochs.append(mrr_score)
                     # break
             # metrics[model] = (ndcg_by_epochs, map_by_epochs, mrr_by_epochs)
-
+            f = open("per_query_stats_lb", 'wb')
+            pickle.dump(per_query_stats, f)
+            f.close()
             averaged_rel_stats = self.average_metrics_for_queries_rel(per_query_stats, queries)
             f = open("query_rel_stats", 'wb')
             pickle.dump(averaged_rel_stats, f)
