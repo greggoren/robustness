@@ -15,6 +15,40 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
     plt.clf()
 
 
+def recover_model(model):
+    indexes_covered = []
+    weights = []
+    with open(model) as model_file:
+        for line in model_file:
+            if line.__contains__(":"):
+                wheights = line.split()
+                wheights_length = len(wheights)
+
+                for index in range(1, wheights_length - 1):
+
+                    feature_id = int(wheights[index].split(":")[0])
+                    if index < feature_id:
+                        for repair in range(index, feature_id):
+                            if repair in indexes_covered:
+                                continue
+                            weights.append(0)
+                            indexes_covered.append(repair)
+                    weights.append(float(wheights[index].split(":")[1]))
+                    indexes_covered.append(feature_id)
+    return np.array(weights)
+
+
+def map_between_C_and_norm(C_array):
+    mapping = {}
+    for C in C_array:
+        sum_norm = 0
+        for fold in range(1, 6):
+            model_file = "models/" + str(fold) + "/svm_model" + str(C) + ".txt"
+            w = recover_model(model_file)
+            sum_norm += np.linalg.norm(w)
+        mapping[C] = sum_norm / 5
+    return mapping
+
 # C_array = [(i + 1) / 1000 for i in range(5)]
 # C_array.extend([(i + 1) / 100 for i in range(5)])
 # C_array.extend([(i + 1) / 10000 for i in range(5)])
@@ -37,22 +71,24 @@ with open("C_relevance_for_correlation_svm") as C_stats:
 
 models = set(C.keys())
 # print(set(C_array) - models)
-
-C_keys = sorted(list(C.keys()))
+mapping = map_between_C_and_norm(models)
+C_keys1 = sorted(list(C.keys()))
+C_keys = []
 C_map = []
 C_ndcg = []
 C_p5 = []
 C_p10 = []
-for key in C_keys:
+for key in C_keys1:
+    C_keys.append(mapping[key])
     C_map.append(C[key]["map"])
     C_ndcg.append(C[key]["ndcg_cut.20"])
     C_p5.append(C[key]["P.5"])
     C_p10.append(C[key]["P.10"])
 
-create_scatter_plot("Map as a function of C", "C_map", "C", "Map", C_keys, C_map)
-create_scatter_plot("NDCG@20 as a function of C", "C_ndcg", "C", "NDCG@20", C_keys, C_ndcg)
-create_scatter_plot("P@5 as a function of C", "C_p5", "C", "P@5", C_keys, C_p5)
-create_scatter_plot("P@10 as a function of C", "C_p10", "C", "P@10", C_keys, C_p10)
+# create_scatter_plot("Map as a function of C", "C_map", "C", "Map", C_keys, C_map)
+# create_scatter_plot("NDCG@20 as a function of C", "C_ndcg", "C", "NDCG@20", C_keys, C_ndcg)
+# create_scatter_plot("P@5 as a function of C", "C_p5", "C", "P@5", C_keys, C_p5)
+# create_scatter_plot("P@10 as a function of C", "C_p10", "C", "P@10", C_keys, C_p10)
 
 f = open("pearson_C_rel.tex", 'w')
 f.write("\\begin{tabular}{c|c|c}\n")
