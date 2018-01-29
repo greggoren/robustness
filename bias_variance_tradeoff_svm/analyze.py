@@ -265,7 +265,7 @@ class analyze:
         kendall, change_rate, rbo_min_models = self.calculate_average_kendall_tau(rankings, weights, ranks,
                                                                                   banned_queries, competition_data)
         self.extract_score(scores)
-        # metrics = self.calculate_metrics(scores)
+        metrics = self.calculate_metrics(scores)
 
         table_file = open("table_value.tex", 'w')
         table_file.write(

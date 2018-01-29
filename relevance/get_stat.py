@@ -1,7 +1,8 @@
 import numpy as np
 stat ={i:{} for i in range(9)}
 res={i:0 for i in range(9)}
-with open("new_rel") as rel:
+counter = 0
+with open("documents_updated.rel") as rel:
     for line in rel:
         splited=line.split()
         query = splited[0]
@@ -10,8 +11,10 @@ with open("new_rel") as rel:
             stat[iter][query]=[]
         if int(splited[3])>0:
             stat[iter][query].append(1)
+            counter += 1
         else:
             stat[iter][query].append(0)
+print(counter)
 a={i:{} for i in range(9)}
 for i in stat:
     tmp=0

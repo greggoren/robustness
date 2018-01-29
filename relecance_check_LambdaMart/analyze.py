@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
-from scipy.stats import spearmanr
+from scipy.stats import spearmanr, kendalltau
 import numpy as np
 
 
@@ -16,7 +16,7 @@ def create_scatter_plot(title, file_name, xlabel, ylabel, x, y):
 
 
 trees = {}
-with open("trees_relevance_for_correlation_LambdaMart") as trees_stats:
+with open("models_relevance_for_correlation_LambdaMart1") as trees_stats:
     for stat in trees_stats:
         if stat.__contains__("MODEL"):
             continue
@@ -37,7 +37,7 @@ for key in tree_keys:
     trees_p5.append(trees[key]["P.5"])
     trees_p10.append(trees[key]["P.10"])
 
-create_scatter_plot("Map as a function of #trees", "trees_map", "#trees", "Map", tree_keys, trees_map)
+create_scatter_plot("MAP as a function of #trees", "trees_map", "#trees", "Map", tree_keys, trees_map)
 create_scatter_plot("NDCG@20 as a function of #trees", "trees_ndcg", "#trees", "NDCG@20", tree_keys, trees_ndcg)
 create_scatter_plot("P@5 as a function of #trees", "trees_p5", "#trees", "P@5", tree_keys, trees_p5)
 create_scatter_plot("P@10 as a function of #trees", "trees_p10", "#trees", "P@10", tree_keys, trees_p10)
@@ -59,13 +59,13 @@ f.close()
 f = open("spearman_trees_rel.tex", 'w')
 f.write("\\begin{tabular}{c|c|c}\n")
 f.write("Metric & Correlation & P-value \\\\ \n")
-corr = spearmanr(np.array(tree_keys[10:]), np.array(trees_map[10:]))
+corr = spearmanr(np.array(tree_keys), np.array(trees_map))
 f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
-corr = spearmanr(tree_keys[10:], trees_ndcg[10:])
+corr = spearmanr(tree_keys, trees_ndcg)
 f.write("NDCG@20 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
-corr = spearmanr(tree_keys[10:], trees_p5[10:])
+corr = spearmanr(tree_keys, trees_p5)
 f.write("P@5 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
-corr = spearmanr(tree_keys[10:], trees_p10[10:])
+corr = spearmanr(tree_keys, trees_p10)
 f.write("P@10 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 f.write("\\end{tabular}")
 f.close()
@@ -92,7 +92,7 @@ for key in leaves_keys:
     leaves_p5.append(leaves[key]["P.5"])
     leaves_p10.append(leaves[key]["P.10"])
 
-create_scatter_plot("Map as a function of #leaves", "leaves_map", "#leaves", "Map", leaves_keys, leaves_map)
+create_scatter_plot("MAP as a function of #leaves", "leaves_map", "#leaves", "Map", leaves_keys, leaves_map)
 create_scatter_plot("NDCG@20 as a function of #leaves", "leaves_ndcg", "#leaves", "NDCG@20", leaves_keys, leaves_ndcg)
 create_scatter_plot("P@5 as a function of #leaves", "leaves_p5", "#leaves", "P@5", leaves_keys, leaves_p5)
 create_scatter_plot("P@10 as a function of #leaves", "leaves_p10", "#leaves", "P@10", leaves_keys, leaves_p10)
@@ -122,5 +122,13 @@ corr = spearmanr(leaves_keys, leaves_p5)
 f.write("P@5 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 corr = spearmanr(leaves_keys, leaves_p10)
 f.write("P@10 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
+f.write("\\end{tabular}")
+f.close()
+
+f = open("kt_leaves_rel.tex", 'w')
+f.write("\\begin{tabular}{c|c|c}\n")
+f.write("Metric & Correlation & P-value \\\\ \n")
+corr = kendalltau(np.array(leaves_keys), np.array(leaves_map))
+f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 f.write("\\end{tabular}")
 f.close()
