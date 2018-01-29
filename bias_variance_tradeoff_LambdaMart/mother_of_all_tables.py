@@ -30,6 +30,6 @@ if __name__ == "__main__":
     # banned[2].append("164")
     # banned[2].append("010")
     # models = ["../model_250_50"]
-    # competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
-    competition_data = preprocess.extract_features_by_epoch("../featuresASR_combined")
+    competition_data = preprocess.extract_features_by_epoch("../features_asr_modified")
+    # competition_data = preprocess.extract_features_by_epoch("../featuresASR_combined")
     analyze.create_table(competition_data, models, banned)
