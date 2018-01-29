@@ -72,6 +72,7 @@ with open("C_relevance_for_correlation_svm") as C_stats:
 models = set(C.keys())
 # print(set(C_array) - models)
 mapping = map_between_C_and_norm(models)
+print(mapping)
 C_keys1 = sorted(list(C.keys()))
 C_keys = []
 C_map = []
@@ -107,7 +108,7 @@ f.close()
 f = open("spearman_C_rel.tex", 'w')
 f.write("\\begin{tabular}{c|c|c}\n")
 f.write("Metric & Correlation & P-value \\\\ \n")
-corr = spearmanr(np.array(C_keys[20:]), np.array(C_map[20:]))
+corr = spearmanr(np.array(C_keys), np.array(C_map))
 f.write("Map & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
 corr = spearmanr(C_keys, C_ndcg)
 f.write("NDCG@20 & " + str(round(corr[0], 3)) + " & " + str(round(corr[1], 3)) + " \\\\ \n")
